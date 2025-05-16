@@ -1,12 +1,11 @@
-/**
- * Sample Skeleton for 'DrawSnapView.fxml' Controller Class
- */
-
 package it.unisa.software_architecture_design.drawsnapdrawingtool;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.*;
 
 public class DrawSnapController {
 
@@ -18,10 +17,32 @@ public class DrawSnapController {
     private GraphicsContext gc;
 
     /**
+     * Attributi per i bottoni
+     */
+    @FXML
+    private Button ellipseButton;
+    @FXML
+    private Button rectangleButton;
+    @FXML
+    private Button lineButton;
+
+    /**
      * Metodo di Inizializzazione dopo il caricamento del foglio fxml
      */
     @FXML
     void initialize() {
         gc = canvas.getGraphicsContext2D();
+        ellipseButton.setOnAction(event -> setDrawMode(event, Shape.ELLISSE));
+        rectangleButton.setOnAction(event -> setDrawMode(event, Shape.RETTANGOLO));
+        lineButton.setOnAction(event -> setDrawMode(event, Shape.LINEA));
+    }
+
+    /**
+     * Metodo per passare alla modalità di disegno
+     * @param event -> evento che ha scaturito la chiamata alla funzione
+     * @param shape -> forma corrispondente al bottone che è stato premuto
+     */
+    void setDrawMode(ActionEvent event, Shape shape) {
+
     }
 }
