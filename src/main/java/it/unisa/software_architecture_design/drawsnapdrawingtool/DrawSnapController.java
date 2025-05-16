@@ -10,12 +10,17 @@ import javafx.scene.canvas.GraphicsContext;
 
 public class DrawSnapController {
 
-    //Oggetti per il foglio di disegno
+    /**
+     * Attributi per il foglio di disegno
+     **/
     @FXML
     private Canvas canvas;
     private GraphicsContext gc;
 
-    @FXML //questo metodo viene chiamato quando il file FXML viene caricato per inizializzarlo
+    /**
+     * Metodo di Inizializzazione dopo il caricamento del foglio fxml
+     */
+    @FXML
     void initialize() {
         gc = canvas.getGraphicsContext2D();
     }
