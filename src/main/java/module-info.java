@@ -7,4 +7,6 @@ module it.unisa.software_architecture_design.drawsnapdrawingtool {
 
     opens it.unisa.software_architecture_design.drawsnapdrawingtool to javafx.fxml;
     exports it.unisa.software_architecture_design.drawsnapdrawingtool;
+    exports it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
+    opens it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate to javafx.fxml;
 }
