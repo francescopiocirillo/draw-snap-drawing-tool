@@ -4,50 +4,71 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Linea extends Forma  {
+    /*
+     * Attributi
+     */
     private double xInizio;
     private double yInizio;
     private double xFine;
     private double yFine;
-    /**
-     * Costruttore, Setter
+
+    /*
+     * Costruttore, getter e setter
      */
     public Linea(double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore) {
         super(coordinataX, coordinataY, larghezza, angoloInclinazione, colore); // Chiamata al costruttore della classe estesa Forma
+
     }
 
-    public double getxInizio() {
+    public double getXInizio() {
         return xInizio;
     }
 
-    public double getyInizio() {
+    public double getYInizio() {
         return yInizio;
     }
 
-    public double getxFine() {
+    public double getXFine() {
         return xFine;
     }
 
-    public double getyFine() {
+    public double getYFine() {
         return yFine;
     }
+
+    private void updateCoordinateYInizioFine() {
+        this.yInizio = this.getCoordinataY() - (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
+        this.yFine = this.getCoordinataY() + (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
+    }
+
+    private void updateCoordinateXInizioFine() {
+        this.xInizio = this.getCoordinataX() - (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
+        this.xFine = this.getCoordinataX() + (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
+    }
+
     @Override
     public void setCoordinataY(double coordinataY) {
-        double larghezza = getLarghezza();
-        this.yInizio = coordinataY - (larghezza / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
-        this.yFine = coordinataY + (larghezza / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
         super.setCoordinataY(coordinataY);
+        updateCoordinateYInizioFine();
     }
 
     @Override
     public void setCoordinataX(double coordinataX) {
-        double larghezza = getLarghezza();
-        this.xInizio = coordinataX - (larghezza / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
-        this.xFine = coordinataX + (larghezza/2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
         super.setCoordinataX(coordinataX);
+        updateCoordinateXInizioFine();
     }
+
+    /*
+      Logica della classe
+     */
+
     /**
+     * Disegna una linea sul {@link GraphicsContext} specificato.
+     * Questo metodo disegna una linea utilizzando le coordinate di inizio e fine fornite dagli attributi
+     * dell'oggetto usando il colore della forma.
      *
-     * @param gc
+     * @param gc il {@code GraphicsContext} su cui disegnare la linea.
+     *           Deve essere già inizializzato e associato a un {@code Canvas} valido.
      */
     @Override
     public void disegna(GraphicsContext gc) {
@@ -55,10 +76,10 @@ public class Linea extends Forma  {
         gc.setStroke(getColore());
 
         // Calcola i punti iniziali e finali della linea
-        double xInizio = getxInizio();
-        double yInizio = getyInizio();
-        double xFine = getxFine();
-        double yFine = getyFine();
+        double xInizio = getXInizio();
+        double yInizio = getYInizio();
+        double xFine = getXFine();
+        double yFine = getYFine();
 
         // Disegna la linea
         gc.strokeLine(xInizio, yInizio, xFine, yFine);
@@ -76,10 +97,10 @@ public class Linea extends Forma  {
     @Override
     public boolean contiene(double px, double py) {
         //Punti alle estremità della linea
-        double xInizio = getxInizio();
-        double yInizio = getyInizio();
-        double xFine = getxFine();
-        double yFine = getyFine();
+        double xInizio = getXInizio();
+        double yInizio = getYInizio();
+        double xFine = getXFine();
+        double yFine = getYFine();
         final double TOLLERANZA = 0.1; //si considerano anche i punti nell'intorno della linea
 
         //Calcolo appartenenza alla retta che passa per i punti di inizio e di fine
