@@ -22,7 +22,9 @@ class DrawSnapControllerTest {
     /**
      * Prima di fare i test vi è bisogno di controllare che il tool kit di java fx sia caricato
      * Se non presente, non sarà possibile inizializzare il contesto grafico e interagire con le sue API
-     * @throws Exception
+     * @throws IllegalStateException se il toolkit di JavaFX non si inizializza entro il tempo massimo specificato
+     * @throws InterruptedException se l'attesa per l'inizializzazione fatta da {@code countDownLatch.await()}
+     * viene interrotta
      */
     @BeforeAll
     public static void initJavaFX() throws Exception{

@@ -32,17 +32,17 @@ public class DrawSnapController {
     @FXML
     void initialize() {
         gc = canvas.getGraphicsContext2D();
-        ellipseButton.setOnAction(event -> setDrawMode(event, Shape.ELLISSE));
-        rectangleButton.setOnAction(event -> setDrawMode(event, Shape.RETTANGOLO));
-        lineButton.setOnAction(event -> setDrawMode(event, Shape.LINEA));
+        ellipseButton.setOnAction(event -> setDrawMode(event, Forme.ELLISSE));
+        rectangleButton.setOnAction(event -> setDrawMode(event, Forme.RETTANGOLO));
+        lineButton.setOnAction(event -> setDrawMode(event, Forme.LINEA));
     }
 
     /**
      * Metodo per passare alla modalità di disegno
      * @param event -> evento che ha scaturito la chiamata alla funzione
-     * @param shape -> forma corrispondente al bottone che è stato premuto
+     * @param forme -> forma corrispondente al bottone che è stato premuto
      */
-    void setDrawMode(ActionEvent event, Shape shape) {
+    void setDrawMode(ActionEvent event, Forme forme) {
 
     }
 }
