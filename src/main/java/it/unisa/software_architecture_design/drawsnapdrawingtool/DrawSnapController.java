@@ -9,14 +9,14 @@ import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.*;
 
 public class DrawSnapController {
 
-    /**
+    /*
      * Attributi per il foglio di disegno
-     **/
+     */
     @FXML
     private Canvas canvas;
     private GraphicsContext gc;
 
-    /**
+    /*
      * Attributi per i bottoni
      */
     @FXML

@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 
 
 public abstract class Forma {
-    /**
+    /*
      * Attributi
      */
     private double coordinataY;
@@ -15,7 +15,7 @@ public abstract class Forma {
     private double angoloInclinazione;
     private Color colore;
 
-    /**
+    /*
      * Costruttore, getter e setter
      */
     public Forma(double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore) {
@@ -66,13 +66,15 @@ public abstract class Forma {
         this.angoloInclinazione = angoloInclidazione;
     }
 
-    /**
+    /*
      * Logica della classe
      */
 
     /**
+     * Disegna la Forma sul {@link GraphicsContext} specificato.
      *
-     * @param gc
+     * @param gc il {@code GraphicsContext} su cui disegnare la Forma.
+     *           Deve essere già inizializzato e associato a un {@code Canvas} valido.
      */
     public abstract void disegna(GraphicsContext gc);
 

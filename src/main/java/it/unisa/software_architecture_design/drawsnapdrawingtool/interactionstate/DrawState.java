@@ -4,13 +4,13 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 
 public class DrawState implements DrawingState{
-    /**
+    /*
      * Attributi
      */
     private Canvas canvas;
     private String figuraCorrente;
 
-    /**
+    /*
      * Costruttore, getter e setter
      */
     public DrawState(Canvas canvas, String figuraCorrente) {
@@ -34,7 +34,7 @@ public class DrawState implements DrawingState{
         this.figuraCorrente = figuraCorrente;
     }
 
-    /**
+    /*
      * Logica della classe
      */
     @Override

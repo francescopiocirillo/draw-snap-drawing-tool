@@ -9,13 +9,13 @@ import javafx.scene.input.MouseEvent;
  * delegare la gestione degli eventi di interazione con il canvas allo stato corrente
  */
 public class DrawingContext {
-    /**
+    /*
      * Attributi
      */
     private Canvas canvas;
     private DrawingState currentState;
 
-    /**
+    /*
      * Costruttore, getter e setter
      */
     public DrawingContext(Canvas canvas, DrawingState currentState) {
@@ -40,7 +40,7 @@ public class DrawingContext {
         this.currentState = currentState;
     }
 
-    /**
+    /*
      * Logica della classe
      */
 
