@@ -44,7 +44,8 @@ class DrawSnapControllerTest {
      * Test per verificare che il canvas e il GraphicContext siano stati inizializzati correttamente
      * Il CountDownLatch viene utilizzato per sincronizzare il metodo di inizializzazione con il test
      * Dobbiamo aspettare che javafx finisca l'inizializzazione prima di procedere con il test
-     * @throws Exception
+     * @throws InterruptedException se l'attesa per l'inizializzazione fatta da {@code countDownLatch.await()}
+     * viene interrotta
      */
     @Test
     void testCanvasInit() throws Exception{
@@ -68,7 +69,9 @@ class DrawSnapControllerTest {
                 countDownLatch.countDown();
             }
         });
-        countDownLatch.await(2, TimeUnit.SECONDS);
+        if((!countDownLatch.await(2, TimeUnit.SECONDS))){
+            throw new IllegalStateException("JavaFX Toolkit non inizializzato entro 2 secondi");
+        }
 
         assertTrue(result[0], "Errore, Canvas o GraphicContext non inizializzati correttamente");
     }

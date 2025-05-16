@@ -39,7 +39,7 @@ public class DrawSnapController {
 
     /**
      * Metodo per passare alla modalità di disegno
-     * @param event -> evento che ha scaturito la chiamata alla funzione
+     * @param event -> evento che ha causato la chiamata alla funzione
      * @param forme -> forma corrispondente al bottone che è stato premuto
      */
     void setDrawMode(ActionEvent event, Forme forme) {
