@@ -42,8 +42,8 @@ public class Linea extends Forma  {
     }
 
     private void updateCoordinateXInizioFine() {
-        this.xInizio = this.getCoordinataX() - (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
-        this.xFine = this.getCoordinataX() + (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
+        this.xInizio = this.getCoordinataX() - (this.getLarghezza() / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
+        this.xFine = this.getCoordinataX() + (this.getLarghezza() / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
     }
 
     @Override
