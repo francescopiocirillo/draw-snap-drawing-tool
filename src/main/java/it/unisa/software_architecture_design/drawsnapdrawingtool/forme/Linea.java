@@ -21,6 +21,16 @@ public class Linea extends Forma  {
         updateCoordinateXInizioFine();
     }
 
+    private void updateCoordinateYInizioFine() {
+        this.yInizio = this.getCoordinataY() - (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
+        this.yFine = this.getCoordinataY() + (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
+    }
+
+    private void updateCoordinateXInizioFine() {
+        this.xInizio = this.getCoordinataX() - (this.getLarghezza() / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
+        this.xFine = this.getCoordinataX() + (this.getLarghezza() / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
+    }
+
     public double getXInizio() {
         return xInizio;
     }
@@ -35,16 +45,6 @@ public class Linea extends Forma  {
 
     public double getYFine() {
         return yFine;
-    }
-
-    private void updateCoordinateYInizioFine() {
-        this.yInizio = this.getCoordinataY() - (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
-        this.yFine = this.getCoordinataY() + (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
-    }
-
-    private void updateCoordinateXInizioFine() {
-        this.xInizio = this.getCoordinataX() - (this.getLarghezza() / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
-        this.xFine = this.getCoordinataX() + (this.getLarghezza() / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
     }
 
     @Override
