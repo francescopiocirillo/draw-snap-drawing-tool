@@ -1,5 +1,7 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.Invoker;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.SaveCommand;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawState;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawingContext;
@@ -10,6 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.*;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +26,8 @@ public class DrawSnapController {
     private Canvas canvas;
     private GraphicsContext gc;
     private DrawingContext drawingContext;
-    List<Forma> forme = null;
+    private List<Forma> forme = null;
+    private Stage stage;
 
     /*
      * Attributi per i bottoni
@@ -35,6 +39,12 @@ public class DrawSnapController {
     @FXML
     private Button lineButton;
 
+    /*
+     * Attributi per la logica
+     */
+    private Invoker invoker = null;
+
+
     /**
      * Metodo di Inizializzazione dopo il caricamento del foglio fxml
      */
@@ -43,11 +53,18 @@ public class DrawSnapController {
         forme = new ArrayList<>();
         gc = canvas.getGraphicsContext2D();
         drawingContext = new DrawingContext(new DrawState(forme, Forme.LINEA)); // stato di default, sarà cambiato quando avremo lo stato sposta o seleziona
+        invoker = new Invoker();
 
         // inizializzazione bottoni per la selezione forma
         ellipseButton.setOnAction(event -> setDrawMode(event, Forme.ELLISSE));
         rectangleButton.setOnAction(event -> setDrawMode(event, Forme.RETTANGOLO));
         lineButton.setOnAction(event -> setDrawMode(event, Forme.LINEA));
+
+        initializeCanvasEventHandlers();
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
     /**
@@ -60,6 +77,7 @@ public class DrawSnapController {
     }
 
     private void handleMousePressed(MouseEvent mouseEvent) {
+        System.out.println("Mouse pressed");
         /*
          * handleMousePressed del controller deve aprire la finestra di dialogo per inserire i dati
          * della figura, dopodiché solo quando l'utente clicca il tasto di conferma deve prendere
@@ -92,6 +110,8 @@ public class DrawSnapController {
 
     @FXML
     void onSavePressed(ActionEvent event) {
-
+        invoker.setCommand(new SaveCommand(forme, stage));
+        invoker.executeCommand();
     }
+
 }

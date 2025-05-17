@@ -12,6 +12,10 @@ public class DrawSnapApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(DrawSnapApplication.class.getResource("DrawSnapView.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1200, 600);
+
+        DrawSnapController controller = fxmlLoader.getController();
+        controller.setStage(stage);
+
         stage.setResizable(false);
         stage.setTitle("DrawSnap - Drawing Tool");
         stage.setScene(scene);

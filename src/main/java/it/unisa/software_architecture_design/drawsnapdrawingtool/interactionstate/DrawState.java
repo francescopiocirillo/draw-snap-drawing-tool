@@ -10,14 +10,15 @@ public class DrawState implements DrawingState{
     /*
      * Attributi
      */
-    private Forme figuraCorrente;
+    private Forme formaCorrente;
     private List<Forma> forme;
 
     /*
      * Costruttore, getter e setter
      */
-    public DrawState(List<Forma> forme, Forme figuraCorrente) {
-        this.figuraCorrente = figuraCorrente;
+    public DrawState(List<Forma> forme, Forme formaCorrente) {
+        this.formaCorrente = formaCorrente;
+        System.out.println(formaCorrente);
     }
 
     public List<Forma> getForme() {
@@ -28,12 +29,12 @@ public class DrawState implements DrawingState{
         this.forme = forme;
     }
 
-    public Forme getFiguraCorrente() {
-        return figuraCorrente;
+    public Forme getFormaCorrente() {
+        return formaCorrente;
     }
 
-    public void setFiguraCorrente(Forme figuraCorrente) {
-        this.figuraCorrente = figuraCorrente;
+    public void setFormaCorrente(Forme formaCorrente) {
+        this.formaCorrente = formaCorrente;
     }
 
     /*
@@ -47,7 +48,7 @@ public class DrawState implements DrawingState{
     @Override
     public void handleMousePressed(MouseEvent event, List<Forma> forme/*aggiungere parametri ricevuti dalla finestra di dialogo del task 1.3.2*/) {
         Forma formaCreata = null;
-        switch (figuraCorrente) {
+        switch (formaCorrente) {
             case ELLISSE:
                 //formaCreata = new FactoryEllisse().creaForma(/*aggiungere parametri*/);
                 System.out.println("È un'ellisse");
@@ -59,6 +60,9 @@ public class DrawState implements DrawingState{
             case LINEA:
                 //formaCreata = new FactoryLinea().creaForma(/*aggiungere parametri*/);
                 System.out.println("È una linea");
+                break;
+            default:
+                System.out.println("È un default");
                 break;
         }
         //forme.add(formaCreata);
