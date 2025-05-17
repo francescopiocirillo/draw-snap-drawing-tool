@@ -41,11 +41,8 @@ public class DrawingContext {
      * DrawingContext delega la gestione dell'evento pressione del mouse allo stato corrente
      * @param event l'evento di pressione del Mouse
      */
-    public void handleMousePressed(MouseEvent event, List<Forma> forme, double coordinataX, double coordinataY,
-                                   double altezza, double larghezza, double angoloInclinazione, Color colore,
-                                   Color coloreInterno){
-        currentState.handleMousePressed(event, forme, coordinataX, coordinataY, altezza, larghezza, angoloInclinazione,
-                                    colore, coloreInterno);
+    public void handleMousePressed(MouseEvent event, List<Forma> forme){
+        currentState.handleMousePressed(event, forme);
     }
 
     /**

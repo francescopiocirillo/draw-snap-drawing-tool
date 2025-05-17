@@ -1,16 +1,18 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FactoryEllisse;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FactoryLinea;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FactoryRettangolo;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Linea;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Rettangolo;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.*;
+import javafx.geometry.Insets;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 import java.util.List;
+import java.util.Optional;
 
 public class DrawState implements DrawingState{
     /*
@@ -52,19 +54,21 @@ public class DrawState implements DrawingState{
      * @param event è l'evento di pressione del mouse
      */
     @Override
-    public void handleMousePressed(MouseEvent event, List<Forma> forme, double coordinataX, double coordinataY,
-                                   double altezza, double larghezza, double angoloInclinazione, Color colore,
-                                   Color coloreInterno) {
+    public void handleMousePressed(MouseEvent event, List<Forma> forme) {
+        AttributiForma attributiForma = helpUIHandleMousePressed();
+
         Forma formaCreata = null;
         switch (formaCorrente) {
             case ELLISSE:
-                formaCreata = new FactoryEllisse().creaForma(coordinataX, coordinataY, altezza, larghezza,
-                                                            angoloInclinazione, colore, coloreInterno);
+                formaCreata = new FactoryEllisse().creaForma(attributiForma.coordinataX, attributiForma.coordinataY,
+                        attributiForma.altezza, attributiForma.larghezza,
+                        attributiForma.angoloInclinazione, attributiForma.colore, attributiForma.coloreInterno);
                 System.out.println("È un'ellisse");
                 break;
             case RETTANGOLO:
-                formaCreata = new FactoryRettangolo().creaForma(coordinataX, coordinataY, altezza, larghezza,
-                                                            angoloInclinazione, colore, coloreInterno);
+                formaCreata = new FactoryRettangolo().creaForma(attributiForma.coordinataX, attributiForma.coordinataY,
+                        attributiForma.altezza, attributiForma.larghezza,
+                        attributiForma.angoloInclinazione, attributiForma.colore, attributiForma.coloreInterno);
                 System.out.println("È un rettangolo");
                 // Parametri mock per testare il disegno, da rimuovere una volta disponibile la factory
                 double x = event.getX();
@@ -80,8 +84,9 @@ public class DrawState implements DrawingState{
                 break;
 
             case LINEA:
-                formaCreata = new FactoryLinea().creaForma(coordinataX, coordinataY, altezza, larghezza,
-                                                         angoloInclinazione, colore, coloreInterno);
+                formaCreata = new FactoryLinea().creaForma(attributiForma.coordinataX, attributiForma.coordinataY,
+                        attributiForma.altezza, attributiForma.larghezza,
+                        attributiForma.angoloInclinazione, attributiForma.colore, attributiForma.coloreInterno);
                 System.out.println("È una linea");
                 // Parametri mock per testare il disegno, da rimuovere una volta disponibile la factory
                 double lineaX = event.getX();
@@ -92,6 +97,28 @@ public class DrawState implements DrawingState{
                 break;
         }
         forme.add(formaCreata);
+    }
+
+    private AttributiForma helpUIHandleMousePressed() {
+        Dialog dialog = new Dialog<>(); // Modale di dialogo
+        dialog.setTitle("Conferma Disegno");
+        Label headerLabel = new Label("Vuoi inserire la figura scelta qui?");
+        headerLabel.setStyle("-fx-font-size: 16px;");
+
+        // StackPane per contenere e centrare il contenuto della finestra
+        StackPane headerPane = new StackPane(headerLabel);
+        headerPane.setPadding(new Insets(40, 0, -20, 0)); // Padding per centrare meglio la frase
+
+        dialog.getDialogPane().setHeader(headerPane);
+
+        // Pulsanti di conferma e annulla
+        ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
+
+        Optional result = dialog.showAndWait(); // aspetta che l'utente interagisca e restituisce un Optional contenente il bottone cliccato
+        AttributiForma attributiForma = new AttributiForma();
+        return attributiForma;
     }
 
 

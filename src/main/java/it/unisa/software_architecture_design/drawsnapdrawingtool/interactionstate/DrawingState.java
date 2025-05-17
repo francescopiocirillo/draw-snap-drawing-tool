@@ -12,9 +12,7 @@ import java.util.List;
  * in questa interfaccia
  */
 public interface DrawingState {
-    void handleMousePressed(MouseEvent event, List<Forma> forme, double coordinataX, double coordinataY,
-                            double altezza, double larghezza, double angoloInclinazione, Color colore,
-                            Color coloreInterno);
+    void handleMousePressed(MouseEvent event, List<Forma> forme);
 
     void handleMouseDragged(MouseEvent event);
 

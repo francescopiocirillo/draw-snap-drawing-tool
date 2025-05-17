@@ -89,34 +89,12 @@ public class DrawSnapController {
      */
     private void handleMousePressed(MouseEvent mouseEvent) {
         System.out.println("Mouse pressed");
-
-
-        Dialog dialog = new Dialog<>(); // Modale di dialogo
-        dialog.setTitle("Conferma Disegno");
-        Label headerLabel = new Label("Vuoi inserire la figura scelta qui?");
-        headerLabel.setStyle("-fx-font-size: 16px;");
-
-        // StackPane per contenere e centrare il contenuto della finestra
-        StackPane headerPane = new StackPane(headerLabel);
-        headerPane.setPadding(new Insets(40, 0, -20, 0)); // Padding per centrare meglio la frase
-
-        dialog.getDialogPane().setHeader(headerPane);
-
-        // Pulsanti di conferma e annulla
-        ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
-
-        Optional result = dialog.showAndWait(); // aspetta che l'utente interagisca e restituisce un Optional contenente il bottone cliccato
-
-        if (result.isPresent() && result.get() == confirmButton) { // l'utente ha cliccato conferma
-            drawingContext.handleMousePressed(mouseEvent, forme); // passa la forma da creare al DrawState
-            redrawAll(); // aggiorna il canvas
-        }
+        drawingContext.handleMousePressed(mouseEvent, forme); // passa la forma da creare al DrawState
+        redrawAll();
     }
 
     /**
-     * Metodo che cancella completamente il contenuto del {@link Canvas} e ridisegna tutte le forme presenti
+     * Metodo che cancella il contenuto del {@link Canvas} e ridisegna tutte le forme presenti
      * nella lista {@code forme} utilizzando il {@link GraphicsContext}.
      * Chiamato dopo una modifica nel canvas per aggiornarne la visualizzazione.
      */
