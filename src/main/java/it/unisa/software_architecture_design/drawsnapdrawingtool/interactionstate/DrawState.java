@@ -49,7 +49,7 @@ public class DrawState implements DrawingState{
      * @param event è l'evento di pressione del mouse
      */
     @Override
-    public void handleMousePressed(MouseEvent event, List forme/*aggiungere parametri ricevuti dalla finestra di dialogo del task 1.3.2*/) {
+    public void handleMousePressed(MouseEvent event, List<Forma> forme/*aggiungere parametri ricevuti dalla finestra di dialogo del task 1.3.2*/) {
         Forma formaCreata = null;
         switch (formaCorrente) {
             case ELLISSE:
