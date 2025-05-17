@@ -41,6 +41,20 @@ class RettangoloTest {
     }
 
     @Test
+    void testContiene_puntoRettangoloMinimo() {
+        Rettangolo rettangolo = new Rettangolo(50, 50, 0.01, 0, Color.BLACK, 0.01, Color.WHITE);
+
+        assertTrue(rettangolo.contiene(50, 50));
+    }
+
+    @Test
+    void testContiene_puntoSulBordoRettangoloMinimo() {
+        Rettangolo rettangolo = new Rettangolo(50, 50, 0.01, 0, Color.BLUE, 0.01, Color.GREEN);
+        // Punto sul bordo superiore
+        assertTrue(rettangolo.contiene(50, 50.005));
+    }
+
+    @Test
     void testContiene_puntoSulBordoConInclinazione() {
         Rettangolo rettangolo = new Rettangolo(50, 50, 40, 45, Color.CORAL, 20, Color.CYAN);
         double verticeAX = rettangolo.getVerticeAX();
@@ -60,7 +74,7 @@ class RettangoloTest {
 
     @Test
     void testPuntoVicinoDiagonaleEsterno() {
-        Rettangolo rettangolo = new Rettangolo(100, 100, 60, 0, Color.BLACK, 40, Color.LIGHTGRAY);
+        Rettangolo rettangolo = new Rettangolo(100, 100, 60, 0, Color.PURPLE, 40, Color.LIGHTGRAY);
         double verticeAX = rettangolo.getVerticeAX();
         double verticeAY = rettangolo.getVerticeAY();
 
@@ -69,7 +83,7 @@ class RettangoloTest {
 
     @Test
     void testPuntoInternoVicinoBordo() {
-        Rettangolo rettangolo = new Rettangolo(50, 50, 40, 0, Color.BLACK, 20, Color.LIGHTGRAY);
+        Rettangolo rettangolo = new Rettangolo(50, 50, 40, 0, Color.ORANGE, 20, Color.PINK);
         // Punto interno vicino al bordo inferiore (y = 60)
         assertTrue(rettangolo.contiene(50, 59.9));
     }
@@ -100,8 +114,22 @@ class RettangoloTest {
     }
 
     @Test
+    void testContiene_puntoVicinoRettangoloMinimo() {
+        Rettangolo rettangolo = new Rettangolo(50, 50, 0.01, 0, Color.ORANGE, 0.01, Color.CYAN);
+        // Punto vicino al rettangolo ma esterno
+        assertFalse(rettangolo.contiene(50.015, 50.015));
+    }
+
+    @Test
+    void testContiene_puntoFuoriDalRettangoloMinimo() {
+        Rettangolo rettangolo = new Rettangolo(50, 50, 0.01, 0, Color.RED, 0.01, Color.YELLOW);
+        // Punto leggermente fuori dal rettangolo
+        assertFalse(rettangolo.contiene(50.01, 50));
+    }
+
+    @Test
     void testContiene_puntoEsternoVicinoAlRettangoloInclinato() {
-        Rettangolo rettangolo = new Rettangolo(50, 50, 40, 45, Color.BLACK, 20, Color.LIGHTGRAY);
+        Rettangolo rettangolo = new Rettangolo(50, 50, 40, 45, Color.LIGHTGREEN, 20, Color.LIGHTBLUE);
         // Punto appena fuori rispetto a un vertice
         double verticeAX = rettangolo.getVerticeAX();
         double verticeAY = rettangolo.getVerticeAY();

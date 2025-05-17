@@ -2,6 +2,7 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionsta
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
 import java.util.List;
 
@@ -11,7 +12,9 @@ import java.util.List;
  * in questa interfaccia
  */
 public interface DrawingState {
-    void handleMousePressed(MouseEvent event, List<Forma> forme);
+    void handleMousePressed(MouseEvent event, List<Forma> forme, double coordinataX, double coordinataY,
+                            double altezza, double larghezza, double angoloInclinazione, Color colore,
+                            Color coloreInterno);
 
     void handleMouseDragged(MouseEvent event);
 

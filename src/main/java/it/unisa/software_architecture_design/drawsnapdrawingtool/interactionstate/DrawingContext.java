@@ -3,6 +3,7 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionsta
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
 import java.util.List;
 
@@ -40,8 +41,11 @@ public class DrawingContext {
      * DrawingContext delega la gestione dell'evento pressione del mouse allo stato corrente
      * @param event l'evento di pressione del Mouse
      */
-    public void handleMousePressed(MouseEvent event, List<Forma> forme){
-        currentState.handleMousePressed(event, forme);
+    public void handleMousePressed(MouseEvent event, List<Forma> forme, double coordinataX, double coordinataY,
+                                   double altezza, double larghezza, double angoloInclinazione, Color colore,
+                                   Color coloreInterno){
+        currentState.handleMousePressed(event, forme, coordinataX, coordinataY, altezza, larghezza, angoloInclinazione,
+                                    colore, coloreInterno);
     }
 
     /**

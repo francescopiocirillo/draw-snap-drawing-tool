@@ -1,8 +1,12 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FactoryEllisse;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FactoryLinea;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FactoryRettangolo;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
 import java.util.List;
 
@@ -46,26 +50,31 @@ public class DrawState implements DrawingState{
      * @param event è l'evento di pressione del mouse
      */
     @Override
-    public void handleMousePressed(MouseEvent event, List<Forma> forme/*aggiungere parametri ricevuti dalla finestra di dialogo del task 1.3.2*/) {
+    public void handleMousePressed(MouseEvent event, List<Forma> forme, double coordinataX, double coordinataY,
+                                   double altezza, double larghezza, double angoloInclinazione, Color colore,
+                                   Color coloreInterno) {
         Forma formaCreata = null;
         switch (formaCorrente) {
             case ELLISSE:
-                //formaCreata = new FactoryEllisse().creaForma(/*aggiungere parametri*/);
+                formaCreata = new FactoryEllisse().creaForma(coordinataX, coordinataY, altezza, larghezza,
+                                                            angoloInclinazione, colore, coloreInterno);
                 System.out.println("È un'ellisse");
                 break;
             case RETTANGOLO:
-                //formaCreata = new FactoryRettangolo().creaForma(/*aggiungere parametri*/);
+                formaCreata = new FactoryRettangolo().creaForma(coordinataX, coordinataY, altezza, larghezza,
+                                                            angoloInclinazione, colore, coloreInterno);
                 System.out.println("È un rettangolo");
                 break;
             case LINEA:
-                //formaCreata = new FactoryLinea().creaForma(/*aggiungere parametri*/);
+                formaCreata = new FactoryLinea().creaForma(coordinataX, coordinataY, altezza, larghezza,
+                                                         angoloInclinazione, colore, coloreInterno);
                 System.out.println("È una linea");
                 break;
             default:
                 System.out.println("È un default");
                 break;
         }
-        //forme.add(formaCreata);
+        forme.add(formaCreata);
     }
 
     /*

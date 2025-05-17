@@ -83,7 +83,7 @@ public class DrawSnapController {
          * della figura, dopodiché solo quando l'utente clicca il tasto di conferma deve prendere
          * i parametri inseriti dall'utente e passarli all'handleMousePressed di DrawingContext
          */
-        drawingContext.handleMousePressed(mouseEvent, forme /*aggiungere parametri che vengono dalla finestra di dialogo*/);
+        //drawingContext.handleMousePressed(mouseEvent, forme /*aggiungere parametri che vengono dalla finestra di dialogo*/);
         /* drawingContext passa i parametri a handleMousePressed di DrawState, che crea la figura e la aggiunge
          * alla lista figure, dopodiché il controller deve ricaricare il canvas (tipo con una funzione redrawAll())
          * per mostrare anche la figura aggiornata
