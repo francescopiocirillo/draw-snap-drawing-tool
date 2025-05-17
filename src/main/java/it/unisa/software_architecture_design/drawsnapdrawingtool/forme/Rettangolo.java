@@ -125,6 +125,9 @@ public class Rettangolo extends Forma  {
      */
     @Override
     public void disegna(GraphicsContext gc) {
+        // Salva lo stato iniziale del foglio di disegno
+        gc.save();
+
         // Vertici del rettangolo
         verticeAX = getVerticeAX();
         verticeAY = getVerticeAY();
@@ -153,6 +156,9 @@ public class Rettangolo extends Forma  {
                 new double[]{verticeAY, verticeBY, verticeCY, verticeDY},
                 4
         );
+
+        // Ripristina lo stato iniziale del foglio di disegno
+        gc.restore();
     }
 
     /**

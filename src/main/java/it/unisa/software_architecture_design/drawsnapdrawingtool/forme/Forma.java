@@ -81,10 +81,10 @@ public abstract class Forma {
     /**
      * Determina se la forma contiene un punto specifico nello spazio.
      *
-     * @param px La coordinata X del punto da verificare.
-     * @param py La coordinata Y del punto da verificare.
-     * @return {@code true} se il punto specificato (px, py) si trova all'interno della forma,
+     * @param puntoDaValutareX La coordinata X del punto da verificare.
+     * @param puntoDaValutareY La coordinata Y del punto da verificare.
+     * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si trova all'interno della forma,
      *         altrimenti {@code false}.
      */
-    public abstract boolean contiene(double px, double py);
+    public abstract boolean contiene(double puntoDaValutareX, double puntoDaValutareY);
 }
