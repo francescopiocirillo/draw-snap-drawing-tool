@@ -12,4 +12,5 @@ module it.unisa.software_architecture_design.drawsnapdrawingtool {
     opens it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate to javafx.fxml;
     exports it.unisa.software_architecture_design.drawsnapdrawingtool.forme;
     opens it.unisa.software_architecture_design.drawsnapdrawingtool.forme to javafx.fxml;
+    exports it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration;
 }

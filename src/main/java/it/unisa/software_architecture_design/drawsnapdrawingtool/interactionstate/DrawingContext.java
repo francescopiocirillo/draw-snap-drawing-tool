@@ -1,7 +1,10 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
+
+import java.util.List;
 
 /**
  * La classe {@code DrawingContext} rappresenta il contesto di disegno e per mezzo del Pattern State
@@ -12,24 +15,13 @@ public class DrawingContext {
     /*
      * Attributi
      */
-    private Canvas canvas;
     private DrawingState currentState;
 
     /*
      * Costruttore, getter e setter
      */
-    public DrawingContext(Canvas canvas, DrawingState currentState) {
-        this.canvas = canvas;
+    public DrawingContext(DrawingState currentState) {
         this.currentState = currentState;
-        initializeEventHandlers();
-    }
-
-    public Canvas getCanvas() {
-        return canvas;
-    }
-
-    public void setCanvas(Canvas canvas) {
-        this.canvas = canvas;
     }
 
     public DrawingState getCurrentState() {
@@ -45,27 +37,18 @@ public class DrawingContext {
      */
 
     /**
-     * Inizializza gli event handler per gli eventi di interesse relativi al {@link Canvas}
-     */
-    private void initializeEventHandlers() {
-        canvas.setOnMousePressed(this::handleMousePressed);
-        canvas.setOnMouseDragged(this::handleMouseDragged);
-        canvas.setOnMouseReleased(this::handleMouseReleased);
-    }
-
-    /**
      * DrawingContext delega la gestione dell'evento pressione del mouse allo stato corrente
      * @param event l'evento di pressione del Mouse
      */
-    private void handleMousePressed(MouseEvent event){
-        currentState.handleMousePressed(event);
+    public void handleMousePressed(MouseEvent event, List<Forma> forme){
+        currentState.handleMousePressed(event, forme);
     }
 
     /**
      * DrawingContext delega la gestione dell'evento di trascinamento del mouse allo stato corrente
      * @param event l'evento di trascinamento del Mouse
      */
-    private void handleMouseDragged(MouseEvent event){
+    public void handleMouseDragged(MouseEvent event){
         currentState.handleMouseDragged(event);
     }
 
@@ -73,7 +56,7 @@ public class DrawingContext {
      * DrawingContext delega la gestione dell'evento di rilascio del mouse allo stato corrente
      * @param event l'evento di rilascio del Mouse
      */
-    private void handleMouseReleased(MouseEvent event){
+    public void handleMouseReleased(MouseEvent event){
         currentState.handleMouseReleased(event);
     }
 
