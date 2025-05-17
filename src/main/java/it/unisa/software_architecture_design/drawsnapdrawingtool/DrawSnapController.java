@@ -88,6 +88,9 @@ public class DrawSnapController {
      * @param mouseEvent -> evento generato dalla pressione del mouse sul canvas
      */
     private void handleMousePressed(MouseEvent mouseEvent) {
+        System.out.println("Mouse pressed");
+
+
         Dialog dialog = new Dialog<>(); // Modale di dialogo
         dialog.setTitle("Conferma Disegno");
         Label headerLabel = new Label("Vuoi inserire la figura scelta qui?");
