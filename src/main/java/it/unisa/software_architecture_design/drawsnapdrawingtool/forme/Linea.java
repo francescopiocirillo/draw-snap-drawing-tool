@@ -21,6 +21,16 @@ public class Linea extends Forma  {
         updateCoordinateXInizioFine();
     }
 
+    private void updateCoordinateYInizioFine() {
+        this.yInizio = this.getCoordinataY() - (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
+        this.yFine = this.getCoordinataY() + (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
+    }
+
+    private void updateCoordinateXInizioFine() {
+        this.xInizio = this.getCoordinataX() - (this.getLarghezza() / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
+        this.xFine = this.getCoordinataX() + (this.getLarghezza() / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
+    }
+
     public double getXInizio() {
         return xInizio;
     }
@@ -35,16 +45,6 @@ public class Linea extends Forma  {
 
     public double getYFine() {
         return yFine;
-    }
-
-    private void updateCoordinateYInizioFine() {
-        this.yInizio = this.getCoordinataY() - (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
-        this.yFine = this.getCoordinataY() + (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
-    }
-
-    private void updateCoordinateXInizioFine() {
-        this.xInizio = this.getCoordinataX() - (this.getLarghezza() / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
-        this.xFine = this.getCoordinataX() + (this.getLarghezza() / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
     }
 
     @Override
@@ -73,6 +73,9 @@ public class Linea extends Forma  {
      */
     @Override
     public void disegna(GraphicsContext gc) {
+        // Salva lo stato iniziale del foglio di disegno
+        gc.save();
+
         // Imposta il colore del GraphicsContext
         gc.setStroke(getColore());
 
@@ -85,18 +88,20 @@ public class Linea extends Forma  {
         // Disegna la linea
         gc.strokeLine(xInizio, yInizio, xFine, yFine);
 
+        // Ripristina lo stato iniziale del foglio di disegno
+        gc.restore();
     }
 
     /**
      * Determina se la linea contiene un punto specifico nello spazio.
      *
-     * @param px La coordinata X del punto da verificare.
-     * @param py La coordinata Y del punto da verificare.
-     * @return {@code true} se il punto specificato (px, py) si trova sulla linea,
+     * @param puntoDaValutareX La coordinata X del punto da verificare.
+     * @param puntoDaValutareY La coordinata Y del punto da verificare.
+     * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si trova sulla linea,
      *         altrimenti {@code false}.
      */
     @Override
-    public boolean contiene(double px, double py) {
+    public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
         //Punti alle estremità della linea
         double xInizio = getXInizio();
         double yInizio = getYInizio();
@@ -107,14 +112,14 @@ public class Linea extends Forma  {
         //Calcolo appartenenza alla retta che passa per i punti di inizio e di fine
         double dx = xFine - xInizio;
         double dy = yFine - yInizio;
-        double determinante = (px - xInizio) * dy - (py - yInizio) * dx;
+        double determinante = (puntoDaValutareX - xInizio) * dy - (puntoDaValutareY - yInizio) * dx;
 
         if (Math.abs(determinante) > TOLLERANZA) {
             return false; // Il punto non appartiene alla retta
         }
 
         //Calcolo appartenenza al segmento compreso tra i punti di inizio e di fine
-        return (px >= Math.min(xInizio, xFine) && px <= Math.max(xInizio, xFine)) &&
-                (py >= Math.min(yInizio, yFine) && py <= Math.max(yInizio, yFine));
+        return (puntoDaValutareX >= Math.min(xInizio, xFine) && puntoDaValutareX <= Math.max(xInizio, xFine)) &&
+                (puntoDaValutareY >= Math.min(yInizio, yFine) && puntoDaValutareY <= Math.max(yInizio, yFine));
     }
 }
