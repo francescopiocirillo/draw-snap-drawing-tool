@@ -7,15 +7,18 @@ import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstat
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawingContext;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class DrawSnapController {
 
@@ -76,19 +79,49 @@ public class DrawSnapController {
         canvas.setOnMouseReleased(this::handleMouseReleased);
     }
 
+    /**
+     * Gestisce l'evento di pressione del mouse sul {@link Canvas}.
+     * Mostra una finestra di dialogo di conferma che chiede all'utente se desidera inserire una figura
+     * nel punto selezionato. Se l'utente conferma, il metodo delega la gestione dell'evento al
+     * {@code drawingContext}, passando anche la lista delle forme {@code forme}, e aggiorna il canvas
+     * richiamando {@code redrawAll()}.
+     * @param mouseEvent -> evento generato dalla pressione del mouse sul canvas
+     */
     private void handleMousePressed(MouseEvent mouseEvent) {
-        System.out.println("Mouse pressed");
-        /*
-         * handleMousePressed del controller deve aprire la finestra di dialogo per inserire i dati
-         * della figura, dopodiché solo quando l'utente clicca il tasto di conferma deve prendere
-         * i parametri inseriti dall'utente e passarli all'handleMousePressed di DrawingContext
-         */
-        drawingContext.handleMousePressed(mouseEvent, forme /*aggiungere parametri che vengono dalla finestra di dialogo*/);
-        /* drawingContext passa i parametri a handleMousePressed di DrawState, che crea la figura e la aggiunge
-         * alla lista figure, dopodiché il controller deve ricaricare il canvas (tipo con una funzione redrawAll())
-         * per mostrare anche la figura aggiornata
-         */
+        Dialog dialog = new Dialog<>(); // Modale di dialogo
+        dialog.setTitle("Conferma Disegno");
+        Label headerLabel = new Label("Vuoi inserire la figura scelta qui?");
+        headerLabel.setStyle("-fx-font-size: 16px;");
 
+        // StackPane per contenere e centrare il contenuto della finestra
+        StackPane headerPane = new StackPane(headerLabel);
+        headerPane.setPadding(new Insets(40, 0, -20, 0)); // Padding per centrare meglio la frase
+
+        dialog.getDialogPane().setHeader(headerPane);
+
+        // Pulsanti di conferma e annulla
+        ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
+
+        Optional result = dialog.showAndWait(); // aspetta che l'utente interagisca e restituisce un Optional contenente il bottone cliccato
+
+        if (result.isPresent() && result.get() == confirmButton) { // l'utente ha cliccato conferma
+            drawingContext.handleMousePressed(mouseEvent, forme); // passa la forma da creare al DrawState
+            redrawAll(); // aggiorna il canvas
+        }
+    }
+
+    /**
+     * Metodo che cancella completamente il contenuto del {@link Canvas} e ridisegna tutte le forme presenti
+     * nella lista {@code forme} utilizzando il {@link GraphicsContext}.
+     * Chiamato dopo una modifica nel canvas per aggiornarne la visualizzazione.
+     */
+    void redrawAll() {
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight()); // l'area da ripulire è tutto il canvas
+        for (Forma f : forme) {
+            f.disegna(gc);
+        }
     }
 
     private void handleMouseDragged(MouseEvent mouseEvent) {

@@ -2,7 +2,10 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionsta
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Linea;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Rettangolo;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
 import java.util.List;
 
@@ -46,7 +49,7 @@ public class DrawState implements DrawingState{
      * @param event è l'evento di pressione del mouse
      */
     @Override
-    public void handleMousePressed(MouseEvent event, List<Forma> forme/*aggiungere parametri ricevuti dalla finestra di dialogo del task 1.3.2*/) {
+    public void handleMousePressed(MouseEvent event, List forme/*aggiungere parametri ricevuti dalla finestra di dialogo del task 1.3.2*/) {
         Forma formaCreata = null;
         switch (formaCorrente) {
             case ELLISSE:
@@ -56,17 +59,33 @@ public class DrawState implements DrawingState{
             case RETTANGOLO:
                 //formaCreata = new FactoryRettangolo().creaForma(/*aggiungere parametri*/);
                 System.out.println("È un rettangolo");
+                // Parametri mock per testare il disegno, da rimuovere una volta disponibile la factory
+                double x = event.getX();
+                double y = event.getY();
+                double larghezza = 60;
+                double altezza = 100;
+                double inclinazione = 0;
+                Color coloreBordo = Color.BLACK;
+                Color coloreInterno = Color.BLACK;
+
+                formaCreata = new Rettangolo(x, y, larghezza, inclinazione, coloreBordo, altezza, coloreInterno);
+
                 break;
+
             case LINEA:
                 //formaCreata = new FactoryLinea().creaForma(/*aggiungere parametri*/);
                 System.out.println("È una linea");
-                break;
-            default:
-                System.out.println("È un default");
+                // Parametri mock per testare il disegno, da rimuovere una volta disponibile la factory
+                double lineaX = event.getX();
+                double lineaY = event.getY();
+
+                formaCreata = new Linea(lineaX, lineaY, 50, 0, Color.BLACK);
+
                 break;
         }
-        //forme.add(formaCreata);
+        forme.add(formaCreata);
     }
+
 
     /*
     * handleMousePressed del controller deve aprire la finestra di dialogo per inserire i dati
