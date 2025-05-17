@@ -89,4 +89,9 @@ public class DrawSnapController {
     void setDrawMode(ActionEvent event, Forme forma) {
         drawingContext.setCurrentState(new DrawState(forme, forma));
     }
+
+    @FXML
+    void onSavePressed(ActionEvent event) {
+
+    }
 }

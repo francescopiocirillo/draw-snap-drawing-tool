@@ -103,7 +103,7 @@ public abstract class Forma implements Serializable {
      * Serializza l'oggetto nel complesso e poi salva come Stringa l'informazione sul colore
      * visto che Color non è serializzabile
      * @param out è lo stream sul quale salvare le informazioni, sarà il File scelto dall'utente
-     * @throws IOException
+     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
      */
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
@@ -115,8 +115,8 @@ public abstract class Forma implements Serializable {
      * Deserializza l'oggetto nel complesso e poi recupera le informazioni sul colore
      * visto che Color non è serializzabile
      * @param in è lo stream dal quale prelevare le informazioni, sarà il File scelto dall'utente
-     * @throws IOException
-     * @throws ClassNotFoundException
+     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
+     * @throws ClassNotFoundException se la classe dell'oggetto serializzato non è trovata
      */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
