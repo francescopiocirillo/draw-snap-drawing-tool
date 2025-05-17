@@ -4,16 +4,22 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.forme;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-public abstract class Forma {
+
+public abstract class Forma implements Serializable {
     /*
      * Attributi
      */
+    private static final long serialVersionUID = 1L;
     private double coordinataY;
     private double coordinataX;
     private double larghezza;
     private double angoloInclinazione;
-    private Color colore;
+    private transient Color colore;
 
     /*
      * Costruttore, getter e setter
@@ -87,4 +93,53 @@ public abstract class Forma {
      *         altrimenti {@code false}.
      */
     public abstract boolean contiene(double px, double py);
+
+    /*
+     * Metodi per la serializzazione/deserializzazione
+     */
+
+    /**
+     * Serializza l'oggetto nel complesso e poi salva come Stringa l'informazione sul colore
+     * visto che Color non è serializzabile
+     * @param out è lo stream sul quale salvare le informazioni, sarà il File scelto dall'utente
+     * @throws IOException
+     */
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        // salva il colore come stringa HEX
+        out.writeUTF(toHexString(colore));
+    }
+
+    /**
+     * Deserializza l'oggetto nel complesso e poi recupera le informazioni sul colore
+     * visto che Color non è serializzabile
+     * @param in è lo stream dal quale prelevare le informazioni, sarà il File scelto dall'utente
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        // ricostruisci il colore da stringa HEX
+        String colorHex = in.readUTF();
+        colore = Color.web(colorHex);
+    }
+
+    /**
+     * Converte l'oggetto di tipo Color in una stringa HEX in modo da permettere la serializzazione
+     * @param color è il colore da convertire
+     * @return la stringa HEX corrispondente al Color di input
+     */
+    private String toHexString(Color color) {
+        int r = (int) Math.round(color.getRed() * 255);
+        int g = (int) Math.round(color.getGreen() * 255);
+        int b = (int) Math.round(color.getBlue() * 255);
+        int a = (int) Math.round(color.getOpacity() * 255);
+
+        if (a < 255) {
+            return String.format("#%02X%02X%02X%02X", r, g, b, a);
+        } else {
+            return String.format("#%02X%02X%02X", r, g, b);
+        }
+    }
+
 }
