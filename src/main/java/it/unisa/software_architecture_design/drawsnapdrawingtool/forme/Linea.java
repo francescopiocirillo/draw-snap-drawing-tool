@@ -107,7 +107,7 @@ public class Linea extends Forma  {
         double yInizio = getYInizio();
         double xFine = getXFine();
         double yFine = getYFine();
-        final double TOLLERANZA = 0.1; //si considerano anche i punti nell'intorno della linea
+        final double TOLLERANZA = 0.0001; //si considerano anche i punti nell'intorno della linea
 
         //Calcolo appartenenza alla retta che passa per i punti di inizio e di fine
         double dx = xFine - xInizio;
