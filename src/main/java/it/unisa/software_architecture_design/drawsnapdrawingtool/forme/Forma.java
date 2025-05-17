@@ -1,19 +1,26 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.forme;
 
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.utils.ColorUtils;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-public abstract class Forma {
+
+public abstract class Forma implements Serializable {
     /*
      * Attributi
      */
+    private static final long serialVersionUID = 1L;
     private double coordinataY;
     private double coordinataX;
     private double larghezza;
     private double angoloInclinazione;
-    private Color colore;
+    private transient Color colore;
 
     /*
      * Costruttore, getter e setter
@@ -87,4 +94,35 @@ public abstract class Forma {
      *         altrimenti {@code false}.
      */
     public abstract boolean contiene(double puntoDaValutareX, double puntoDaValutareY);
+
+    /*
+     * Metodi per la serializzazione/deserializzazione
+     */
+
+    /**
+     * Serializza l'oggetto nel complesso e poi salva come Stringa l'informazione sul colore
+     * visto che Color non è serializzabile
+     * @param out è lo stream sul quale salvare le informazioni, sarà il File scelto dall'utente
+     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
+     */
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        // salva il colore come stringa HEX
+        out.writeUTF(ColorUtils.toHexString(colore));
+    }
+
+    /**
+     * Deserializza l'oggetto nel complesso e poi recupera le informazioni sul colore
+     * visto che Color non è serializzabile
+     * @param in è lo stream dal quale prelevare le informazioni, sarà il File scelto dall'utente
+     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
+     * @throws ClassNotFoundException se la classe dell'oggetto serializzato non è trovata
+     */
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        // ricostruisci il colore da stringa HEX
+        String colorHex = in.readUTF();
+        colore = Color.web(colorHex);
+    }
+
 }
