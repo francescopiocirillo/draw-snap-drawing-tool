@@ -17,6 +17,6 @@ public class FactoryEllisse implements FactoryForma{
      */
     @Override
     public Forma creaForma(double coordinataX, double coordinataY, double altezza, double larghezza, double angoloInclinazione, Color colore, Color coloreInterno) {
-        return new Rettangolo(coordinataX, coordinataY, larghezza, angoloInclinazione, colore, altezza, coloreInterno);
+        return new Ellisse(coordinataX, coordinataY, larghezza, angoloInclinazione, colore, altezza, coloreInterno);
     }
 }

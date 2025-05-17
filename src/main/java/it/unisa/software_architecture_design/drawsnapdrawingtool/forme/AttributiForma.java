@@ -15,11 +15,11 @@ public class AttributiForma {
     public AttributiForma() {
         this.coordinataX = 0.0;
         this.coordinataY = 0.0;
-        this.altezza = 100.0;
+        this.altezza = 50.0;
         this.larghezza = 100.0;
         this.angoloInclinazione = 0.0;
-        this.colore = Color.BLACK;
-        this.coloreInterno = Color.WHITE;
+        this.colore = Color.BLUE;
+        this.coloreInterno = Color.LIGHTBLUE;
     }
 
     // Costruttore con valori scelti

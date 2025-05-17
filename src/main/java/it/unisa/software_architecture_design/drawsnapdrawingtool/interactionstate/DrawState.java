@@ -58,42 +58,27 @@ public class DrawState implements DrawingState{
         AttributiForma attributiForma = helpUIHandleMousePressed();
 
         Forma formaCreata = null;
+        double coordinataX = event.getX();
+        double coordinataY = event.getY();
         switch (formaCorrente) {
             case ELLISSE:
-                formaCreata = new FactoryEllisse().creaForma(attributiForma.coordinataX, attributiForma.coordinataY,
+                formaCreata = new FactoryEllisse().creaForma(coordinataX, coordinataY,
                         attributiForma.altezza, attributiForma.larghezza,
                         attributiForma.angoloInclinazione, attributiForma.colore, attributiForma.coloreInterno);
                 System.out.println("È un'ellisse");
                 break;
             case RETTANGOLO:
-                formaCreata = new FactoryRettangolo().creaForma(attributiForma.coordinataX, attributiForma.coordinataY,
+                formaCreata = new FactoryRettangolo().creaForma(coordinataX, coordinataY,
                         attributiForma.altezza, attributiForma.larghezza,
                         attributiForma.angoloInclinazione, attributiForma.colore, attributiForma.coloreInterno);
                 System.out.println("È un rettangolo");
-                // Parametri mock per testare il disegno, da rimuovere una volta disponibile la factory
-                double x = event.getX();
-                double y = event.getY();
-                double larghezza = 60;
-                double altezza = 100;
-                double inclinazione = 0;
-                Color coloreBordo = Color.BLACK;
-                Color coloreInterno = Color.BLACK;
-
-                formaCreata = new Rettangolo(x, y, larghezza, inclinazione, coloreBordo, altezza, coloreInterno);
-
                 break;
 
             case LINEA:
-                formaCreata = new FactoryLinea().creaForma(attributiForma.coordinataX, attributiForma.coordinataY,
+                formaCreata = new FactoryLinea().creaForma(coordinataX, coordinataY,
                         attributiForma.altezza, attributiForma.larghezza,
                         attributiForma.angoloInclinazione, attributiForma.colore, attributiForma.coloreInterno);
                 System.out.println("È una linea");
-                // Parametri mock per testare il disegno, da rimuovere una volta disponibile la factory
-                double lineaX = event.getX();
-                double lineaY = event.getY();
-
-                formaCreata = new Linea(lineaX, lineaY, 50, 0, Color.BLACK);
-
                 break;
         }
         forme.add(formaCreata);

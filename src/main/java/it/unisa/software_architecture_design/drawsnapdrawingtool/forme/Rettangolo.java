@@ -31,24 +31,24 @@ public class Rettangolo extends Forma  {
     private void updateVertici() {
         double centroX = getCoordinataX();
         double centroY = getCoordinataY();
-        double mezzaAltezza = getAltezza() / 2;
         double mezzaLarghezza = getLarghezza() / 2;
+        double mezzaAltezza = getAltezza() / 2;
 
         double angoloRad = Math.toRadians(getAngoloInclinazione());
         double cosAngolo = Math.cos(angoloRad);
         double sinAngolo = Math.sin(angoloRad);
 
-        this.verticeAX = centroX - mezzaAltezza * cosAngolo + mezzaLarghezza * sinAngolo;
-        this.verticeAY = centroY - mezzaAltezza * sinAngolo - mezzaLarghezza * cosAngolo;
+        this.verticeAX = centroX - mezzaLarghezza * cosAngolo + mezzaAltezza * sinAngolo;
+        this.verticeAY = centroY - mezzaLarghezza * sinAngolo - mezzaAltezza * cosAngolo;
 
-        this.verticeBX = centroX + mezzaAltezza * cosAngolo + mezzaLarghezza * sinAngolo;
-        this.verticeBY = centroY + mezzaAltezza * sinAngolo - mezzaLarghezza * cosAngolo;
+        this.verticeBX = centroX + mezzaLarghezza * cosAngolo + mezzaAltezza * sinAngolo;
+        this.verticeBY = centroY + mezzaLarghezza * sinAngolo - mezzaAltezza * cosAngolo;
 
-        this.verticeCX = centroX + mezzaAltezza * cosAngolo - mezzaLarghezza * sinAngolo;
-        this.verticeCY = centroY + mezzaAltezza * sinAngolo + mezzaLarghezza * cosAngolo;
+        this.verticeCX = centroX + mezzaLarghezza * cosAngolo - mezzaAltezza * sinAngolo;
+        this.verticeCY = centroY + mezzaLarghezza * sinAngolo + mezzaAltezza * cosAngolo;
 
-        this.verticeDX = centroX - mezzaAltezza * cosAngolo - mezzaLarghezza * sinAngolo;
-        this.verticeDY = centroY - mezzaAltezza * sinAngolo + mezzaLarghezza * cosAngolo;
+        this.verticeDX = centroX - mezzaLarghezza * cosAngolo - mezzaAltezza * sinAngolo;
+        this.verticeDY = centroY - mezzaLarghezza * sinAngolo + mezzaAltezza * cosAngolo;
     }
 
     public double getAltezza() {
