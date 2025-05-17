@@ -17,7 +17,8 @@ public class Linea extends Forma  {
      */
     public Linea(double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore) {
         super(coordinataX, coordinataY, larghezza, angoloInclinazione, colore); // Chiamata al costruttore della classe estesa Forma
-
+        updateCoordinateYInizioFine();
+        updateCoordinateXInizioFine();
     }
 
     public double getXInizio() {
