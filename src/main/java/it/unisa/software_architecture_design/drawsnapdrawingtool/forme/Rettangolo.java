@@ -190,7 +190,8 @@ public class Rettangolo extends Forma  {
     }
 
     /**
-     * Determina se il punto (puntoDaValutareX, puntoDaValutareY) è "alla sinistra" del segmento tra (inizioVettoreCoordinataX, y1) e (x2, y2) tramite il prodotto vettoriale.
+     * Determina se il punto (puntoDaValutareX, puntoDaValutareY) è "alla sinistra" del segmento tra
+     * (inizioVettoreCoordinataX, y1) e (x2, y2) tramite il prodotto vettoriale.
      *
      * @param puntoDaValutareX
      * @param puntoDaValutareY
