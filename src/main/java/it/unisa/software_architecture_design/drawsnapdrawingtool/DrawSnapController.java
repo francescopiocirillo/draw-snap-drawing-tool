@@ -5,20 +5,19 @@ import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.SaveCo
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawState;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawingContext;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.SelectState;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 public class DrawSnapController {
 
@@ -41,6 +40,8 @@ public class DrawSnapController {
     private Button rectangleButton;
     @FXML
     private Button lineButton;
+    @FXML
+    private Button selectButton;
 
     /*
      * Attributi per la logica
@@ -62,6 +63,7 @@ public class DrawSnapController {
         ellipseButton.setOnAction(event -> setDrawMode(event, Forme.ELLISSE));
         rectangleButton.setOnAction(event -> setDrawMode(event, Forme.RETTANGOLO));
         lineButton.setOnAction(event -> setDrawMode(event, Forme.LINEA));
+        selectButton.setOnAction(event -> setSelectMode());
 
         initializeCanvasEventHandlers();
     }
@@ -120,6 +122,13 @@ public class DrawSnapController {
      */
     void setDrawMode(ActionEvent event, Forme forma) {
         drawingContext.setCurrentState(new DrawState(forme, forma));
+    }
+
+    /**
+     * Metodo per passare alla modalità di selezione
+     */
+    void setSelectMode() {
+        drawingContext.setCurrentState(new SelectState());
     }
 
     @FXML

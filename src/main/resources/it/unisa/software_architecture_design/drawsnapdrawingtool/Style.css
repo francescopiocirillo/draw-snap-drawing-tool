@@ -3,7 +3,7 @@
  */
 #button {
 	-fx-background-radius: 10px;
-	-fx-background-color: #F0F0F0;
+	-fx-background-color: #FAF7F2;
 	-fx-border-radius: 8px;
 	-fx-cursor: hand;
 	-fx-transition: all 0.3s ease-in-out; /*transizione*/
@@ -28,14 +28,14 @@
 	-fx-scale-y: 1;
 	-fx-border-color: #4A90E2;
 	-fx-border-width:2px;
-	-fx-effect: dropshadow(gaussian, #4A90E2, 10, 0.5, 0, 0);/*ombra*/
+	/*-fx-effect: dropshadow(gaussian, #4A90E2, 10, 0.5, 0, 0);/*ombra*/
 }
 
 /*
  *	css per la barra degli strumenti
  */
 #barra {
-	-fx-background-color: #D8CAB8;
+	-fx-background-color: #FAF7F2;
 	-fx-background-radius: 30px;
 	-fx-border-radius: 30px;
 	-fx-border-color:transparent;
@@ -46,5 +46,5 @@
  *	css per il contenitore del canvas, in modo da far capire fino a dove arriva il canvas
  */
 #canvaContainer {
-	-fx-background-color: #D1D1D1;
+	-fx-background-color: #FAF7F2;
 }
