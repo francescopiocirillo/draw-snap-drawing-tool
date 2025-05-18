@@ -121,14 +121,16 @@ public class DrawSnapController {
      * @param forma -> forma corrispondente al bottone che è stato premuto
      */
     void setDrawMode(ActionEvent event, Forme forma) {
-        drawingContext.setCurrentState(new DrawState(forme, forma));
+        drawingContext.setCurrentState(new DrawState(forme, forma), forme);
+        redrawAll();
     }
 
     /**
      * Metodo per passare alla modalità di selezione
      */
     void setSelectMode() {
-        drawingContext.setCurrentState(new SelectState());
+        drawingContext.setCurrentState(new SelectState(), forme);
+        redrawAll();
     }
 
     @FXML

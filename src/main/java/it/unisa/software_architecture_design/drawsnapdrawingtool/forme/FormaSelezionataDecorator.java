@@ -53,7 +53,7 @@ public class FormaSelezionataDecorator extends FormaDecorator{
     private void disegnaIndicatoreDiSelezione(GraphicsContext gc) {
         gc.save();
         // Colore e stile dell'evidenziazione
-        gc.setStroke(Color.YELLOW); // Colore dell'indicatore
+        gc.setStroke(Color.BLACK); // Colore dell'indicatore
         gc.setLineWidth(SPESSORE_BORDO);    // Spessore del bordo
         gc.setLineDashes(10.0, 5.0); // Imposta la linea tratteggiata: 10 pixel linea, 5 pixel spazio
 

@@ -17,16 +17,33 @@ public class SelectState implements DrawingState{
         double coordinataX = event.getX();
         double coordinataY = event.getY();
         List<Forma> formeSelezionate = new ArrayList<Forma>();
+        List<Forma> formeNonSelezionate = new ArrayList<Forma>();
+
         for (Forma f : forme) {
             if(f.contiene(coordinataX, coordinataY)){
                 formeSelezionate.add(f);
+            }else{
+                formeNonSelezionate.add(f);
             }
         }
+
         for(Forma f : formeSelezionate){
             forme.remove(f);
             forme.add(new FormaSelezionataDecorator(f));
         }
+
+        deselezionaHelper(forme, formeNonSelezionate);
     }
+
+    public void deselezionaHelper(List<Forma> forme, List<Forma> formeDaDeselezionare) {
+        for(Forma f : formeDaDeselezionare){
+            if(f instanceof  FormaSelezionataDecorator){
+                forme.remove(f);
+                forme.add(((FormaSelezionataDecorator) f).getForma());
+            }
+        }
+    }
+
     /**
      * @param event l'evento di pressione del mouse
      */

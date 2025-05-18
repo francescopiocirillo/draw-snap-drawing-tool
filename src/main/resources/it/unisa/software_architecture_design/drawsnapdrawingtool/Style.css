@@ -2,12 +2,13 @@
  *	css per i bottoni
  */
 #button {
-	-fx-background-radius: 10px;
 	-fx-background-color: #FAF7F2;
+	-fx-border-width:20px;
+	/*-fx-background-radius: 10px;
 	-fx-border-radius: 8px;
 	-fx-cursor: hand;
 	-fx-transition: all 0.3s ease-in-out; /*transizione*/
-	-fx-effect: dropshadow(gaussian, #000000, 15, 0, 0, 4); /*ombra*/
+	/*-fx-effect: dropshadow(gaussian, #000000, 15, 0, 0, 4); /*ombra*/
 }
 
 /*
@@ -17,7 +18,7 @@
 	-fx-background-color: #E0E0E0;
 	-fx-scale-x: 1.1;/*Aumento di dimensione*/
 	-fx-scale-y: 1.1;/*Aumento di dimensione*/
-	-fx-effect: dropshadow(gaussian, #000000, 15, 0, 0, 4);/*ombra*/
+	/*-fx-effect: dropshadow(gaussian, #000000, 15, 0, 0, 4);/*ombra*/
 }
 
 /*
@@ -26,7 +27,7 @@
 #button:focused {
 	-fx-scale-x: 1;
 	-fx-scale-y: 1;
-	-fx-border-color: #4A90E2;
+	/*-fx-border-color: #4A90E2;
 	-fx-border-width:2px;
 	/*-fx-effect: dropshadow(gaussian, #4A90E2, 10, 0.5, 0, 0);/*ombra*/
 }
@@ -46,5 +47,5 @@
  *	css per il contenitore del canvas, in modo da far capire fino a dove arriva il canvas
  */
 #canvaContainer {
-	-fx-background-color: #FAF7F2;
+	-fx-background-color: #EFEBE9;
 }

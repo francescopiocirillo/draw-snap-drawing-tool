@@ -1,10 +1,7 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-
 import java.util.List;
 
 /**
@@ -29,7 +26,10 @@ public class DrawingContext {
         return currentState;
     }
 
-    public void setCurrentState(DrawingState currentState) {
+    public void setCurrentState(DrawingState currentState, List<Forma> forme) {
+        if(this.currentState instanceof SelectState){
+            ((SelectState) this.currentState).deselezionaHelper(forme, forme);
+        }
         this.currentState = currentState;
     }
 
