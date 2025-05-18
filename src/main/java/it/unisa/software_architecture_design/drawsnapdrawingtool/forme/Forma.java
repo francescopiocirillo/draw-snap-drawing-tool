@@ -25,6 +25,8 @@ public abstract class Forma implements Serializable {
     /*
      * Costruttore, getter e setter
      */
+    public Forma(){} //usato da FormaDecorator
+
     public Forma(double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore) {
         this.coordinataX = coordinataX;
         this.coordinataY = coordinataY;
