@@ -32,7 +32,7 @@ class LineaTest {
         double puntoX = linea.getXInizio() + (linea.getXFine() - linea.getXInizio()) * 0.25;
         double puntoY = linea.getYInizio() + (linea.getYFine() - linea.getYInizio()) * 0.25;
 
-        assertTrue(linea.contiene(puntoX, puntoY), "Un punto interno a una linea inclinata negativamente dovrebbe essere considerato sulla linea");
+        assertTrue(linea.contiene(puntoX, puntoY));
     }
 
     @Test
@@ -40,6 +40,19 @@ class LineaTest {
         Linea linea = new Linea(150, 100, 200, 90, Color.RED);
 
         assertTrue(linea.contiene(150, 200));
+    }
+
+    @Test
+    void testContiene_puntoEsternoVicinoAllaLineaDentroTolleranza() {
+        Linea linea = new Linea(100, 100, 200, 45, Color.GRAY);
+
+        //utilizzando la trigonometria
+        double puntoX = linea.getXInizio() + (linea.getXFine() - linea.getXInizio()) * 0.75;
+        double puntoY = linea.getYInizio() + (linea.getYFine() - linea.getYInizio()) * 0.75;
+
+        puntoX = puntoX +2;
+
+        assertTrue(linea.contiene(puntoX, puntoY));
     }
 
     @Test
@@ -71,14 +84,14 @@ class LineaTest {
     }
 
     @Test
-    void testContiene_puntoEsternoVicinoAllaLinea() {
+    void testContiene_puntoEsternoVicinoAllaLineaFuoriTolleranza() {
         Linea linea = new Linea(100, 100, 200, 45, Color.GRAY);
 
         //utilizzando la trigonometria
         double puntoX = linea.getXInizio() + (linea.getXFine() - linea.getXInizio()) * 0.75;
         double puntoY = linea.getYInizio() + (linea.getYFine() - linea.getYInizio()) * 0.75;
 
-        puntoX = puntoX +2;
+        puntoY = puntoY + 25;
 
         assertFalse(linea.contiene(puntoX, puntoY));
     }
@@ -87,13 +100,13 @@ class LineaTest {
     void testContiene_puntoEsternoLontanoDallaLinea() {
         Linea linea = new Linea(100, 400, 400, 0, Color.YELLOW);
 
-        assertFalse(linea.contiene(600, 600), "Un punto molto lontano dalla linea non dovrebbe essere considerato sulla linea");
+        assertFalse(linea.contiene(600, 600));
     }
 
     @Test
     void testContiene_puntoSullaRettaMaNonSulSegmento() {
         Linea linea = new Linea(150, 150, 200, 90, Color.BLACK);
 
-        assertFalse(linea.contiene(150, 400), "Un punto allineato ma fuori dai limiti del segmento non dovrebbe essere considerato sulla linea");
+        assertFalse(linea.contiene(150, 400));
     }
 }

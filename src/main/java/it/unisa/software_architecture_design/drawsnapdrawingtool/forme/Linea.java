@@ -3,6 +3,8 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.forme;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.awt.geom.Line2D;
+
 public class Linea extends Forma  {
     /*
      * Attributi
@@ -107,19 +109,9 @@ public class Linea extends Forma  {
         double yInizio = getYInizio();
         double xFine = getXFine();
         double yFine = getYFine();
-        final double TOLLERANZA = 0.0001; //si considerano anche i punti nell'intorno della linea
+        final double TOLLERANZA = 10; //si considerano anche i punti nell'intorno della linea
 
-        //Calcolo appartenenza alla retta che passa per i punti di inizio e di fine
-        double dx = xFine - xInizio;
-        double dy = yFine - yInizio;
-        double determinante = (puntoDaValutareX - xInizio) * dy - (puntoDaValutareY - yInizio) * dx;
-
-        if (Math.abs(determinante) > TOLLERANZA) {
-            return false; // Il punto non appartiene alla retta
-        }
-
-        //Calcolo appartenenza al segmento compreso tra i punti di inizio e di fine
-        return (puntoDaValutareX >= Math.min(xInizio, xFine) && puntoDaValutareX <= Math.max(xInizio, xFine)) &&
-                (puntoDaValutareY >= Math.min(yInizio, yFine) && puntoDaValutareY <= Math.max(yInizio, yFine));
+        Line2D line = new Line2D.Double(xInizio, yInizio, xFine, yFine);
+        return line.ptSegDist(puntoDaValutareX, puntoDaValutareY) <= TOLLERANZA;
     }
 }
