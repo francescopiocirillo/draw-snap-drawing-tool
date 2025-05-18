@@ -9,7 +9,6 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,23 +18,15 @@ public class DrawState implements DrawingState{
      * Attributi
      */
     private Forme formaCorrente;
-    private List<Forma> forme;
 
     /*
      * Costruttore, getter e setter
      */
-    public DrawState(List<Forma> forme, Forme formaCorrente) {
+    public DrawState(Forme formaCorrente) {
         this.formaCorrente = formaCorrente;
         System.out.println(formaCorrente);
     }
 
-    public List<Forma> getForme() {
-        return forme;
-    }
-
-    public void setForme(List<Forma> forme) {
-        this.forme = forme;
-    }
 
     public Forme getFormaCorrente() {
         return formaCorrente;
@@ -116,7 +107,7 @@ public class DrawState implements DrawingState{
     * */
 
     @Override
-    public void handleMouseDragged(MouseEvent event) {
+    public void handleMouseDragged(MouseEvent event, List<Forma> forme) {
         //WIP
     }
 

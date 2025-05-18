@@ -8,30 +8,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SelectState implements DrawingState{
+
+    private double offsetX;
+    private double offsetY;
+
     /**
      * @param event l'evento di pressione del mouse
      * @param forme lista delle forme presenti sul foglio di disegno
      */
     @Override
     public void handleMousePressed(MouseEvent event, List<Forma> forme) {
+        System.out.println("INGRESSO FUNZIONE");
+
         double coordinataX = event.getX();
         double coordinataY = event.getY();
-        List<Forma> formeSelezionate = new ArrayList<Forma>();
-        List<Forma> formeNonSelezionate = new ArrayList<Forma>();
+
+        Forma formaSelezionata = null;
 
         for (Forma f : forme) {
             if(f.contiene(coordinataX, coordinataY)){
-                formeSelezionate.add(f);
-            }else{
-                formeNonSelezionate.add(f);
+                formaSelezionata = f;
+                offsetX = coordinataX - f.getCoordinataX();
+                offsetY = coordinataY - f.getCoordinataY();
+
+                System.out.println("FORMA SELEZIONATA PRE: " + formaSelezionata);
+                System.out.println("COORD X: " + formaSelezionata.getCoordinataX());
+                System.out.println("COORD Y: " + formaSelezionata.getCoordinataY());
+
+                break;
             }
         }
 
-        for(Forma f : formeSelezionate){
-            forme.remove(f);
-            forme.add(new FormaSelezionataDecorator(f));
-        }
+        List<Forma> formeNonSelezionate = new ArrayList<>(forme);
+        if (formaSelezionata != null) {
+            System.out.println("INGRESSO fs");
+            System.out.println("FORMA SELEZIONATA: " + formaSelezionata);
+            System.out.println("COORD X: " + formaSelezionata.getCoordinataX());
+            System.out.println("COORD Y: " + formaSelezionata.getCoordinataY());
 
+            forme.remove(formaSelezionata);
+            formeNonSelezionate.remove(formaSelezionata);
+            if (formaSelezionata instanceof FormaSelezionataDecorator) {
+                forme.add(formaSelezionata);
+            }else {
+                forme.add(new FormaSelezionataDecorator(formaSelezionata));
+            }
+        }
         deselezionaHelper(forme, formeNonSelezionate);
     }
 
@@ -45,15 +67,33 @@ public class SelectState implements DrawingState{
     }
 
     /**
-     * @param event l'evento di pressione del mouse
+     * @param event l'evento di trascinamento del mouse
      */
     @Override
-    public void handleMouseDragged(MouseEvent event) {
+    public void handleMouseDragged(MouseEvent event, List<Forma> forme) {
+        System.out.println("INGRESSO FUNZIONE");
+        double mouseX = event.getX();
+        double mouseY = event.getY();
 
+        for (Forma f : forme) {
+            if (f instanceof FormaSelezionataDecorator) {
+                Forma formaOriginale = ((FormaSelezionataDecorator) f).getForma();
+                System.out.println("FORMA ORIGINALE: " + f);
+                System.out.println("COORD X: " + f.getCoordinataX());
+                System.out.println("COORD Y: " + f.getCoordinataY());
+
+                double newX = mouseX - offsetX;
+                double newY = mouseY - offsetY;
+
+                formaOriginale.setCoordinataX(newX);
+                formaOriginale.setCoordinataY(newY);
+                break; // Presupponendo una sola forma selezionata
+            }
+        }
     }
 
     /**
-     * @param event l'evento di pressione del mouse
+     * @param event l'evento di rilascio del mouse
      */
     @Override
     public void handleMouseReleased(MouseEvent event) {

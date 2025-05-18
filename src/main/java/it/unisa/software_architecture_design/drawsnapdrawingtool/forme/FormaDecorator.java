@@ -17,5 +17,13 @@ public abstract class FormaDecorator extends Forma{
         return formaDecorata;
     }
 
+    public double getCoordinataY() {
+        return formaDecorata.getCoordinataY();
+    }
+
+    public double getCoordinataX() {
+        return formaDecorata.getCoordinataX();
+    }
+
 }
 //double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore

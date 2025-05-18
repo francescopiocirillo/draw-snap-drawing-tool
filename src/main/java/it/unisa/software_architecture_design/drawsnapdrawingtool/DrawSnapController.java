@@ -56,7 +56,7 @@ public class DrawSnapController {
     void initialize() {
         forme = new ArrayList<>();
         gc = canvas.getGraphicsContext2D();
-        drawingContext = new DrawingContext(new DrawState(forme, Forme.LINEA)); // stato di default, sarà cambiato quando avremo lo stato sposta o seleziona
+        drawingContext = new DrawingContext(new SelectState()); // stato di default, sarà cambiato quando avremo lo stato sposta o seleziona
         invoker = new Invoker();
 
         // inizializzazione bottoni per la selezione forma
@@ -108,7 +108,9 @@ public class DrawSnapController {
     }
 
     private void handleMouseDragged(MouseEvent mouseEvent) {
-
+        System.out.println("Mouse dragged");
+        drawingContext.handleMouseDragged(mouseEvent, forme); // passa la forma da creare al DrawState
+        redrawAll();
     }
 
     private void handleMouseReleased(MouseEvent mouseEvent) {
@@ -121,7 +123,7 @@ public class DrawSnapController {
      * @param forma -> forma corrispondente al bottone che è stato premuto
      */
     void setDrawMode(ActionEvent event, Forme forma) {
-        drawingContext.setCurrentState(new DrawState(forme, forma), forme);
+        drawingContext.setCurrentState(new DrawState(forma), forme);
         redrawAll();
     }
 

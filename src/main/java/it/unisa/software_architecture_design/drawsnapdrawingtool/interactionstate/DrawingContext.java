@@ -49,8 +49,8 @@ public class DrawingContext {
      * DrawingContext delega la gestione dell'evento di trascinamento del mouse allo stato corrente
      * @param event l'evento di trascinamento del Mouse
      */
-    public void handleMouseDragged(MouseEvent event){
-        currentState.handleMouseDragged(event);
+    public void handleMouseDragged(MouseEvent event, List<Forma> forme){
+        currentState.handleMouseDragged(event, forme);
     }
 
     /**
