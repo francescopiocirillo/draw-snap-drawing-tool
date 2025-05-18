@@ -29,6 +29,7 @@ public class DrawingContext {
     public void setCurrentState(DrawingState currentState, List<Forma> forme) {
         if(this.currentState instanceof SelectState){
             ((SelectState) this.currentState).deselezionaHelper(forme, forme);
+            ((SelectState) this.currentState).disattivaToolBar();
         }
         this.currentState = currentState;
     }
