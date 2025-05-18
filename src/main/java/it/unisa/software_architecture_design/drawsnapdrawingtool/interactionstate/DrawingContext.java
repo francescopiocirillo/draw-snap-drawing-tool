@@ -27,6 +27,7 @@ public class DrawingContext {
     }
 
     public void setCurrentState(DrawingState currentState, List<Forma> forme) {
+        // quando si esce dallo stato di selezione è necessario deselezionare tutte le figure
         if(this.currentState instanceof SelectState){
             ((SelectState) this.currentState).deselezionaHelper(forme, forme);
             ((SelectState) this.currentState).disattivaToolBar();
@@ -41,6 +42,7 @@ public class DrawingContext {
     /**
      * DrawingContext delega la gestione dell'evento pressione del mouse allo stato corrente
      * @param event l'evento di pressione del Mouse
+     * @param forme la lista delle forme presenti sul canvas
      */
     public void handleMousePressed(MouseEvent event, List<Forma> forme){
         currentState.handleMousePressed(event, forme);
@@ -48,7 +50,8 @@ public class DrawingContext {
 
     /**
      * DrawingContext delega la gestione dell'evento di trascinamento del mouse allo stato corrente
-     * @param event l'evento di trascinamento del Mouse
+     * @param event l'evento di pressione del Mouse
+     * @param forme la lista delle forme presenti sul canvas
      */
     public void handleMouseDragged(MouseEvent event, List<Forma> forme){
         currentState.handleMouseDragged(event, forme);
