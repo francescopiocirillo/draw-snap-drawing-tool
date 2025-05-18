@@ -62,6 +62,7 @@ public class Ellisse extends Forma {
 
         // stroke disegna il contorno
         gc.setStroke(getColore());
+        gc.setLineWidth(2);
         gc.strokeOval(-getLarghezza() / 2, -altezza / 2, getLarghezza(), altezza);
 
         // Ripristina lo stato iniziale del foglio di disegno
