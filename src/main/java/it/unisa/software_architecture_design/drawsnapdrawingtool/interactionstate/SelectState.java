@@ -7,19 +7,23 @@ import javafx.scene.input.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * La classe {@code SelectState} rappresenta lo stato di selezione e per mezzo del Pattern State
+ * si occupa della logica degli handler relativi agli eventi di interazione con il canvas nello stato di selezione
+ * permettendo la selezione di una figura e il suo spostamento.
+ */
 public class SelectState implements DrawingState{
 
     private double offsetX;
     private double offsetY;
 
     /**
+     * Gestisce l'evento di pressione del mouse sul canvas per permettere la selezione di una figura
      * @param event l'evento di pressione del mouse
      * @param forme lista delle forme presenti sul foglio di disegno
      */
     @Override
     public void handleMousePressed(MouseEvent event, List<Forma> forme) {
-        System.out.println("INGRESSO FUNZIONE");
-
         double coordinataX = event.getX();
         double coordinataY = event.getY();
 
@@ -28,35 +32,34 @@ public class SelectState implements DrawingState{
         for (Forma f : forme) {
             if(f.contiene(coordinataX, coordinataY)){
                 formaSelezionata = f;
+                // offset utili per lo spostamento della figura in caso di MouseDragged
                 offsetX = coordinataX - f.getCoordinataX();
                 offsetY = coordinataY - f.getCoordinataY();
-
-                System.out.println("FORMA SELEZIONATA PRE: " + formaSelezionata);
-                System.out.println("COORD X: " + formaSelezionata.getCoordinataX());
-                System.out.println("COORD Y: " + formaSelezionata.getCoordinataY());
-
                 break;
             }
         }
 
         List<Forma> formeNonSelezionate = new ArrayList<>(forme);
         if (formaSelezionata != null) {
-            System.out.println("INGRESSO fs");
-            System.out.println("FORMA SELEZIONATA: " + formaSelezionata);
-            System.out.println("COORD X: " + formaSelezionata.getCoordinataX());
-            System.out.println("COORD Y: " + formaSelezionata.getCoordinataY());
-
             forme.remove(formaSelezionata);
             formeNonSelezionate.remove(formaSelezionata);
+            // una forma già decorata con la selezione non ha bisogno di essere ridecorata
             if (formaSelezionata instanceof FormaSelezionataDecorator) {
                 forme.add(formaSelezionata);
             }else {
                 forme.add(new FormaSelezionataDecorator(formaSelezionata));
             }
         }
+
         deselezionaHelper(forme, formeNonSelezionate);
     }
 
+    /**
+     * Metodo di utilità che permette la deselezione di tutte le Forme della lista {@code forme} che sono
+     * presenti in {@code formeDaDeselezionare} e che sono selezionate.
+     * @param forme la lista di tutte le forme
+     * @param formeDaDeselezionare la lista delle forme da deselezionare
+     */
     public void deselezionaHelper(List<Forma> forme, List<Forma> formeDaDeselezionare) {
         for(Forma f : formeDaDeselezionare){
             if(f instanceof  FormaSelezionataDecorator){
@@ -67,20 +70,18 @@ public class SelectState implements DrawingState{
     }
 
     /**
+     * Gestisce l'evento di trascinamento del mouse permettendo lo spostamento della forma selezionata.
      * @param event l'evento di trascinamento del mouse
+     * @param forme la lista di forme presenti sul canvas
      */
     @Override
     public void handleMouseDragged(MouseEvent event, List<Forma> forme) {
-        System.out.println("INGRESSO FUNZIONE");
         double mouseX = event.getX();
         double mouseY = event.getY();
 
         for (Forma f : forme) {
             if (f instanceof FormaSelezionataDecorator) {
                 Forma formaOriginale = ((FormaSelezionataDecorator) f).getForma();
-                System.out.println("FORMA ORIGINALE: " + f);
-                System.out.println("COORD X: " + f.getCoordinataX());
-                System.out.println("COORD Y: " + f.getCoordinataY());
 
                 double newX = mouseX - offsetX;
                 double newY = mouseY - offsetY;
@@ -93,10 +94,11 @@ public class SelectState implements DrawingState{
     }
 
     /**
-     * @param event l'evento di rilascio del mouse
+     * METODO MOMENTANEAMENTE NON NECESSARI0
+     * @param event evento di rilascio del mouse
      */
     @Override
     public void handleMouseReleased(MouseEvent event) {
-
+        //NA
     }
 }

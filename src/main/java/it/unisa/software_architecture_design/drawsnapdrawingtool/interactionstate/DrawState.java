@@ -13,6 +13,11 @@ import javafx.scene.layout.StackPane;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * La classe {@code DrawState} rappresenta lo stato di disegno e per mezzo del Pattern State
+ * si occupa della logica degli handler relativi agli eventi di interazione con il canvas nello stato di disegno
+ * differenziando tra le diverse figure per mezzo di un parametro.
+ */
 public class DrawState implements DrawingState{
     /*
      * Attributi
@@ -40,9 +45,10 @@ public class DrawState implements DrawingState{
      * Logica della classe
      */
 
-    /**
+    /***
      * Gestisce l'evento di pressione del mouse sul canvas in modo da creare la forma giusta
      * @param event è l'evento di pressione del mouse
+     * @param forme lista di tutte le forme presenti sul canvas
      */
     @Override
     public void handleMousePressed(MouseEvent event, List<Forma> forme) {
@@ -75,6 +81,11 @@ public class DrawState implements DrawingState{
         forme.add(formaCreata);
     }
 
+    /**
+     * Classe di utilità che aiuta nella creazione della UI necessaria all'input delle caratteristiche
+     * della forma creata.
+     * @return attributiForma gli attributi per la creazione di una Forma
+     */
     private AttributiForma helpUIHandleMousePressed() {
         Dialog dialog = new Dialog<>(); // Modale di dialogo
         dialog.setTitle("Conferma Disegno");
@@ -93,26 +104,25 @@ public class DrawState implements DrawingState{
         dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
 
         Optional result = dialog.showAndWait(); // aspetta che l'utente interagisca e restituisce un Optional contenente il bottone cliccato
-        AttributiForma attributiForma = new AttributiForma();
-        return attributiForma;
+        return new AttributiForma();
     }
 
-
-    /*
-    * handleMousePressed del controller deve aprire la finestra di dialogo per inserire i dati
-    * della figura, dopodiché solo quando l'utente clicca il tasto di conferma deve prendere
-    * i parametri inseriti dall'utente e passarli all'handleMousePressed di DrawingContext, che li passa
-    * a handleMousePressed di DrawState, che crea la figura e la aggiunge alla lista figure, dopodiché il controller
-    * deve ricaricare il canvas (tipo con una funzione redrawAll()) per mostrare anche la figura aggiornata
-    * */
-
+    /**
+     * METODO MOMENTANEAMENTE NON NECESSARIO
+     * @param event evento di trascinamento del mouse
+     * @param forme lista di tutte le forme presenti sul canvas
+     */
     @Override
     public void handleMouseDragged(MouseEvent event, List<Forma> forme) {
-        //WIP
+        //NA
     }
 
+    /**
+     * METODO MOMENTANEAMENTE NON NECESSARI0
+     * @param event evento di rilascio del mouse
+     */
     @Override
     public void handleMouseReleased(MouseEvent event) {
-        //WIP
+        //NA
     }
 }
