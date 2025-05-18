@@ -3,14 +3,21 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionsta
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.*;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.control.ColorPicker;
+
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 public class DrawState implements DrawingState{
@@ -46,7 +53,7 @@ public class DrawState implements DrawingState{
      */
     @Override
     public void handleMousePressed(MouseEvent event, List<Forma> forme) {
-        AttributiForma attributiForma = helpUIHandleMousePressed();
+        AttributiForma attributiForma = helpUIHandleMousePressed(formaCorrente);
 
         Forma formaCreata = null;
         double coordinataX = event.getX();
@@ -75,27 +82,58 @@ public class DrawState implements DrawingState{
         forme.add(formaCreata);
     }
 
-    private AttributiForma helpUIHandleMousePressed() {
-        Dialog dialog = new Dialog<>(); // Modale di dialogo
+    private AttributiForma helpUIHandleMousePressed(Forme tipoForma) {
+        Dialog<AttributiForma> dialog = new Dialog<>(); //modale di dialogo
         dialog.setTitle("Conferma Disegno");
+        Locale.setDefault(new Locale("it", "IT")); //per settare le scritte nel colorpicker in italiano
+
+
         Label headerLabel = new Label("Vuoi inserire la figura scelta qui?");
-        headerLabel.setStyle("-fx-font-size: 16px;");
+        headerLabel.setStyle("-fx-font-size: 20px;");
 
         // StackPane per contenere e centrare il contenuto della finestra
         StackPane headerPane = new StackPane(headerLabel);
-        headerPane.setPadding(new Insets(40, 0, -20, 0)); // Padding per centrare meglio la frase
-
+        headerPane.setPadding(new Insets(20, 0, 10, 0));
         dialog.getDialogPane().setHeader(headerPane);
+
+        // ColorPicker per il bordo della figura
+        Label bordoLabel = new Label("Colore del bordo:");
+        bordoLabel.setStyle("-fx-font-size: 18px;");
+        ColorPicker bordoPicker = new ColorPicker(Color.BLACK);
+        bordoPicker.setPrefWidth(150);
+
+        VBox bordoBox = new VBox(5, bordoLabel, bordoPicker);
+        bordoBox.setAlignment(Pos.CENTER);
+
+        VBox contentBox = new VBox(15);
+        contentBox.setPadding(new Insets(20));
+        contentBox.setAlignment(Pos.CENTER);
+        contentBox.getChildren().add(bordoBox);
+
+        // Layout della modale
+        dialog.getDialogPane().setContent(contentBox);
+        dialog.getDialogPane().setMinWidth(400);
+        dialog.getDialogPane().setMinHeight(200);
 
         // Pulsanti di conferma e annulla
         ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
 
-        Optional result = dialog.showAndWait(); // aspetta che l'utente interagisca e restituisce un Optional contenente il bottone cliccato
-        AttributiForma attributiForma = new AttributiForma();
-        return attributiForma;
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == confirmButton) {       //se viene premuto conferma crea un nuovo AttributiForma con il colore bordo scelto
+                AttributiForma attributi = new AttributiForma();
+                attributi.colore = bordoPicker.getValue();
+                return attributi;
+            }
+            return null;
+        });
+
+        Optional<AttributiForma> result = dialog.showAndWait(); // aspetta che l'utente interagisca e restituisce un Optional
+        return result.orElse(null);
     }
+
+
 
 
     /*
