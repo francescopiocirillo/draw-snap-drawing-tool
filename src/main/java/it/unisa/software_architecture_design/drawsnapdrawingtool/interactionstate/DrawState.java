@@ -68,27 +68,31 @@ public class DrawState implements DrawingState{
 
         }
 
+        if(attributiForma == null){
+            attributiForma = new AttributiForma();
+        }
+
         Forma formaCreata = null;
         double coordinataX = event.getX();
         double coordinataY = event.getY();
         switch (formaCorrente) {
             case ELLISSE:
                 formaCreata = new FactoryEllisse().creaForma(coordinataX, coordinataY,
-                        attributiForma.altezza, attributiForma.larghezza,
-                        attributiForma.angoloInclinazione, attributiForma.colore, attributiForma.coloreInterno);
+                        attributiForma.getAltezza(), attributiForma.getLarghezza(),
+                        attributiForma.getAngoloInclinazione(), attributiForma.getColore(), attributiForma.getColoreInterno());
                 System.out.println("È un'ellisse");
                 break;
             case RETTANGOLO:
                 formaCreata = new FactoryRettangolo().creaForma(coordinataX, coordinataY,
-                        attributiForma.altezza, attributiForma.larghezza,
-                        attributiForma.angoloInclinazione, attributiForma.colore, attributiForma.coloreInterno);
+                        attributiForma.getAltezza(), attributiForma.getLarghezza(),
+                        attributiForma.getAngoloInclinazione(), attributiForma.getColore(), attributiForma.getColoreInterno());
                 System.out.println("È un rettangolo");
                 break;
 
             case LINEA:
                 formaCreata = new FactoryLinea().creaForma(coordinataX, coordinataY,
-                        attributiForma.altezza, attributiForma.larghezza,
-                        attributiForma.angoloInclinazione, attributiForma.colore, attributiForma.coloreInterno);
+                        attributiForma.getAltezza(), attributiForma.getLarghezza(),
+                        attributiForma.getAngoloInclinazione(), attributiForma.getColore(), attributiForma.getColoreInterno());
                 System.out.println("È una linea");
                 break;
         }
@@ -161,10 +165,10 @@ public class DrawState implements DrawingState{
         dialog.setResultConverter(dialogButton -> {   //se viene premuto conferma crea un nuovo AttributiForma con i colori scelti
             if (dialogButton == confirmButton) {
                 AttributiForma attributi = new AttributiForma();
-                attributi.colore = bordoPicker.getValue();
-                attributi.coloreInterno = finalInternoPicker != null //se è una linea il colore interno è settato a trasparente
+                attributi.setColore(bordoPicker.getValue());
+                attributi.setColoreInterno((finalInternoPicker != null)  //se è una linea il colore interno è settato a trasparente
                         ? finalInternoPicker.getValue()
-                        : Color.TRANSPARENT;
+                        : Color.TRANSPARENT);
                 return attributi;
             }
             return null;
@@ -173,6 +177,7 @@ public class DrawState implements DrawingState{
         Optional<AttributiForma> result = dialog.showAndWait(); // aspetta che l'utente interagisca e restituisce un Optional
         return result.orElse(null);
     }
+
     /**
      * METODO MOMENTANEAMENTE NON NECESSARIO
      * @param event evento di trascinamento del mouse

@@ -1,14 +1,20 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.forme;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.utils.ColorUtils;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serial;
 
 public class Rettangolo extends Forma  {
     /*
      * Attributi
      */
     private double altezza;
-    private Color coloreInterno;
+    private transient Color coloreInterno;
     private double verticeAX;
     private double verticeAY;
     private double verticeBX;
@@ -205,5 +211,27 @@ public class Rettangolo extends Forma  {
     private boolean isToTheLeft(double puntoDaValutareX, double puntoDaValutareY, double inizioVettoreCoordinataX, double inizioVettoreCoordinataY, double fineVettoreCoordinataX, double fineVettoreCoordinataY) {
         double crossProduct = (fineVettoreCoordinataX - inizioVettoreCoordinataX) * (puntoDaValutareY - inizioVettoreCoordinataY) - (fineVettoreCoordinataY - inizioVettoreCoordinataY) * (puntoDaValutareX - inizioVettoreCoordinataX);
         return crossProduct >= 0 ;
+    }
+
+    /**
+     * Serializza l'oggetto nel complesso con il metodo della superclasse e poi salva
+     * anche il colore di riempimento che non è serializzabile.
+     * @param out è lo stream sul quale salvare le informazioni, sarà il File scelto dall'utente
+     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
+     */
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeUTF(ColorUtils.toHexString(getColore()));
+        // Serializza il colore interno specifico della sottoclasse
+        out.writeUTF(ColorUtils.toHexString(coloreInterno));
+    }
+
+    /**
+     *
+     */
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        // DA RIDEFINIRE
     }
 }

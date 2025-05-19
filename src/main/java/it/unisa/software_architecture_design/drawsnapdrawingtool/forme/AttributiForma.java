@@ -3,13 +3,13 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.forme;
 import javafx.scene.paint.Color;
 
 public class AttributiForma {
-    public double coordinataX;
-    public double coordinataY;
-    public double altezza;
-    public double larghezza;
-    public double angoloInclinazione;
-    public Color colore;
-    public Color coloreInterno;
+    private double coordinataX;
+    private double coordinataY;
+    private double altezza;
+    private double larghezza;
+    private double angoloInclinazione;
+    private Color colore;
+    private Color coloreInterno;
 
     // Costruttore con valori di default
     public AttributiForma() {
@@ -32,5 +32,61 @@ public class AttributiForma {
         this.angoloInclinazione = angoloInclinazione;
         this.colore = colore;
         this.coloreInterno = coloreInterno;
+    }
+
+    public double getCoordinataY() {
+        return coordinataY;
+    }
+
+    public void setCoordinataY(double coordinataY) {
+        this.coordinataY = coordinataY;
+    }
+
+    public double getAltezza() {
+        return altezza;
+    }
+
+    public void setAltezza(double altezza) {
+        this.altezza = altezza;
+    }
+
+    public double getLarghezza() {
+        return larghezza;
+    }
+
+    public void setLarghezza(double larghezza) {
+        this.larghezza = larghezza;
+    }
+
+    public double getAngoloInclinazione() {
+        return angoloInclinazione;
+    }
+
+    public void setAngoloInclinazione(double angoloInclinazione) {
+        this.angoloInclinazione = angoloInclinazione;
+    }
+
+    public Color getColore() {
+        return colore;
+    }
+
+    public void setColore(Color colore) {
+        this.colore = colore;
+    }
+
+    public Color getColoreInterno() {
+        return coloreInterno;
+    }
+
+    public void setColoreInterno(Color coloreInterno) {
+        this.coloreInterno = coloreInterno;
+    }
+
+    public double getCoordinataX() {
+        return coordinataX;
+    }
+
+    public void setCoordinataX(double coordinataX) {
+        this.coordinataX = coordinataX;
     }
 }

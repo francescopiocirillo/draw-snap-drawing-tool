@@ -2,103 +2,170 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionsta
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiForma;
-import javafx.application.Platform;
-import javafx.stage.Stage;
-import org.junit.jupiter.api.BeforeEach;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.testfx.framework.junit5.ApplicationExtension;
-import org.testfx.framework.junit5.ApplicationTest;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 /**
- * Classe di test automatica per la classe {@link DrawState}, focalizzata
- * sul metodo {@code helpUIHandleMousePressed(Forme)} che mostra una finestra
- * di dialogo JavaFX per la selezione dei colori.
- * <p>
- * Utilizza TestFX per simulare l'interazione dell'utente.
+ * Classe di test per {@link DrawState}
  */
-@ExtendWith(ApplicationExtension.class)
-public class DrawStateTest extends ApplicationTest {
-
-    private DrawState drawState;
+class DrawStateTest {
 
     /**
-     * Inizializza lo stato con una forma di tipo RETTANGOLO
-     * prima di ogni test.
+     * Classe che estende DrawState facendo l'override di {@code helpUIHandleMousePressed} in modo
+     * da non dover interagire con l'interfaccia grafica.
      */
-    @BeforeEach
-    void setUp() {
-        drawState = new DrawState(Forme.RETTANGOLO) {
-            @Override
-            public AttributiForma helpUIHandleMousePressed(Forme tipoForma) {
-                return super.helpUIHandleMousePressed(tipoForma);
-            }
-        };
-    }
+    class TestableDrawState extends DrawState {
+        private final AttributiForma attributiFinti;
 
-    /**
-     * Lancia una finestra invisibile per avviare il toolkit JavaFX.
-     *
-     * @param stage stage principale richiesto da TestFX (non usato nel test)
-     */
-    @Override
-    public void start(Stage stage) {
-        stage.show();
-    }
-
-    /**
-     * Testa il metodo {@code helpUIHandleMousePressed} della classe {@link DrawState}
-     * verificando che, in seguito alla conferma della finestra di dialogo per la selezione
-     * degli attributi di una forma, vengano restituiti correttamente gli attributi scelti.
-     * @throws Exception se si verifica un'interruzione durante l'attesa del completamento
-     *                   del thread JavaFX o altre eccezioni durante il test.
-     */
-    @Test
-    void testHelpUIHandleMousePressed_ConfermaDialog() throws Exception {
-        CountDownLatch latch = new CountDownLatch(1);
-        final AttributiForma[] result = new AttributiForma[1];
-
-        Platform.runLater(() -> {
-            try {
-                DrawState state = new DrawState(Forme.RETTANGOLO);
-                result[0] = state.helpUIHandleMousePressed(Forme.RETTANGOLO);
-            } finally {
-                latch.countDown();
-            }
-        });
-
-        if (!latch.await(10, TimeUnit.SECONDS)) {
-            fail("Timeout scaduto per l'interazione con JavaFX");
+        public TestableDrawState(Forme formaCorrente, AttributiForma attributiFinti) {
+            super(formaCorrente);
+            this.attributiFinti = attributiFinti;
         }
 
-        assertNotNull(result[0], "La finestra di dialogo non ha restituito attributi");
-        assertNotNull(result[0].colore, "Il colore del bordo non deve essere nullo");
-        assertNotNull(result[0].coloreInterno, "Il colore interno non deve essere nullo");
+        @Override
+        protected AttributiForma helpUIHandleMousePressed() {
+            return attributiFinti;
+        }
     }
 
-
+    /**
+     * Verifica la corretta creazione dell'Ellisse quando avviene la pressione del mouse.
+     */
     @Test
-    void getFormaCorrente() {
+    void testHandleMousePressed_CreaEllisse() {
+        // Setup
+        AttributiForma attributi = new AttributiForma();
+        attributi.setAltezza(100);
+        attributi.setLarghezza(200);
+        attributi.setAngoloInclinazione(0);
+
+        Color coloreNero = Color.color(0, 0, 0); // nero
+        Color coloreBianco = Color.color(1, 1, 1); // bianco
+
+        attributi.setColore(coloreNero);
+        attributi.setColoreInterno(coloreBianco);
+
+        DrawState state = new TestableDrawState(Forme.ELLISSE, attributi);
+
+        MouseEvent mouseEvent = mock(MouseEvent.class);
+        when(mouseEvent.getX()).thenReturn(50.0);
+        when(mouseEvent.getY()).thenReturn(75.0);
+
+        List<Forma> forme = new ArrayList<>();
+
+        // Chiamata al metodo
+        state.handleMousePressed(mouseEvent, forme);
+
+        // Assert
+        assertEquals(1, forme.size());
+        Forma forma = forme.get(0);
+        assertNotNull(forma);
+        assertEquals("Ellisse", forma.getClass().getSimpleName());
     }
 
+    /**
+     * Verifica la corretta creazione del Rettangolo quando avviene la pressione del mouse.
+     */
     @Test
-    void setFormaCorrente() {
+    void testHandleMousePressed_CreaRettangolo() {
+        AttributiForma attributi = new AttributiForma();
+        attributi.setAltezza(50);
+        attributi.setLarghezza(80);
+        attributi.setColore(Color.BLUE);
+        attributi.setColoreInterno(Color.RED);
+
+        DrawState state = new TestableDrawState(Forme.RETTANGOLO, attributi);
+
+        MouseEvent mouseEvent = mock(MouseEvent.class);
+        when(mouseEvent.getX()).thenReturn(10.0);
+        when(mouseEvent.getY()).thenReturn(20.0);
+
+        List<Forma> forme = new ArrayList<>();
+
+        state.handleMousePressed(mouseEvent, forme);
+
+        assertEquals(1, forme.size());
+        assertEquals("Rettangolo", forme.get(0).getClass().getSimpleName());
     }
 
+    /**
+     * Verifica la corretta creazione della Linea quando avviene la pressione del mouse.
+     */
     @Test
-    void handleMousePressed() {
+    void testHandleMousePressed_CreaLinea() {
+        AttributiForma attributi = new AttributiForma();
+        attributi.setAltezza(0); // La linea potrebbe non avere altezza/larghezza significative
+        attributi.setLarghezza(0);
+        attributi.setColore(Color.BLACK);
+
+        DrawState state = new TestableDrawState(Forme.LINEA, attributi);
+
+        MouseEvent mouseEvent = mock(MouseEvent.class);
+        when(mouseEvent.getX()).thenReturn(0.0);
+        when(mouseEvent.getY()).thenReturn(0.0);
+
+        List<Forma> forme = new ArrayList<>();
+
+        state.handleMousePressed(mouseEvent, forme);
+
+        assertEquals(1, forme.size());
+        assertEquals("Linea", forme.get(0).getClass().getSimpleName());
     }
 
+    /**
+     * Verifica che una casistica anomala come la creazione della figura con coordinate negative
+     * non provochi comportamenti inattesi.
+     */
     @Test
-    void handleMouseDragged() {
+    void testHandleMousePressed_CoordinateNegative() {
+        AttributiForma attributi = new AttributiForma();
+        attributi.setAltezza(30);
+        attributi.setLarghezza(40);
+        attributi.setColore(Color.GREEN);
+
+        DrawState state = new TestableDrawState(Forme.ELLISSE, attributi);
+
+        MouseEvent mouseEvent = mock(MouseEvent.class);
+        when(mouseEvent.getX()).thenReturn(-10.0);
+        when(mouseEvent.getY()).thenReturn(-20.0);
+
+        List<Forma> forme = new ArrayList<>();
+
+        state.handleMousePressed(mouseEvent, forme);
+
+        assertEquals(1, forme.size());
+        Forma forma = forme.get(0);
+        assertNotNull(forma);
     }
 
+    /**
+     * Verifica che anche se l'oggetto contenente gli attributi della Forma è null
+     * il comportamento resta controllato, senza eccezioni ma invece con parametri di default.
+     */
     @Test
-    void handleMouseReleased() {
+    void testHandleMousePressed_AttributiNull_DefaultFallback() {
+        DrawState state = new TestableDrawState(Forme.RETTANGOLO, null);
+
+        MouseEvent mouseEvent = mock(MouseEvent.class);
+        when(mouseEvent.getX()).thenReturn(10.0);
+        when(mouseEvent.getY()).thenReturn(20.0);
+
+        List<Forma> forme = new ArrayList<>();
+
+        assertDoesNotThrow(() -> state.handleMousePressed(mouseEvent, forme));
+
+        assertEquals(1, forme.size());
+        Forma forma = forme.get(0);
+        assertNotNull(forma);
+        assertEquals("Rettangolo", forma.getClass().getSimpleName());
     }
+
 }
