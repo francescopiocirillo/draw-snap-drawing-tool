@@ -2,6 +2,7 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionsta
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
+import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
@@ -16,6 +17,9 @@ public class SelectState implements DrawingState{
 
     private double offsetX;
     private double offsetY;
+    private ToolBar toolBarFX; // barra in alto delle modifiche
+
+    public SelectState(ToolBar toolBarFX) { this.toolBarFX = toolBarFX; }
 
     /**
      * Gestisce l'evento di pressione del mouse sul canvas per permettere la selezione di una figura
@@ -41,6 +45,15 @@ public class SelectState implements DrawingState{
 
         List<Forma> formeNonSelezionate = new ArrayList<>(forme);
         if (formaSelezionata != null) {
+            if(toolBarFX != null) {
+                toolBarFX.setDisable(false); //abilita la barra in alto delle modifiche
+            }
+
+            System.out.println("INGRESSO fs");
+            System.out.println("FORMA SELEZIONATA: " + formaSelezionata);
+            System.out.println("COORD X: " + formaSelezionata.getCoordinataX());
+            System.out.println("COORD Y: " + formaSelezionata.getCoordinataY());
+
             forme.remove(formaSelezionata);
             formeNonSelezionate.remove(formaSelezionata);
             // una forma già decorata con la selezione non ha bisogno di essere ridecorata
@@ -48,6 +61,10 @@ public class SelectState implements DrawingState{
                 forme.add(formaSelezionata);
             }else {
                 forme.add(new FormaSelezionataDecorator(formaSelezionata));
+            }
+        }else{
+            if(toolBarFX != null) {
+                toolBarFX.setDisable(true); //disabilita la barra in alto delle modifiche
             }
         }
 
@@ -66,6 +83,12 @@ public class SelectState implements DrawingState{
                 forme.remove(f);
                 forme.add(((FormaSelezionataDecorator) f).getForma());
             }
+        }
+    }
+
+    public void disattivaToolBar() {
+        if(toolBarFX != null) {
+            toolBarFX.setDisable(true); //disabilita la barra in alto delle modifiche
         }
     }
 

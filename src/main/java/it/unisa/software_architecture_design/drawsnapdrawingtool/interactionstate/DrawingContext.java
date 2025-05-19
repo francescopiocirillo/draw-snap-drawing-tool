@@ -30,6 +30,7 @@ public class DrawingContext {
         // quando si esce dallo stato di selezione è necessario deselezionare tutte le figure
         if(this.currentState instanceof SelectState){
             ((SelectState) this.currentState).deselezionaHelper(forme, forme);
+            ((SelectState) this.currentState).disattivaToolBar();
         }
         this.currentState = currentState;
     }

@@ -1,5 +1,6 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.DeleteCommand;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.Invoker;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.SaveCommand;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
@@ -42,6 +43,8 @@ public class DrawSnapController {
     private Button lineButton;
     @FXML
     private Button selectButton;
+    @FXML
+    private ToolBar toolBarFX; // barra in alto delle modifiche
 
     /*
      * Attributi per la logica
@@ -56,7 +59,7 @@ public class DrawSnapController {
     void initialize() {
         forme = new ArrayList<>();
         gc = canvas.getGraphicsContext2D();
-        drawingContext = new DrawingContext(new SelectState()); // stato di default, sarà cambiato quando avremo lo stato sposta o seleziona
+        drawingContext = new DrawingContext(new SelectState(toolBarFX)); // stato di default, sarà cambiato quando avremo lo stato sposta o seleziona
         invoker = new Invoker();
 
         // inizializzazione bottoni per la selezione forma
@@ -131,7 +134,7 @@ public class DrawSnapController {
      * Metodo per passare alla modalità di selezione
      */
     void setSelectMode() {
-        drawingContext.setCurrentState(new SelectState(), forme);
+        drawingContext.setCurrentState(new SelectState(toolBarFX), forme);
         redrawAll();
     }
 
@@ -139,6 +142,19 @@ public class DrawSnapController {
     void onSavePressed(ActionEvent event) {
         invoker.setCommand(new SaveCommand(forme, stage));
         invoker.executeCommand();
+    }
+
+    @FXML
+    void onDeletePressed(ActionEvent event) {
+        invoker.setCommand(new DeleteCommand(forme));
+        invoker.executeCommand();
+        toolBarFX.setDisable(true); // disattiva la toolBar visto che la figura non è più in focus essendo eliminata
+        redrawAll();
+    }
+
+    @FXML
+    void onCutPressed(ActionEvent event) {
+
     }
 
 }

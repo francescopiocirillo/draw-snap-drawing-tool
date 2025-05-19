@@ -48,7 +48,7 @@ public class DrawStateTest extends ApplicationTest {
      */
     @Override
     public void start(Stage stage) {
-        stage.show(); // Necessario per inizializzare JavaFX
+        stage.show();
     }
 
     /**
@@ -81,4 +81,24 @@ public class DrawStateTest extends ApplicationTest {
         assertNotNull(result[0].coloreInterno, "Il colore interno non deve essere nullo");
     }
 
+
+    @Test
+    void getFormaCorrente() {
+    }
+
+    @Test
+    void setFormaCorrente() {
+    }
+
+    @Test
+    void handleMousePressed() {
+    }
+
+    @Test
+    void handleMouseDragged() {
+    }
+
+    @Test
+    void handleMouseReleased() {
+    }
 }
