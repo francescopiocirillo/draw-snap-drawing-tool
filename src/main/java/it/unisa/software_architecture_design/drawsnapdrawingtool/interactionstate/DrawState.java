@@ -64,11 +64,6 @@ public class DrawState implements DrawingState{
 
         if (attributiForma == null) { // se l'utente ha premuto "Annulla" non fare nulla
             System.out.println("Creazione forma annullata dall'utente.");
-            return;
-
-        }
-
-        if(attributiForma == null){
             attributiForma = new AttributiForma();
         }
 
