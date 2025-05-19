@@ -3,6 +3,9 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionsta
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiForma;
 import javafx.application.Platform;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,7 +62,7 @@ public class DrawStateTestUI extends ApplicationTest {
      *                   del thread JavaFX o altre eccezioni durante il test.
      */
     @Test
-    void testHelpUIHandleMousePressed_ConfermaDialog() throws Exception {
+    void testHelpUIHandleMousePressed_Dialog() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
         final AttributiForma[] result = new AttributiForma[1];
 
@@ -76,29 +79,41 @@ public class DrawStateTestUI extends ApplicationTest {
             fail("Timeout scaduto per l'interazione con JavaFX");
         }
 
-        assertNotNull(result[0], "La finestra di dialogo non ha restituito attributi");
-        assertNotNull(result[0].getColore(), "Il colore del bordo non deve essere nullo");
-        assertNotNull(result[0].getColoreInterno(), "Il colore interno non deve essere nullo");
+        AttributiForma attributi = result[0];
+
+        assertNotNull(attributi, "La finestra di dialogo non ha restituito attributi");
+        assertNotNull(attributi.getColore(), "Il colore del bordo non deve essere nullo");
+        assertNotNull(attributi.getColoreInterno(), "Il colore interno non deve essere nullo");
+
+        assertEquals(100.0, attributi.getAltezza(), 0.01, "Valore di altezza errato");
+        assertEquals(100.0, attributi.getLarghezza(), 0.01, "Valore di larghezza errato");
+        assertEquals(0.0, attributi.getAngoloInclinazione(), 0.01, "Valore di angolo errato");
     }
 
 
-    @Test
-    void getFormaCorrente() {
-    }
 
-    @Test
-    void setFormaCorrente() {
-    }
 
-    @Test
-    void handleMousePressed() {
-    }
 
-    @Test
-    void handleMouseDragged() {
-    }
 
-    @Test
-    void handleMouseReleased() {
-    }
+
+
+//    @Test
+//    void getFormaCorrente() {
+//    }
+//
+//    @Test
+//    void setFormaCorrente() {
+//    }
+//
+//    @Test
+//    void handleMousePressed() {
+//    }
+//
+//    @Test
+//    void handleMouseDragged() {
+//    }
+//
+//    @Test
+//    void handleMouseReleased() {
+//    }
 }
