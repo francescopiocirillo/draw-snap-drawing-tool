@@ -1,5 +1,6 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.CutCommand;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.DeleteCommand;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.Invoker;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.SaveCommand;
@@ -154,7 +155,10 @@ public class DrawSnapController {
 
     @FXML
     void onCutPressed(ActionEvent event) {
-
+        invoker.setCommand(new CutCommand(forme));
+        invoker.executeCommand();
+        toolBarFX.setDisable(true);
+        redrawAll();
     }
 
 }
