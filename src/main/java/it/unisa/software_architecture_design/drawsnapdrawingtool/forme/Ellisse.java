@@ -120,10 +120,18 @@ public class Ellisse extends Forma {
     }
 
     /**
-     *
+     * Deserializza l'oggetto nel complesso con il metodo della superclasse e poi ricava
+     * anche il colore di riempimento che non è serializzabile.
+     * @param in è lo stream dal quale caricare le informazioni, sarà il File scelto dall'utente
+     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
+     * @throws ClassNotFoundException se si verifica un errore nel caricare una classe
      */
     @Serial
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        // DA RIDEFINIRE
+        in.defaultReadObject();
+        String colore = in.readUTF();
+        this.setColore(Color.web(colore));
+        String coloreInterno = in.readUTF();
+        this.setColoreInterno(Color.web(coloreInterno));
     }
 }

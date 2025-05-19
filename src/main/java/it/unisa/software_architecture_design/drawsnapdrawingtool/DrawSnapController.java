@@ -1,9 +1,6 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool;
 
-import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.CutCommand;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.DeleteCommand;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.Invoker;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.SaveCommand;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.*;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawState;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawingContext;
@@ -155,7 +152,9 @@ public class DrawSnapController {
      */
     @FXML
     void onLoadPressed(ActionEvent event) {
-
+        invoker.setCommand(new LoadCommand(forme, stage));
+        invoker.executeCommand();
+        redrawAll();
     }
 
     /**
