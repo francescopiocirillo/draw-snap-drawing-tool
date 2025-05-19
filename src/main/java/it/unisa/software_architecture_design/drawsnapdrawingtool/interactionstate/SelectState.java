@@ -45,7 +45,9 @@ public class SelectState implements DrawingState{
 
         List<Forma> formeNonSelezionate = new ArrayList<>(forme);
         if (formaSelezionata != null) {
-            toolBarFX.setDisable(false); //abilita la barra in alto delle modifiche
+            if(toolBarFX != null) {
+                toolBarFX.setDisable(false); //abilita la barra in alto delle modifiche
+            }
 
             System.out.println("INGRESSO fs");
             System.out.println("FORMA SELEZIONATA: " + formaSelezionata);
@@ -61,7 +63,9 @@ public class SelectState implements DrawingState{
                 forme.add(new FormaSelezionataDecorator(formaSelezionata));
             }
         }else{
-            toolBarFX.setDisable(true); //disabilita la barra in alto delle modifiche
+            if(toolBarFX != null) {
+                toolBarFX.setDisable(true); //disabilita la barra in alto delle modifiche
+            }
         }
 
         deselezionaHelper(forme, formeNonSelezionate);
@@ -83,7 +87,9 @@ public class SelectState implements DrawingState{
     }
 
     public void disattivaToolBar() {
-        toolBarFX.setDisable(true); //disabilita la barra in alto delle modifiche
+        if(toolBarFX != null) {
+            toolBarFX.setDisable(true); //disabilita la barra in alto delle modifiche
+        }
     }
 
     /**

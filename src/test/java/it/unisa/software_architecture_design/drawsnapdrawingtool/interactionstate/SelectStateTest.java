@@ -26,7 +26,7 @@ class SelectStateTest {
      */
     @BeforeEach
     public void setUp() {
-        selectState = new SelectState( new ToolBar() );
+        selectState = new SelectState( null );
     }
 
     /*
