@@ -11,7 +11,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 
-public abstract class Forma implements Serializable {
+public abstract class Forma implements Serializable, Cloneable{
     /*
      * Attributi
      */
@@ -127,4 +127,18 @@ public abstract class Forma implements Serializable {
         colore = Color.web(colorHex);
     }
 
+    /**
+     * Metodo per clonare l'oggetto creandone una nuova istanza
+     * Permette di modificare l'elemento clonato senza intaccare quello originale
+     * @return la forma clonata.
+     */
+    @Override
+    public Forma clone(){
+        try{
+            return (Forma) super.clone();
+        }catch(CloneNotSupportedException ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
 }
