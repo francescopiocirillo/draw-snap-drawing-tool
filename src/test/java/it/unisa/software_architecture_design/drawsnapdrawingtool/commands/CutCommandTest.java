@@ -23,6 +23,90 @@ class CutCommandTest {
     }
 
     @Test
+    void testExecute_ListaVuota(){
+        forme.clear();
+
+        //Eseguo il comando di taglia
+        Command cut = new CutCommand(forme, formeCopiate);
+        cut.execute();
+
+        //Controllo la modifica della dimensione della lista iniziale di forme
+        assertEquals(0, forme.size(), "Dimensione errata");
+
+        //Controllo se la dimensione della lista FormeCopiate è corretta
+        assertEquals(0, formeCopiate.size(), "Dimensione errata");
+    }
+
+    @Test
+    void testExecute_NessunaFormaSelezionata(){
+        //Creo una prima forma
+        Forma forma = new Forma(10, 20, 30, 0, Color.RED) {
+            @Override
+            public void disegna(GraphicsContext gc) {
+                //Mock
+            }
+
+            @Override
+            public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
+                return false; //Mock: nessun punto è contenuto
+            }
+
+        };
+
+        //Aggiungo la forma a lista
+        forme.add(forma);
+
+        //Eseguo il comando di taglia
+        Command cut = new CutCommand(forme, formeCopiate);
+        cut.execute();
+
+        //Controllo la modifica della dimensione della lista iniziale di forme
+        assertEquals(1, forme.size(), "Dimensione errata");
+
+        //Controllo se la dimensione della lista FormeCopiate è corretta
+        assertEquals(0, formeCopiate.size(), "Dimensione errata");
+    }
+
+    @Test
+    void testExecute_UnaFormaSelezionata(){
+        //Creo una forma selezionata
+        Forma formaSelezionata = new FormaSelezionataDecorator(new Forma(50, 60, 30, 0, Color.BLUE) {
+            @Override
+            public void disegna(GraphicsContext gc) {
+                // Mock
+            }
+
+            @Override
+            public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
+                return true; // Mock: Il punto è contenuto
+            }
+        });
+
+        //Aggiungo la forma a lista
+        forme.add(formaSelezionata);
+
+        //Eseguo il comando di taglia
+        Command cut = new CutCommand(forme, formeCopiate);
+        cut.execute();
+
+        //Controllo cse la forma selezionata è ancora presente nella lista forme
+        assertFalse(forme.contains(formaSelezionata), "Forma selezionata ancora presente nel foglio di disegno");
+
+        //Controllo se la dimensione della lista FormeCopiate è corretta
+        assertEquals(1, formeCopiate.size(), "Dimensione errata");
+
+        //Controllo che la forma copiata è uguale (a livello di attributi) a quella selezionata
+        assertTrue( formeCopiate.getFirst().confrontaAttributi(formaSelezionata),"Forma selezionata non presente tra quelle copiate");
+
+        //Controllo che la forma copiata non abbia lo stesso riferimento di quella selezionata
+        assertNotSame(formeCopiate.getFirst(), formaSelezionata, "le due forme hanno lo stesso riferimento");
+
+        //Controllo la modifica della dimensione della lista iniziale di forme
+        assertEquals(0, forme.size(), "Dimensione errata");
+
+    }
+
+    @Test
     void testExecute_dueFormeSulFoglio(){
         //Creo una prima forma
         Forma forma1 = new Forma(10, 20, 30, 0, Color.RED) {
@@ -115,7 +199,7 @@ class CutCommandTest {
         //Controllo che la forma copiata non abbia lo stesso riferimento di quella selezionata
         assertNotSame(formeCopiate.getFirst(), formaSelezionata, "le due forme hanno lo stesso riferimento");
 
-        //Controllo la modifica della lista iniziale di forme
+        //Controllo la modifica della dimensione della lista iniziale di forme
         assertEquals(20, forme.size(), "Dimensione errata");
     }
 
