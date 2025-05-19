@@ -40,7 +40,7 @@
                      </graphic></Button>
                   <Button id="button" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="122.0" text="Button" />
                   <Button id="button" layoutX="56.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="112.0" text="Button" />
-                  <Button id="button" alignment="CENTER" contentDisplay="CENTER" layoutX="103.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="112.0">
+                  <Button id="button" alignment="CENTER" contentDisplay="CENTER" layoutX="103.0" layoutY="10.0" mnemonicParsing="false" onAction="#onCutPressed" prefHeight="35.0" prefWidth="112.0">
                      <graphic>
                         <ImageView fitHeight="31.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                            <image>
