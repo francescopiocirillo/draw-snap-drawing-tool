@@ -2,6 +2,7 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionsta
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
+import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ class SelectStateTest {
      */
     @BeforeEach
     public void setUp() {
-        selectState = new SelectState();
+        selectState = new SelectState( new ToolBar() );
     }
 
     /*
