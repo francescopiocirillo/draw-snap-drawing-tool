@@ -62,6 +62,11 @@ public class DrawState implements DrawingState{
     public void handleMousePressed(MouseEvent event, List<Forma> forme) {
         AttributiForma attributiForma = helpUIHandleMousePressed(formaCorrente);
 
+        if (attributiForma == null) { // se l'utente ha premuto "Annulla" non fare nulla
+            System.out.println("Creazione forma annullata dall'utente.");
+            return;
+        }
+
         Forma formaCreata = null;
         double coordinataX = event.getX();
         double coordinataY = event.getY();
