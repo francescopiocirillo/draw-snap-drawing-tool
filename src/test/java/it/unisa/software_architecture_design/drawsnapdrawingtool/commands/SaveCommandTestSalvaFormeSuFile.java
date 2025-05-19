@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Classe per il testing del metodo {@salvaFormeSuFile} della classe {@code SaveCommand}
+ * Classe per il testing del metodo {@code salvaFormeSuFile} della classe {@code SaveCommand}
  */
 class SaveCommandTestSalvaFormeSuFile {
 
