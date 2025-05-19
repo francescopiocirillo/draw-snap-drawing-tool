@@ -70,12 +70,17 @@ public class FormaSelezionataDecorator extends FormaDecorator{
             altezza = ellisse.getAltezza();
         }
 
-        // stroke disegna il contorno
-        gc.strokeRect(x - larghezza / 2 - MARGINE_SELEZIONE,
-                y - altezza / 2 - MARGINE_SELEZIONE,
-                larghezza + 2 * MARGINE_SELEZIONE,
-                altezza + 2 * MARGINE_SELEZIONE);
+        // Aggiungi margine
+        double rectWidth = larghezza + 2 * MARGINE_SELEZIONE;
+        double rectHeight = altezza + 2 * MARGINE_SELEZIONE;
 
-        gc.restore();
+        // Traslazione al centro della forma e rotazione di 45 gradi
+        gc.translate(x, y);
+        gc.rotate(getForma().getAngoloInclinazione()); // Rotazione in senso orario di 45 gradi
+
+        // Disegna il rettangolo centrato sull'origine (che ora è il centro della forma)
+        gc.strokeRect(-rectWidth / 2, -rectHeight / 2, rectWidth, rectHeight);
+
+        gc.restore(); // Ripristina il contesto grafico originales
     }
 }
