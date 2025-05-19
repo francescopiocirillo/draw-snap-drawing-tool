@@ -47,21 +47,24 @@ public class SaveCommand implements Command {
      */
     @Override
     public void execute() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Salva Disegno");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Disegno (*.dsnap)", "*.dsnap"));
-        File file = fileChooser.showSaveDialog(stage);
+        File file = showFileChooser();
 
         if (file != null) {
             salvaFormeSuFile(file);
         }
+    }
+    protected File showFileChooser() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Salva Disegno");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Disegno (*.dsnap)", "*.dsnap"));
+        return fileChooser.showSaveDialog(stage);
     }
 
     /**
      * Metodo di utilità che esegue l'effettivo salvataggio della lista forme nel file specificato
      * @param file File nel quale salvare la lista
      */
-    private void salvaFormeSuFile(File file) {
+    void salvaFormeSuFile(File file) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
             oos.writeObject(forme);
         } catch (IOException e) {
