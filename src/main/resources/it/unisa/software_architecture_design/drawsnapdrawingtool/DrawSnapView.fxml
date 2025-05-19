@@ -23,6 +23,7 @@
                 <Menu mnemonicParsing="false" text="File">
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#onSavePressed" text="Salva" />
+                        <MenuItem mnemonicParsing="false" onAction="#onSavePressed" text="Carica" />
                   </items>
                 </Menu>
               </menus>
@@ -39,16 +40,19 @@
                      </graphic></Button>
                   <Button id="button" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="122.0" text="Button" />
                   <Button id="button" layoutX="56.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="112.0" text="Button" />
-                  <Button id="button" layoutX="103.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="112.0" text="Button" />
+                  <Button id="button" alignment="CENTER" contentDisplay="CENTER" layoutX="103.0" layoutY="10.0" mnemonicParsing="false" onAction="#onCutPressed" prefHeight="35.0" prefWidth="112.0">
+                     <graphic>
+                        <ImageView fitHeight="31.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/taglia.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
               </items>
             </ToolBar>
             <StackPane id="canvaContainer" VBox.vgrow="ALWAYS">
                <children>
-                  <StackPane prefHeight="150.0" prefWidth="200.0">
-                     <children>
-                        <Canvas fx:id="canvas" height="580.0" nodeOrientation="INHERIT" width="800.0" />
-                     </children>
-                  </StackPane>
+                  <Canvas fx:id="canvas" height="580.0" nodeOrientation="INHERIT" width="800.0" />
                   <HBox id="barra" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" spacing="30.0" StackPane.alignment="BOTTOM_CENTER">
                      <children>
                         <Button id="button" fx:id="selectButton" alignment="CENTER" contentDisplay="RIGHT" layoutX="159.0" layoutY="18.0" mnemonicParsing="false" textAlignment="CENTER">
@@ -101,7 +105,7 @@
                         </Button>
                      </children>
                      <StackPane.margin>
-                        <Insets bottom="50.0" />
+                        <Insets bottom="100.0" />
                      </StackPane.margin>
                   </HBox>
                </children>

@@ -152,4 +152,9 @@ public class DrawSnapController {
         redrawAll();
     }
 
+    @FXML
+    void onCutPressed(ActionEvent event) {
+
+    }
+
 }
