@@ -23,7 +23,7 @@
                 <Menu mnemonicParsing="false" text="File">
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#onSavePressed" text="Salva" />
-                        <MenuItem mnemonicParsing="false" onAction="#onSavePressed" text="Carica" />
+                        <MenuItem mnemonicParsing="false" onAction="#onLoadPressed" text="Carica" />
                   </items>
                 </Menu>
               </menus>

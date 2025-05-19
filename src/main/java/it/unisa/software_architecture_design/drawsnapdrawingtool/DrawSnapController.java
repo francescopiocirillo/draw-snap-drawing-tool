@@ -1,9 +1,6 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool;
 
-import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.CutCommand;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.DeleteCommand;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.Invoker;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.SaveCommand;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.*;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawState;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawingContext;
@@ -139,12 +136,31 @@ public class DrawSnapController {
         redrawAll();
     }
 
+    /**
+     * Metodo per salvare su file il disegno corrente
+     * @param event -> evento che causa l'operazione di salvataggio
+     */
     @FXML
     void onSavePressed(ActionEvent event) {
         invoker.setCommand(new SaveCommand(forme, stage));
         invoker.executeCommand();
     }
 
+    /**
+     * Metodo per caricare da file un disegno precedentemente salvato
+     * @param event -> evento che causa l'operazione di caricamento
+     */
+    @FXML
+    void onLoadPressed(ActionEvent event) {
+        invoker.setCommand(new LoadCommand(forme, stage));
+        invoker.executeCommand();
+        redrawAll();
+    }
+
+    /**
+     * Metodo per eliminare una figura selezionata
+     * @param event -> evento che causa l'operazione di elimina
+     */
     @FXML
     void onDeletePressed(ActionEvent event) {
         invoker.setCommand(new DeleteCommand(forme));
@@ -153,6 +169,10 @@ public class DrawSnapController {
         redrawAll();
     }
 
+    /**
+     * Metodo per tagliare una figura selezionata
+     * @param event -> evento che causa l'operazione di taglia
+     */
     @FXML
     void onCutPressed(ActionEvent event) {
         invoker.setCommand(new CutCommand(forme));
