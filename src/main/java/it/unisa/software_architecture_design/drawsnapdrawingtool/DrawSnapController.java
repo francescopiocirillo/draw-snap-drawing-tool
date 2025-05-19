@@ -29,6 +29,7 @@ public class DrawSnapController {
     private DrawingContext drawingContext;
     private List<Forma> forme = null;
     private Stage stage;
+    private static List<Forma> formeCopiate; //Lista per tenere salvate le variabili copiate
 
     /*
      * Attributi per i bottoni
@@ -175,7 +176,7 @@ public class DrawSnapController {
      */
     @FXML
     void onCutPressed(ActionEvent event) {
-        invoker.setCommand(new CutCommand(forme));
+        invoker.setCommand(new CutCommand(forme, formeCopiate));
         invoker.executeCommand();
         toolBarFX.setDisable(true);
         redrawAll();
