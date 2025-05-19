@@ -101,8 +101,10 @@ public class DrawState implements DrawingState{
 
     /**
      * Mostra una finestra di dialogo che consente all'utente di selezionare i colori della figura da disegnare.
-     * Il dialogo visualizza un {@link ColorPicker} per il colore del bordo e, se la figura
-     * selezionata non è una linea ({@code Forme.LINEA}), anche un {@link ColorPicker} per il colore interno.
+     * Il dialogo permette di:
+     * selezionare il colore del bordo tramite un {@link ColorPicker},
+     * selezionare il colore di riempimento (solo se la figura non è una linea),
+     * specificare dimensioni e angolo di inclinazione tramite {@link Spinner},
      * @param tipoForma il tipo di figura geometrica selezionata
      * @return un oggetto {@link AttributiForma} contenente i colori selezionati se l'utente conferma, oppure {@code null} se l'utente annulla
      */
@@ -114,8 +116,7 @@ public class DrawState implements DrawingState{
 
         Label headerLabel = new Label("Vuoi inserire la figura scelta qui?");
         headerLabel.setStyle("-fx-font-size: 20px;");
-
-        // StackPane per contenere e centrare il contenuto della finestra
+        // StackPane per contenere contenuto della finestra
         StackPane headerPane = new StackPane(headerLabel);
         headerPane.setPadding(new Insets(20, 0, 10, 0));
         dialog.getDialogPane().setHeader(headerPane);
@@ -125,14 +126,13 @@ public class DrawState implements DrawingState{
         bordoLabel.setStyle("-fx-font-size: 18px;");
         ColorPicker bordoPicker = new ColorPicker(Color.BLACK);
         bordoPicker.setPrefWidth(150);
-
         VBox bordoBox = new VBox(5, bordoLabel, bordoPicker);
         bordoBox.setAlignment(Pos.CENTER);
 
         // ColorPicker per l'interno della figura
         VBox internoBox = null;
         ColorPicker internoPicker = null;
-        if (tipoForma != Forme.LINEA) { //se la figura selezionata è chiusa, si può scegliere il colore interno
+        if (tipoForma != Forme.LINEA) {
             Label internoLabel = new Label("Colore di riempimento:");
             internoLabel.setStyle("-fx-font-size: 18px;");
             internoPicker = new ColorPicker(Color.WHITE);
@@ -141,42 +141,82 @@ public class DrawState implements DrawingState{
             internoBox.setAlignment(Pos.CENTER);
         }
 
+        //Spinner per le dimensioni
+        VBox dimensioniBox = new VBox(10);
+        dimensioniBox.setAlignment(Pos.CENTER);
+
+        Spinner<Double> spinnerAltezza = new Spinner<>(10.0, 500.0, 100.0, 1.0);
+        Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, 100.0, 1.0);
+        Spinner<Double> spinnerLunghezza = new Spinner<>(10.0, 500.0, 100.0, 1.0);
+        Spinner<Double> spinnerAngolo = new Spinner<>(0.0, 360.0, 0.0, 1.0);
+
+        spinnerAltezza.setEditable(true);
+        spinnerLarghezza.setEditable(true);
+        spinnerLunghezza.setEditable(true);
+        spinnerAngolo.setEditable(true);
+        // Suggerimenti quando scorri sullo spinner
+        spinnerLarghezza.setTooltip(new Tooltip("Imposta la larghezza della figura in pixel"));
+        spinnerAltezza.setTooltip(new Tooltip("Imposta l'altezza della figura in pixel"));
+        spinnerLunghezza.setTooltip(new Tooltip("Imposta la lunghezza della linea in pixel"));
+        spinnerAngolo.setTooltip(new Tooltip("Angolo di rotazione in gradi (0-360)"));
+
+        if (tipoForma == Forme.LINEA) {
+            dimensioniBox.getChildren().addAll(
+                    new Label("Lunghezza:"), spinnerLunghezza,
+                    new Label("Angolo inclinazione (°):"), spinnerAngolo
+            );
+        } else {
+            dimensioniBox.getChildren().addAll(
+                    new Label("Altezza:"), spinnerAltezza,
+                    new Label("Larghezza:"), spinnerLarghezza,
+                    new Label("Angolo inclinazione (°):"), spinnerAngolo
+            );
+        }
+
+        //Composizione VBox
         VBox contentBox = new VBox(15);
         contentBox.setPadding(new Insets(20));
-        contentBox.setAlignment(Pos.CENTER);
-        contentBox.getChildren().add(bordoBox);
-        if (internoBox != null) {
-            contentBox.getChildren().add(internoBox);
-        }
-        // Layout della modale
+        contentBox.getChildren().addAll(bordoBox);
+        if (internoBox != null) contentBox.getChildren().add(internoBox);
+        contentBox.getChildren().add(dimensioniBox);
+
         dialog.getDialogPane().setContent(contentBox);
         dialog.getDialogPane().setMinWidth(400);
-        dialog.getDialogPane().setMinHeight(250);
+        dialog.getDialogPane().setMinHeight(350);
 
-        dialog.getDialogPane().setContent(contentBox);
-
-        // Pulsanti di conferma e annulla
+        // Pulsanti conferma e annulla
         ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
 
-        ColorPicker finalInternoPicker = internoPicker; // necessario per la lambda
+        ColorPicker finalInternoPicker = internoPicker; //necessario per la lambda
 
-        dialog.setResultConverter(dialogButton -> {   //se viene premuto conferma crea un nuovo AttributiForma con i colori scelti
-            if (dialogButton == confirmButton) {
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == confirmButton) { //se viene premuto conferma crea un nuovo AttributiForma con i parametri scelti
                 AttributiForma attributi = new AttributiForma();
                 attributi.setColore(bordoPicker.getValue());
-                attributi.setColoreInterno((finalInternoPicker != null)  //se è una linea il colore interno è settato a trasparente
+                attributi.setColoreInterno(finalInternoPicker != null
                         ? finalInternoPicker.getValue()
-                        : Color.TRANSPARENT);
+                        : Color.TRANSPARENT); //se è una linea il colore interno è settato a trasparente
+
+                if (tipoForma == Forme.LINEA) {
+                    attributi.setLarghezza(spinnerLunghezza.getValue());
+                    attributi.setAltezza(0);
+                    attributi.setAngoloInclinazione(spinnerAngolo.getValue());
+                } else {
+                    attributi.setAltezza(spinnerAltezza.getValue());
+                    attributi.setLarghezza(spinnerLarghezza.getValue());
+                    attributi.setAngoloInclinazione(spinnerAngolo.getValue());
+                }
                 return attributi;
             }
             return null;
         });
 
-        Optional<AttributiForma> result = dialog.showAndWait(); // aspetta che l'utente interagisca e restituisce un Optional
+        Optional<AttributiForma> result = dialog.showAndWait();  // aspetta che l'utente interagisca e restituisce un Optional
         return result.orElse(null);
     }
+
 
     /**
      * METODO MOMENTANEAMENTE NON NECESSARIO
