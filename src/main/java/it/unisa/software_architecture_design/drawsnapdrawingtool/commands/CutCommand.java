@@ -13,20 +13,21 @@ public class CutCommand implements Command{
      * Attributi
      */
     private final List<Forma> forme;
-    private static Forma formaCopiata; //Variabile per tenere salvata la variabile copiata
+    private List<Forma> formeCopiate;
 
     /*
      * Costruttore, getter e setter
      */
-    public CutCommand(List<Forma> forme) {
+    public CutCommand(List<Forma> forme, List<Forma> formeCopiate) {
         this.forme = forme;
+        this.formeCopiate = formeCopiate;
     }
 
     public List<Forma> getForme() {
         return forme;
     }
 
-    public Forma getFormaCopiata() {return formaCopiata;}
+    public List<Forma> getFormeCopiate() {return formeCopiate;}
 
     /*
      * Logica della classe
@@ -45,7 +46,7 @@ public class CutCommand implements Command{
             }
         }
         if(formaDaTagliare != null){
-            formaCopiata = formaDaTagliare.clone();
+            formeCopiate.add(formaDaTagliare.clone());
             forme.remove(formaDaTagliare);
         }
     }
