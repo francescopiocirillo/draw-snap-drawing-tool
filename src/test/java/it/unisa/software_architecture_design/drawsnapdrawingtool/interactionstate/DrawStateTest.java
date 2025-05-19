@@ -31,7 +31,7 @@ class DrawStateTest {
         }
 
         @Override
-        protected AttributiForma helpUIHandleMousePressed() {
+        protected AttributiForma helpUIHandleMousePressed(Forme tipoForma) {
             return attributiFinti;
         }
     }
