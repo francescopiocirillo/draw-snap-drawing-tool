@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -26,6 +27,14 @@
                 </Menu>
               </menus>
             </MenuBar>
+            <ToolBar>
+              <items>
+                <Button alignment="TOP_CENTER" minWidth="107.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="110.0" text="Elimina" />
+                  <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="122.0" text="Button" />
+                  <Button layoutX="56.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="112.0" text="Button" />
+                  <Button layoutX="103.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="112.0" text="Button" />
+              </items>
+            </ToolBar>
             <StackPane id="canvaContainer" VBox.vgrow="ALWAYS">
                <children>
                   <StackPane prefHeight="150.0" prefWidth="200.0">
