@@ -5,16 +5,14 @@ import it.unisa.software_architecture_design.drawsnapdrawingtool.utils.ColorUtil
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 
 
 public abstract class Forma implements Serializable {
     /*
      * Attributi
      */
+    @Serial
     private static final long serialVersionUID = 1L;
     private double coordinataY;
     private double coordinataX;
@@ -107,6 +105,7 @@ public abstract class Forma implements Serializable {
      * @param out è lo stream sul quale salvare le informazioni, sarà il File scelto dall'utente
      * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
      */
+    @Serial
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         // salva il colore come stringa HEX
@@ -120,6 +119,7 @@ public abstract class Forma implements Serializable {
      * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
      * @throws ClassNotFoundException se la classe dell'oggetto serializzato non è trovata
      */
+    @Serial
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         // ricostruisci il colore da stringa HEX

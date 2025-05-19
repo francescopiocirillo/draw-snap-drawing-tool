@@ -54,27 +54,31 @@ public class DrawState implements DrawingState{
     public void handleMousePressed(MouseEvent event, List<Forma> forme) {
         AttributiForma attributiForma = helpUIHandleMousePressed();
 
+        if(attributiForma == null){
+            attributiForma = new AttributiForma();
+        }
+
         Forma formaCreata = null;
         double coordinataX = event.getX();
         double coordinataY = event.getY();
         switch (formaCorrente) {
             case ELLISSE:
                 formaCreata = new FactoryEllisse().creaForma(coordinataX, coordinataY,
-                        attributiForma.altezza, attributiForma.larghezza,
-                        attributiForma.angoloInclinazione, attributiForma.colore, attributiForma.coloreInterno);
+                        attributiForma.getAltezza(), attributiForma.getLarghezza(),
+                        attributiForma.getAngoloInclinazione(), attributiForma.getColore(), attributiForma.getColoreInterno());
                 System.out.println("È un'ellisse");
                 break;
             case RETTANGOLO:
                 formaCreata = new FactoryRettangolo().creaForma(coordinataX, coordinataY,
-                        attributiForma.altezza, attributiForma.larghezza,
-                        attributiForma.angoloInclinazione, attributiForma.colore, attributiForma.coloreInterno);
+                        attributiForma.getAltezza(), attributiForma.getLarghezza(),
+                        attributiForma.getAngoloInclinazione(), attributiForma.getColore(), attributiForma.getColoreInterno());
                 System.out.println("È un rettangolo");
                 break;
 
             case LINEA:
                 formaCreata = new FactoryLinea().creaForma(coordinataX, coordinataY,
-                        attributiForma.altezza, attributiForma.larghezza,
-                        attributiForma.angoloInclinazione, attributiForma.colore, attributiForma.coloreInterno);
+                        attributiForma.getAltezza(), attributiForma.getLarghezza(),
+                        attributiForma.getAngoloInclinazione(), attributiForma.getColore(), attributiForma.getColoreInterno());
                 System.out.println("È una linea");
                 break;
         }
@@ -86,7 +90,7 @@ public class DrawState implements DrawingState{
      * della forma creata.
      * @return attributiForma gli attributi per la creazione di una Forma
      */
-    private AttributiForma helpUIHandleMousePressed() {
+    protected AttributiForma helpUIHandleMousePressed() {
         Dialog dialog = new Dialog<>(); // Modale di dialogo
         dialog.setTitle("Conferma Disegno");
         Label headerLabel = new Label("Vuoi inserire la figura scelta qui?");
