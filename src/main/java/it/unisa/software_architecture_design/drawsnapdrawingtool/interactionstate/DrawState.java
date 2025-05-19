@@ -97,7 +97,7 @@ public class DrawState implements DrawingState{
      * @return un oggetto {@link AttributiForma} contenente i colori selezionati se l'utente conferma, oppure {@code null} se l'utente annulla
      */
 
-    private AttributiForma helpUIHandleMousePressed(Forme tipoForma) {
+    protected AttributiForma helpUIHandleMousePressed(Forme tipoForma) {
         Dialog<AttributiForma> dialog = new Dialog<>(); //modale di dialogo
         dialog.setTitle("Conferma Disegno");
         Locale.setDefault(new Locale("it", "IT")); //per settare le scritte nel colorpicker in italiano
@@ -167,7 +167,6 @@ public class DrawState implements DrawingState{
         Optional<AttributiForma> result = dialog.showAndWait(); // aspetta che l'utente interagisca e restituisce un Optional
         return result.orElse(null);
     }
-
     /**
      * METODO MOMENTANEAMENTE NON NECESSARIO
      * @param event evento di trascinamento del mouse

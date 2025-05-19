@@ -1,0 +1,84 @@
+package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
+
+import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiForma;
+import javafx.application.Platform;
+import javafx.stage.Stage;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.testfx.framework.junit5.ApplicationExtension;
+import org.testfx.framework.junit5.ApplicationTest;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Classe di test automatica per la classe {@link DrawState}, focalizzata
+ * sul metodo {@code helpUIHandleMousePressed(Forme)} che mostra una finestra
+ * di dialogo JavaFX per la selezione dei colori.
+ * <p>
+ * Utilizza TestFX per simulare l'interazione dell'utente.
+ */
+@ExtendWith(ApplicationExtension.class)
+public class DrawStateTest extends ApplicationTest {
+
+    private DrawState drawState;
+
+    /**
+     * Inizializza lo stato con una forma di tipo RETTANGOLO
+     * prima di ogni test.
+     */
+    @BeforeEach
+    void setUp() {
+        drawState = new DrawState(Forme.RETTANGOLO) {
+            @Override
+            public AttributiForma helpUIHandleMousePressed(Forme tipoForma) {
+                return super.helpUIHandleMousePressed(tipoForma);
+            }
+        };
+    }
+
+    /**
+     * Lancia una finestra invisibile per avviare il toolkit JavaFX.
+     *
+     * @param stage stage principale richiesto da TestFX (non usato nel test)
+     */
+    @Override
+    public void start(Stage stage) {
+        stage.show(); // Necessario per inizializzare JavaFX
+    }
+
+    /**
+     * Testa il metodo {@code helpUIHandleMousePressed} della classe {@link DrawState}
+     * verificando che, in seguito alla conferma della finestra di dialogo per la selezione
+     * degli attributi di una forma, vengano restituiti correttamente gli attributi scelti.
+     * @throws Exception se si verifica un'interruzione durante l'attesa del completamento
+     *                   del thread JavaFX o altre eccezioni durante il test.
+     */
+    @Test
+    void testHelpUIHandleMousePressed_ConfermaDialog() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+        final AttributiForma[] result = new AttributiForma[1];
+
+        Platform.runLater(() -> {
+            try {
+                DrawState state = new DrawState(Forme.RETTANGOLO);
+                result[0] = state.helpUIHandleMousePressed(Forme.RETTANGOLO);
+            } finally {
+                latch.countDown();
+            }
+        });
+
+        if (!latch.await(10, TimeUnit.SECONDS)) {
+            fail("Timeout scaduto per l'interazione con JavaFX");
+        }
+
+        assertNotNull(result[0], "La finestra di dialogo non ha restituito attributi");
+        assertNotNull(result[0].colore, "Il colore del bordo non deve essere nullo");
+        assertNotNull(result[0].coloreInterno, "Il colore interno non deve essere nullo");
+    }
+
+}
