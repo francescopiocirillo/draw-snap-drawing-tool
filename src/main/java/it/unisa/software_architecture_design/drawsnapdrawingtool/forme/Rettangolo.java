@@ -242,4 +242,22 @@ public class Rettangolo extends Forma  {
         String coloreInterno = in.readUTF();
         this.setColoreInterno(Color.web(coloreInterno));
     }
+
+    /**
+     * Metodo per il controllare se due forme sono uguali
+     * @param forma -> forma con cui fare il confronto
+     * @return {@code true} se gli attributi sono uguali, altrimenti {@code false}
+     */
+    @Override
+    public boolean confrontaAttributi(Forma forma){
+        Rettangolo rettangolo = (Rettangolo) forma;
+        return super.confrontaAttributi(rettangolo) &&
+                this.verticeAX == rettangolo.getVerticeAX() &&
+                this.verticeAY == rettangolo.getVerticeAY() &&
+                this.verticeBX == rettangolo.getVerticeBX() &&
+                this.verticeCX == rettangolo.getVerticeCX() &&
+                this.verticeCY == rettangolo.getVerticeCY() &&
+                this.verticeDX == rettangolo.getVerticeDX() &&
+                this.verticeDY == rettangolo.getVerticeDY();
+    }
 }

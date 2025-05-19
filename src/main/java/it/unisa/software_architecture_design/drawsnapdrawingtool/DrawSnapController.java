@@ -57,6 +57,7 @@ public class DrawSnapController {
     @FXML
     void initialize() {
         forme = new ArrayList<>();
+        formeCopiate = new ArrayList<>();
         gc = canvas.getGraphicsContext2D();
         drawingContext = new DrawingContext(new SelectState(toolBarFX)); // stato di default, sarà cambiato quando avremo lo stato sposta o seleziona
         invoker = new Invoker();

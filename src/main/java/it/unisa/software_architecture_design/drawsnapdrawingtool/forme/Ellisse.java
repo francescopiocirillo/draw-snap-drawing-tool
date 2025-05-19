@@ -134,4 +134,17 @@ public class Ellisse extends Forma {
         String coloreInterno = in.readUTF();
         this.setColoreInterno(Color.web(coloreInterno));
     }
+
+    /**
+     * Metodo per il controllare se due forme sono uguali
+     * @param forma -> forma con cui fare il confronto
+     * @return {@code true} se gli attributi sono uguali, altrimenti {@code false}
+     */
+    @Override
+    public boolean confrontaAttributi(Forma forma){
+        Ellisse ellisse = (Ellisse) forma;
+        return super.confrontaAttributi(ellisse) &&
+                this.altezza == ellisse.getAltezza() &&
+                this.coloreInterno == ellisse.getColoreInterno();
+    }
 }

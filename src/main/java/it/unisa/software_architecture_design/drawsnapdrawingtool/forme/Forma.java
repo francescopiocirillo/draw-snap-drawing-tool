@@ -73,6 +73,7 @@ public abstract class Forma implements Serializable, Cloneable{
         this.angoloInclinazione = angoloInclidazione;
     }
 
+
     /*
      * Logica della classe
      */
@@ -140,5 +141,18 @@ public abstract class Forma implements Serializable, Cloneable{
             ex.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Metodo per il controllare se due forme sono uguali
+     * @param forma -> forma con cui fare il confronto
+     * @return {@code true} se gli attributi sono uguali, altrimenti {@code false}
+     */
+    public boolean confrontaAttributi(Forma forma){
+        return this.angoloInclinazione == forma.getAngoloInclinazione() &&
+                this.colore == forma.getColore() &&
+                this.coordinataX == forma.getCoordinataX() &&
+                this.coordinataY == forma.getCoordinataY() &&
+                this.larghezza == forma.getLarghezza();
     }
 }

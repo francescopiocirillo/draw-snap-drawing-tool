@@ -25,5 +25,11 @@ public abstract class FormaDecorator extends Forma{
         return formaDecorata.getCoordinataX();
     }
 
+    @Override
+    public boolean confrontaAttributi(Forma forma) {
+        FormaDecorator decorator = (FormaDecorator) forma;
+        return this.formaDecorata.confrontaAttributi(decorator.getForma());
+    }
+
 }
 //double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore
