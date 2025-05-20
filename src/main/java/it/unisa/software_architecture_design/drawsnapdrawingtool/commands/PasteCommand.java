@@ -49,12 +49,7 @@ public class PasteCommand implements Command {
     public void execute() {
 
         if (formeCopiate != null && !formeCopiate.isEmpty()) {
-            Forma ultimaForma = formeCopiate.get(formeCopiate.size() - 1);
-
-            // Se è un decorator, rimuovilo prima di clonare (opzionale ma consigliato)
-            if (ultimaForma instanceof FormaSelezionataDecorator decorator) {
-                ultimaForma = decorator.getForma();
-            }
+            Forma ultimaForma = formeCopiate.getLast();
 
             Forma nuova = ultimaForma.clone();
             if (nuova != null) {
