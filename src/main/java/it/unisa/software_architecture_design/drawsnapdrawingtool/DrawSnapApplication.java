@@ -13,8 +13,11 @@ public class DrawSnapApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(DrawSnapApplication.class.getResource("DrawSnapView.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1200, 600);
 
+        DrawSnapModel model = new DrawSnapModel();
+
         DrawSnapController controller = fxmlLoader.getController();
         controller.setStage(stage);
+        controller.setModel(model);
 
         stage.setResizable(false);
         stage.setTitle("DrawSnap - Drawing Tool");
