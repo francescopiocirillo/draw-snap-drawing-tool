@@ -5,7 +5,7 @@ import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 
 /**
- * La classe {@code PasteCommand} rappresenta un comando che incolla le figure selezionate.
+ * La classe {@code PasteCommand} rappresenta un comando che incolla le figure precedentemente copiate.
  */
 public class PasteCommand implements Command {
     /*

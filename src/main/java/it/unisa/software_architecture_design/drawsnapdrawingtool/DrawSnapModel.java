@@ -18,71 +18,139 @@ public class DrawSnapModel implements Serializable {
     @Serial
     private static final long serialVersionUID = 1001L;
 
+    //Costruttore
     public DrawSnapModel() {
         forme = new ArrayList<Forma>();
         formeCopiate = new ArrayList<Forma>();
     }
 
+    /**
+     * Metodo per aggiungere una forma al disegno
+     * @param f -> la forma da aggiungere
+     */
     public void add(Forma f){
         forme.add(f);
     }
 
+    /**
+     * Metodo per rimuovere una forma dal disegno
+     * @param f -> la forma da rimuovere
+     */
     public void remove(Forma f){
         forme.remove(f);
     }
 
+    /**
+     * Metodo per rimuovere tutte le forme presenti nel disegno
+     */
     public void clear(){
         forme.clear();
     }
 
+
+    /**
+     * Metodo per aggiungere una lista di forme al disegno
+     * @param forme -> lista di forme da aggiungere
+     */
     public void addAll(List<Forma> forme){
         this.forme.addAll(forme);
     }
 
+    /**
+     * Metodo per prendere una forma tramite indice
+     * @param index -> indice della forma
+     * @return la forma selezionata
+     */
     public Forma get(int index){
         return forme.get(index);
     }
 
+    /**
+     * Metodo per ottenere la prima forma aggiunta
+     * @return la prima forma presente nella lista
+     */
     public Forma getFirst(){
         return forme.getFirst();
     }
 
+    /**
+     * Metodo per creare l'iterator da usare nelle liste di Forme
+     * @return Iterator
+     */
     public Iterator<Forma> getIteratorForme() {
         return forme.iterator();
     }
 
+    /**
+     * Metodo per controllare se la lista di forme presenti nel disegno è vuota
+     * @return {@code true} se la lista è vuota, altrimenti {@code false}
+     */
     public boolean isEmpty(){
         return forme.isEmpty();
     }
 
+    /**
+     * Metodo per ottenere il numerod i forme presenti nel disegno
+     * @return numero di forme
+     */
     public int size(){
         return forme.size();
     }
 
+    /**
+     * Metodo per controllare che una forma è presente nel foglio did isegno
+     * @param f -> la forma di cui controllare la presenza
+     * @return {@code true} se la forma è presente, altrimenti {@code false}
+     */
     public boolean contains(Forma f){
         return forme.contains(f);
     }
 
+    /**
+     * Metodo per aggiungere una forma alla lista di forme copiate
+     * @param f -> la forma da aggiungere
+     */
     public void addFormaCopiata(Forma f){
         formeCopiate.add(f);
     }
 
+    /**
+     * Metodo per rimuovere una forma dalla lista di forme copiate
+     * @param f -> forma da rimuovere
+     */
     public void removeFormaCopiata(Forma f){
         formeCopiate.remove(f);
     }
 
+    /**
+     * Metodo per ottenere il numerod i forme copiate
+     * @return numero di forme
+     */
     public int sizeFormeCopiate(){
         return formeCopiate.size();
     }
 
+    /**
+     * Metodo per prendere una forma copiata tramite indice
+     * @param index -> indice della forma
+     * @return la forma selezionata
+     */
     public Forma getFormaCopiata(int index){
         return formeCopiate.get(index);
     }
 
+    /**
+     * Metodo per ottenere la prima forma copiata
+     * @return la prima forma copiata nella lista
+     */
     public Forma getFirstFormaCopiata(){
         return formeCopiate.getFirst();
     }
 
+    /**
+     * Metodo per ottenere l'ultima forma copiata
+     * @return l'ultima forma copiata nella lista
+     */
     public Forma getLastFormaCopiata(){return formeCopiate.getLast();}
 
     /**

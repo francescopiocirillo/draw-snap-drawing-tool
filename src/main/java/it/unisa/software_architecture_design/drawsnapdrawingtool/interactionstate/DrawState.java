@@ -104,7 +104,6 @@ public class DrawState implements DrawingState{
      * @param tipoForma il tipo di figura geometrica selezionata
      * @return un oggetto {@link AttributiForma} contenente i colori selezionati se l'utente conferma, oppure {@code null} se l'utente annulla
      */
-
     protected AttributiForma helpUIHandleMousePressed(Forme tipoForma) {
         Dialog<AttributiForma> dialog = new Dialog<>(); //modale di dialogo
         dialog.setTitle("Conferma Disegno");

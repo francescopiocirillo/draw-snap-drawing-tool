@@ -37,4 +37,3 @@ public abstract class FormaDecorator extends Forma{
     }
 
 }
-//double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore

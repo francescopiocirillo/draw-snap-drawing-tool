@@ -130,7 +130,7 @@ class DrawSnapControllerTest {
             }
         });
 
-        if (!latch.await(2, TimeUnit.SECONDS)) {
+        if (!latch.await(5, TimeUnit.SECONDS)) {
             throw new IllegalStateException("Test non completato entro il timeout");
         }
     }

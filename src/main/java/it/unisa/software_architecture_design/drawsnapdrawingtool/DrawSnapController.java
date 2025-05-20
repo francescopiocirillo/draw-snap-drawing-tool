@@ -32,8 +32,6 @@ public class DrawSnapController {
     private DrawingContext drawingContext;
     private DrawSnapModel forme = null;
     private Stage stage;
-    private double lastClickX = -1;
-    private double lastClickY = -1;
 
     //Menù contestuale
     private ContextMenu contextMenu;
@@ -57,6 +55,8 @@ public class DrawSnapController {
      * Attributi per la logica
      */
     private Invoker invoker = null;
+    private double lastClickX = -1;
+    private double lastClickY = -1;
 
 
     /**
@@ -74,6 +74,8 @@ public class DrawSnapController {
         rectangleButton.setOnAction(event -> setDrawMode(event, Forme.RETTANGOLO));
         lineButton.setOnAction(event -> setDrawMode(event, Forme.LINEA));
         selectButton.setOnAction(event -> setSelectMode());
+
+        //inizializzazione menu contestuale per l'operazione di incolla
         contextMenu = new ContextMenu();
         pasteButton = new MenuItem("Incolla");
         pasteButton.setOnAction(this::onPastePressed);
@@ -142,8 +144,8 @@ public class DrawSnapController {
         }
     }
 
+
     private void handleMouseDragged(MouseEvent mouseEvent) {
-        System.out.println("Mouse dragged");
         drawingContext.handleMouseDragged(mouseEvent, forme); // passa la forma da creare al DrawState
         redrawAll();
     }
