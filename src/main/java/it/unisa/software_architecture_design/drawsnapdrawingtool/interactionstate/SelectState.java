@@ -62,20 +62,6 @@ public class SelectState implements DrawingState{
     }
 
     /**
-     * Metodo di utilità che permette la deselezione di tutte le Forme della lista {@code forme} che sono
-     * presenti in {@code formeDaDeselezionare} e che sono selezionate.
-
-
-    public void deselezionaHelper(DrawSnapModel forme, List<Forma> formeDaDeselezionare) {
-        for(Forma f : formeDaDeselezionare){
-            if(f instanceof  FormaSelezionataDecorator){
-                forme.remove(f);
-                forme.add(((FormaSelezionataDecorator) f).getForma());
-            }
-        }
-    }*/
-
-    /**
      * Metodo di utilità per disattivare la toolBar quando non necessaria
      */
     public void disattivaToolBar() {
