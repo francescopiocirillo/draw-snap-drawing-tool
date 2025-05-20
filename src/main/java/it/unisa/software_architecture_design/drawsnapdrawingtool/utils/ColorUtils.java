@@ -22,6 +22,11 @@ public class ColorUtils {
         }
     }
 
+    /**
+     * Converte l'oggetto di tipo String HEX in modo da permettere la deserializzazione
+     * @param hex è la stringa del colore
+     * @return il colore corrisponde al Color restituito
+     */
     public static Color fromHexString(String hex) {
         return Color.web(hex);
     }
