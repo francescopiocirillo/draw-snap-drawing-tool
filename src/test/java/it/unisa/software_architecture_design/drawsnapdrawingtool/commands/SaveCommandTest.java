@@ -1,5 +1,6 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.commands;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiForma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Rettangolo;
 import javafx.stage.FileChooser;
@@ -34,7 +35,7 @@ class SaveCommandTest {
     Path tempDir;
     private Stage mockStage;
     private SaveCommand saveCommand;
-    private List<Forma> forme;
+    private DrawSnapModel forme;
 
     /**
      * Verifica che vengano correttamente scritte informazioni su un file
@@ -42,7 +43,7 @@ class SaveCommandTest {
     @Test
     void salvaFormeSuFile_DovrebbeSalvareCorrettamenteLeForme() {
         // Preparazione
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
         AttributiForma attr = new AttributiForma();
         Forma forma = new Rettangolo(attr.getCoordinataX(), attr.getCoordinataY(), attr.getLarghezza(),
                 attr.getAngoloInclinazione(), attr.getColore(), attr.getAltezza(), attr.getColoreInterno());
@@ -67,7 +68,7 @@ class SaveCommandTest {
     @Test
     void salvaFormeSuFile_ConFileNulloDovrebbeLanciareNullPointerException() {
         // Preparazione
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
         Stage stageMock = Mockito.mock(Stage.class);
         SaveCommand saveCommand = new SaveCommand(forme, stageMock);
 
@@ -81,7 +82,7 @@ class SaveCommandTest {
     @Test
     void salvaFormeSuFile_ConListaFormeVuotaDovrebbeCreareFileVuoto() {
         // Preparazione
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
         Stage stageMock = Mockito.mock(Stage.class);
         SaveCommand saveCommand = new SaveCommand(forme, stageMock);
 
@@ -101,7 +102,7 @@ class SaveCommandTest {
     @Test
     public void testExecute_chiamataASalvaFormeSuFile() {
         mockStage = mock(Stage.class);
-        forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
         saveCommand = spy(new SaveCommand(forme, mockStage));
 
         // Mock del file di salvataggio
@@ -130,7 +131,7 @@ class SaveCommandTest {
     @Test
     void testExecute_quandoNessunFileSelezionato_nonChiamaSalvaForme() {
         mockStage = mock(Stage.class);
-        forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
         saveCommand = spy(new SaveCommand(forme, mockStage));
 
         doReturn(null).when(saveCommand).showFileChooser();

@@ -39,8 +39,28 @@ public class DrawSnapModel implements Serializable {
         this.forme.addAll(forme);
     }
 
+    public Forma get(int index){
+        return forme.get(index);
+    }
+
+    public Forma getFirst(){
+        return forme.getFirst();
+    }
+
     public Iterator<Forma> getIteratorForme() {
         return forme.iterator();
+    }
+
+    public boolean isEmpty(){
+        return forme.isEmpty();
+    }
+
+    public int size(){
+        return forme.size();
+    }
+
+    public boolean contains(Forma f){
+        return forme.contains(f);
     }
 
     public void addFormaCopiata(Forma f){
@@ -49,6 +69,18 @@ public class DrawSnapModel implements Serializable {
 
     public void removeFormaCopiata(Forma f){
         formeCopiate.remove(f);
+    }
+
+    public int sizeFormeCopiate(){
+        return formeCopiate.size();
+    }
+
+    public Forma getFormaCopiata(int index){
+        return formeCopiate.get(index);
+    }
+
+    public Forma getFirstFormaCopiata(){
+        return formeCopiate.getFirst();
     }
 
     /**

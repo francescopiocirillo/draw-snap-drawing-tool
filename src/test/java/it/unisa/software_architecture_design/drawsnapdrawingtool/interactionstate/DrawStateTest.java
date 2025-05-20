@@ -1,5 +1,6 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiForma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
@@ -59,7 +60,7 @@ class DrawStateTest {
         when(mouseEvent.getX()).thenReturn(50.0);
         when(mouseEvent.getY()).thenReturn(75.0);
 
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
 
         // Chiamata al metodo
         state.handleMousePressed(mouseEvent, forme);
@@ -88,7 +89,7 @@ class DrawStateTest {
         when(mouseEvent.getX()).thenReturn(10.0);
         when(mouseEvent.getY()).thenReturn(20.0);
 
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
 
         state.handleMousePressed(mouseEvent, forme);
 
@@ -112,7 +113,7 @@ class DrawStateTest {
         when(mouseEvent.getX()).thenReturn(0.0);
         when(mouseEvent.getY()).thenReturn(0.0);
 
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
 
         state.handleMousePressed(mouseEvent, forme);
 
@@ -137,7 +138,7 @@ class DrawStateTest {
         when(mouseEvent.getX()).thenReturn(-10.0);
         when(mouseEvent.getY()).thenReturn(-20.0);
 
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
 
         state.handleMousePressed(mouseEvent, forme);
 
@@ -158,7 +159,7 @@ class DrawStateTest {
         when(mouseEvent.getX()).thenReturn(10.0);
         when(mouseEvent.getY()).thenReturn(20.0);
 
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
 
         assertDoesNotThrow(() -> state.handleMousePressed(mouseEvent, forme));
 

@@ -14,9 +14,7 @@ import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 
 public class DrawSnapController {
