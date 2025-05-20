@@ -19,18 +19,18 @@
       <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <MenuBar>
-              <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#onSavePressed" text="Salva" />
+               <menus>
+                  <Menu mnemonicParsing="false" text="File">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#onSavePressed" text="Salva" />
                         <MenuItem mnemonicParsing="false" onAction="#onLoadPressed" text="Carica" />
-                  </items>
-                </Menu>
-              </menus>
+                     </items>
+                  </Menu>
+               </menus>
             </MenuBar>
             <ToolBar id="toolBar" fx:id="toolBarFX" disable="true">
-              <items>
-                <Button id="button" alignment="TOP_CENTER" minWidth="107.0" mnemonicParsing="false" onAction="#onDeletePressed" prefHeight="35.0" prefWidth="110.0">
+               <items>
+                  <Button id="button" alignment="TOP_CENTER" minWidth="107.0" mnemonicParsing="false" onAction="#onDeletePressed" prefHeight="35.0" prefWidth="110.0">
                      <graphic>
                         <ImageView fitHeight="31.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -38,8 +38,14 @@
                            </image>
                         </ImageView>
                      </graphic></Button>
-                  <Button id="button" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="122.0" text="Button" />
-                  <Button id="button" layoutX="56.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="112.0" text="Button" />
+                  <Button id="button" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onCopyPressed" prefHeight="35.0" prefWidth="122.0">
+                     <graphic>
+                        <ImageView fitHeight="31.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/copy3.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
                   <Button id="button" alignment="CENTER" contentDisplay="CENTER" layoutX="103.0" layoutY="10.0" mnemonicParsing="false" onAction="#onCutPressed" prefHeight="35.0" prefWidth="112.0">
                      <graphic>
                         <ImageView fitHeight="31.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
@@ -48,9 +54,9 @@
                            </image>
                         </ImageView>
                      </graphic></Button>
-              </items>
+               </items>
             </ToolBar>
-            <StackPane id="canvaContainer" VBox.vgrow="ALWAYS">
+            <StackPane id="canvaContainer" fx:id="canvasContainer" VBox.vgrow="ALWAYS">
                <children>
                   <Canvas fx:id="canvas" height="580.0" nodeOrientation="INHERIT" width="800.0" />
                   <HBox id="barra" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" spacing="30.0" StackPane.alignment="BOTTOM_CENTER">

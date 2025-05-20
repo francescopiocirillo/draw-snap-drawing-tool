@@ -83,6 +83,8 @@ public class DrawSnapModel implements Serializable {
         return formeCopiate.getFirst();
     }
 
+    public Forma getLastFormaCopiata(){return formeCopiate.getLast();}
+
     /**
      * La Forma Selezionata viene rimossa dalla lista forme e reinserita dopo la decorazione
      * @param formaSelezionata

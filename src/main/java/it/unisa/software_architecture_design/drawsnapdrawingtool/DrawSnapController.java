@@ -11,7 +11,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.Iterator;
@@ -24,10 +26,18 @@ public class DrawSnapController {
      */
     @FXML
     private Canvas canvas;
+    @FXML
+    private StackPane canvasContainer;
     private GraphicsContext gc;
     private DrawingContext drawingContext;
     private DrawSnapModel forme = null;
     private Stage stage;
+    private double lastClickX = -1;
+    private double lastClickY = -1;
+
+    //Menù contestuale
+    private ContextMenu contextMenu;
+    private MenuItem pasteButton;
 
     /*
      * Attributi per i bottoni
@@ -64,6 +74,17 @@ public class DrawSnapController {
         rectangleButton.setOnAction(event -> setDrawMode(event, Forme.RETTANGOLO));
         lineButton.setOnAction(event -> setDrawMode(event, Forme.LINEA));
         selectButton.setOnAction(event -> setSelectMode());
+        contextMenu = new ContextMenu();
+        pasteButton = new MenuItem("Incolla");
+        pasteButton.setOnAction(this::onPastePressed);
+        contextMenu.getItems().add(pasteButton);
+
+        //Dimensione canvas adattiva
+        canvas.widthProperty().bind(canvasContainer.widthProperty());
+        canvas.heightProperty().bind(canvasContainer.heightProperty());
+
+        canvas.widthProperty().addListener((observable, oldValue, newValue) -> {redrawAll();});
+        canvas.heightProperty().addListener((observable, oldValue, newValue) -> {redrawAll();});
 
         initializeCanvasEventHandlers();
     }
@@ -90,9 +111,21 @@ public class DrawSnapController {
      * @param mouseEvent -> evento generato dalla pressione del mouse sul canvas
      */
     private void handleMousePressed(MouseEvent mouseEvent) {
-        System.out.println("Mouse pressed");
-        drawingContext.handleMousePressed(mouseEvent, forme); // passa la forma da creare al DrawState
-        redrawAll();
+        if (contextMenu.isShowing()) {
+            contextMenu.hide();
+        }
+        if (mouseEvent.getButton() == MouseButton.PRIMARY) { //tasto sinistro
+            System.out.println("Clic sinistro");
+            lastClickX = mouseEvent.getX();
+            lastClickY = mouseEvent.getY();
+            drawingContext.handleMousePressed(mouseEvent, forme);
+            redrawAll();
+        } else if (mouseEvent.getButton() == MouseButton.SECONDARY) { //tasto destro
+            System.out.println("Clic destro");
+            lastClickX = mouseEvent.getX();
+            lastClickY = mouseEvent.getY();
+            contextMenu.show(canvas, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+        }
     }
 
     /**
@@ -181,5 +214,31 @@ public class DrawSnapController {
         toolBarFX.setDisable(true);
         redrawAll();
     }
+
+    /**
+     * Metodo per copiare una figura selezionata
+     * @param event -> evento che causa l'operazione di copia
+     */
+    @FXML
+    void onCopyPressed(ActionEvent event) {
+        invoker.setCommand(new CopyCommand(forme));
+        invoker.executeCommand();
+        toolBarFX.setDisable(true);
+        redrawAll();
+    }
+
+    /**
+     * Metodo per incollare una figura selezionata
+     * @param event -> evento che causa l'operazione di incolla
+     */
+    @FXML
+    void onPastePressed(ActionEvent event) {
+        invoker.setCommand(new PasteCommand(forme, lastClickX, lastClickY));
+        invoker.executeCommand();
+        toolBarFX.setDisable(true);
+        redrawAll();
+    }
+
+
 
 }
