@@ -1,9 +1,7 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
 
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import javafx.scene.input.MouseEvent;
-
-import java.util.List;
 
 /**
  * L'interfaccia {@code DrawingState} sarà implementata da tutti gli stati dell'applicazione, che dovranno
@@ -11,9 +9,9 @@ import java.util.List;
  * in questa interfaccia
  */
 public interface DrawingState {
-    void handleMousePressed(MouseEvent event, List<Forma> forme);
+    void handleMousePressed(MouseEvent event, DrawSnapModel forme);
 
-    void handleMouseDragged(MouseEvent event, List<Forma> forme);
+    void handleMouseDragged(MouseEvent event, DrawSnapModel forme);
 
     void handleMouseReleased(MouseEvent event);
 }

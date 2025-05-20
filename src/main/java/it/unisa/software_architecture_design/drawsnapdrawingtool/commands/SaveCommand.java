@@ -1,5 +1,6 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.commands;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -19,23 +20,19 @@ public class SaveCommand implements Command {
     /*
      * Attributi
      */
-    private final List<Forma> forme;
+    private final DrawSnapModel forme;
     private final Stage stage;
 
     /*
      * Costruttore, getter e setter
      */
-    public SaveCommand(List<Forma> forme, Stage stage) {
+    public SaveCommand(DrawSnapModel forme, Stage stage) {
         this.forme = forme;
         this.stage = stage;
     }
 
     public Stage getStage() {
         return stage;
-    }
-
-    public List<Forma> getForme() {
-        return forme;
     }
 
     /*

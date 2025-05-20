@@ -1,8 +1,7 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
 
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import javafx.scene.input.MouseEvent;
-import java.util.List;
 
 /**
  * La classe {@code DrawingContext} rappresenta il contesto di disegno e per mezzo del Pattern State
@@ -26,10 +25,10 @@ public class DrawingContext {
         return currentState;
     }
 
-    public void setCurrentState(DrawingState currentState, List<Forma> forme) {
+    public void setCurrentState(DrawingState currentState, DrawSnapModel forme) {
         // quando si esce dallo stato di selezione è necessario deselezionare tutte le figure
         if(this.currentState instanceof SelectState){
-            ((SelectState) this.currentState).deselezionaHelper(forme, forme);
+            ((SelectState) this.currentState).deselezionaHelper(forme, forme.getCopy());
             ((SelectState) this.currentState).disattivaToolBar();
         }
         this.currentState = currentState;
@@ -44,7 +43,7 @@ public class DrawingContext {
      * @param event l'evento di pressione del Mouse
      * @param forme la lista delle forme presenti sul canvas
      */
-    public void handleMousePressed(MouseEvent event, List<Forma> forme){
+    public void handleMousePressed(MouseEvent event, DrawSnapModel forme){
         currentState.handleMousePressed(event, forme);
     }
 
@@ -53,7 +52,7 @@ public class DrawingContext {
      * @param event l'evento di pressione del Mouse
      * @param forme la lista delle forme presenti sul canvas
      */
-    public void handleMouseDragged(MouseEvent event, List<Forma> forme){
+    public void handleMouseDragged(MouseEvent event, DrawSnapModel forme){
         currentState.handleMouseDragged(event, forme);
     }
 

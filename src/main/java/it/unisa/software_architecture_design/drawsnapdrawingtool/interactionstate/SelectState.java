@@ -1,11 +1,13 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
 import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -27,13 +29,15 @@ public class SelectState implements DrawingState{
      * @param forme lista delle forme presenti sul foglio di disegno
      */
     @Override
-    public void handleMousePressed(MouseEvent event, List<Forma> forme) {
+    public void handleMousePressed(MouseEvent event, DrawSnapModel forme) {
         double coordinataX = event.getX();
         double coordinataY = event.getY();
 
         Forma formaSelezionata = null;
 
-        for (Forma f : forme) {
+        Iterator<Forma> it = forme.getIteratorForme();
+        while (it.hasNext()) {
+            Forma f = it.next();
             if(f.contiene(coordinataX, coordinataY)){
                 formaSelezionata = f;
                 // offset utili per lo spostamento della figura in caso di MouseDragged
@@ -43,16 +47,12 @@ public class SelectState implements DrawingState{
             }
         }
 
-        List<Forma> formeNonSelezionate = new ArrayList<>(forme);
+        List<Forma> formeNonSelezionate = forme.getCopy();
         if (formaSelezionata != null) {
+            forme.seleziona(formaSelezionata);
             if(toolBarFX != null) {
                 toolBarFX.setDisable(false); //abilita la barra in alto delle modifiche
             }
-
-            System.out.println("INGRESSO fs");
-            System.out.println("FORMA SELEZIONATA: " + formaSelezionata);
-            System.out.println("COORD X: " + formaSelezionata.getCoordinataX());
-            System.out.println("COORD Y: " + formaSelezionata.getCoordinataY());
 
             forme.remove(formaSelezionata);
             formeNonSelezionate.remove(formaSelezionata);
@@ -77,7 +77,7 @@ public class SelectState implements DrawingState{
      * @param forme la lista di tutte le forme
      * @param formeDaDeselezionare la lista delle forme da deselezionare
      */
-    public void deselezionaHelper(List<Forma> forme, List<Forma> formeDaDeselezionare) {
+    public void deselezionaHelper(DrawSnapModel forme, List<Forma> formeDaDeselezionare) {
         for(Forma f : formeDaDeselezionare){
             if(f instanceof  FormaSelezionataDecorator){
                 forme.remove(f);
@@ -98,11 +98,13 @@ public class SelectState implements DrawingState{
      * @param forme la lista di forme presenti sul canvas
      */
     @Override
-    public void handleMouseDragged(MouseEvent event, List<Forma> forme) {
+    public void handleMouseDragged(MouseEvent event, DrawSnapModel forme) {
         double mouseX = event.getX();
         double mouseY = event.getY();
 
-        for (Forma f : forme) {
+        Iterator<Forma> it = forme.getIteratorForme();
+        while (it.hasNext()) {
+            Forma f = it.next();
             if (f instanceof FormaSelezionataDecorator) {
                 Forma formaOriginale = ((FormaSelezionataDecorator) f).getForma();
 

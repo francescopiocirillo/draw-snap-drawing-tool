@@ -1,5 +1,6 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.*;
 import javafx.geometry.Insets;
@@ -59,7 +60,7 @@ public class DrawState implements DrawingState{
      * @param forme lista di tutte le forme presenti sul canvas
      */
     @Override
-    public void handleMousePressed(MouseEvent event, List<Forma> forme) {
+    public void handleMousePressed(MouseEvent event, DrawSnapModel forme) {
         AttributiForma attributiForma = helpUIHandleMousePressed(formaCorrente);
 
         if (attributiForma == null) { // se l'utente ha premuto "Annulla" non fare nulla
@@ -219,7 +220,7 @@ public class DrawState implements DrawingState{
      * @param forme lista di tutte le forme presenti sul canvas
      */
     @Override
-    public void handleMouseDragged(MouseEvent event, List<Forma> forme) {
+    public void handleMouseDragged(MouseEvent event, DrawSnapModel forme) {
         //NA
     }
 

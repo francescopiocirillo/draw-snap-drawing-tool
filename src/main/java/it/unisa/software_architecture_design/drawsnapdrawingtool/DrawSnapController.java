@@ -15,6 +15,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -27,9 +28,8 @@ public class DrawSnapController {
     private Canvas canvas;
     private GraphicsContext gc;
     private DrawingContext drawingContext;
-    private List<Forma> forme = null;
+    private DrawSnapModel forme = null;
     private Stage stage;
-    private static List<Forma> formeCopiate; //Lista per tenere salvate le variabili copiate
 
     /*
      * Attributi per i bottoni
@@ -56,8 +56,7 @@ public class DrawSnapController {
      */
     @FXML
     void initialize() {
-        forme = new ArrayList<>();
-        formeCopiate = new ArrayList<>();
+        forme = new DrawSnapModel();
         gc = canvas.getGraphicsContext2D();
         drawingContext = new DrawingContext(new SelectState(toolBarFX)); // stato di default, sarà cambiato quando avremo lo stato sposta o seleziona
         invoker = new Invoker();
@@ -105,7 +104,9 @@ public class DrawSnapController {
      */
     void redrawAll() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight()); // l'area da ripulire è tutto il canvas
-        for (Forma f : forme) {
+        Iterator<Forma> it = forme.getIteratorForme();
+        while (it.hasNext()) {
+            Forma f = it.next();
             f.disegna(gc);
         }
     }
@@ -177,7 +178,7 @@ public class DrawSnapController {
      */
     @FXML
     void onCutPressed(ActionEvent event) {
-        invoker.setCommand(new CutCommand(forme, formeCopiate));
+        invoker.setCommand(new CutCommand(forme));
         invoker.executeCommand();
         toolBarFX.setDisable(true);
         redrawAll();
