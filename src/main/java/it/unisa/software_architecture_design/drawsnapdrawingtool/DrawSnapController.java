@@ -64,7 +64,6 @@ public class DrawSnapController {
      */
     @FXML
     void initialize() {
-        forme = new DrawSnapModel();
         gc = canvas.getGraphicsContext2D();
         drawingContext = new DrawingContext(new SelectState(toolBarFX)); // stato di default, sarà cambiato quando avremo lo stato sposta o seleziona
         invoker = new Invoker();
@@ -94,6 +93,11 @@ public class DrawSnapController {
     public void setStage(Stage stage) {
         this.stage = stage;
     }
+
+    public void setModel(DrawSnapModel model) {
+        this.forme = model;
+    }
+
 
     /**
      * Inizializza gli event handler per gli eventi di interesse relativi al {@link Canvas}
