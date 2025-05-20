@@ -131,6 +131,14 @@ public class DrawSnapModel implements Serializable {
     }
 
     /**
+     * Metodo per controllare se la lista di forme copiate è vuota
+     * @return {@code true} se la lista è vuota, altrimenti {@code false}
+     */
+    public boolean isEmptyFormeCopiate(){
+        return formeCopiate.isEmpty();
+    }
+
+    /**
      * Metodo per prendere una forma copiata tramite indice
      * @param index -> indice della forma
      * @return la forma selezionata

@@ -126,7 +126,7 @@ public class DrawSnapController {
             lastClickY = mouseEvent.getY();
             drawingContext.handleMousePressed(mouseEvent, forme);
             redrawAll();
-        } else if (mouseEvent.getButton() == MouseButton.SECONDARY) { //tasto destro
+        } else if (mouseEvent.getButton() == MouseButton.SECONDARY && !forme.isEmptyFormeCopiate()) { //tasto destro
             System.out.println("Clic destro");
             lastClickX = mouseEvent.getX();
             lastClickY = mouseEvent.getY();
