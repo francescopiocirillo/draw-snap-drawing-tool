@@ -47,20 +47,10 @@ public class SelectState implements DrawingState{
             }
         }
 
-        List<Forma> formeNonSelezionate = forme.getCopy();
         if (formaSelezionata != null) {
-            forme.seleziona(formaSelezionata);
+            formaSelezionata = forme.selezionaForma(formaSelezionata);
             if(toolBarFX != null) {
                 toolBarFX.setDisable(false); //abilita la barra in alto delle modifiche
-            }
-
-            forme.remove(formaSelezionata);
-            formeNonSelezionate.remove(formaSelezionata);
-            // una forma già decorata con la selezione non ha bisogno di essere ridecorata
-            if (formaSelezionata instanceof FormaSelezionataDecorator) {
-                forme.add(formaSelezionata);
-            }else {
-                forme.add(new FormaSelezionataDecorator(formaSelezionata));
             }
         }else{
             if(toolBarFX != null) {
@@ -68,15 +58,14 @@ public class SelectState implements DrawingState{
             }
         }
 
-        deselezionaHelper(forme, formeNonSelezionate);
+        forme.deselezionaEccetto(formaSelezionata);
     }
 
     /**
      * Metodo di utilità che permette la deselezione di tutte le Forme della lista {@code forme} che sono
      * presenti in {@code formeDaDeselezionare} e che sono selezionate.
-     * @param forme la lista di tutte le forme
-     * @param formeDaDeselezionare la lista delle forme da deselezionare
-     */
+
+
     public void deselezionaHelper(DrawSnapModel forme, List<Forma> formeDaDeselezionare) {
         for(Forma f : formeDaDeselezionare){
             if(f instanceof  FormaSelezionataDecorator){
@@ -84,7 +73,7 @@ public class SelectState implements DrawingState{
                 forme.add(((FormaSelezionataDecorator) f).getForma());
             }
         }
-    }
+    }*/
 
     public void disattivaToolBar() {
         if(toolBarFX != null) {

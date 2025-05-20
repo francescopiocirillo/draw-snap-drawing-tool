@@ -51,8 +51,37 @@ public class DrawSnapModel implements Serializable {
         formeCopiate.remove(f);
     }
 
-    public void selezionaForma(Forma formaSelezionata){
+    /**
+     * La Forma Selezionata viene rimossa dalla lista forme e reinserita dopo la decorazione
+     * @param formaSelezionata
+     */
+    public Forma selezionaForma(Forma formaSelezionata){
+        if (!(formaSelezionata instanceof FormaSelezionataDecorator)) {
+            forme.remove(formaSelezionata);
+            formaSelezionata = new FormaSelezionataDecorator(formaSelezionata);
+            forme.add(formaSelezionata);
+            return formaSelezionata;
+        }
+        return formaSelezionata;
+    }
 
+    public void deselezionaEccetto(Forma formaSelezionata) {
+        if(formaSelezionata != null){
+            forme.remove(formaSelezionata);
+        }
+
+        List<Forma> formeDaDeselezionare = new ArrayList<>();
+        formeDaDeselezionare.addAll(forme);
+        for(Forma f : formeDaDeselezionare){
+            if(f instanceof  FormaSelezionataDecorator){
+                forme.remove(f);
+                forme.add(((FormaSelezionataDecorator) f).getForma());
+            }
+        }
+
+        if(formaSelezionata != null){
+            forme.add(formaSelezionata);
+        }
     }
 
     public void rebuildForme(DrawSnapModel nuovoModel){

@@ -28,7 +28,7 @@ public class DrawingContext {
     public void setCurrentState(DrawingState currentState, DrawSnapModel forme) {
         // quando si esce dallo stato di selezione è necessario deselezionare tutte le figure
         if(this.currentState instanceof SelectState){
-            ((SelectState) this.currentState).deselezionaHelper(forme, forme.getCopy());
+            forme.deselezionaEccetto(null);
             ((SelectState) this.currentState).disattivaToolBar();
         }
         this.currentState = currentState;
