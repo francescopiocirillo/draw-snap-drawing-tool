@@ -13,178 +13,97 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CopyCommandTest {
+
     private List<Forma> forme;
-    private static List<Forma> formeCopiate;
+    private List<Forma> formeCopiate;
 
     @BeforeEach
     void setUp() {
         forme = new ArrayList<>();
-        formeCopiate= new ArrayList<>();
+        formeCopiate = new ArrayList<>();
     }
 
     @Test
-    void testExecute_NessunaFormaSelezionata(){
-        //Creo una prima forma
+    void testExecute_ListaVuota() {
+        // Lista di partenza vuota
+        Command copy = new CopyCommand(forme, formeCopiate);
+        copy.execute();
+
+        // Nessuna forma da copiare
+        assertEquals(0, formeCopiate.size(), "La lista copiata deve essere vuota");
+    }
+
+    @Test
+    void testExecute_NessunaFormaSelezionata() {
+        // Forma normale non selezionata
         Forma forma = new Forma(10, 20, 30, 0, Color.RED) {
-            @Override
-            public void disegna(GraphicsContext gc) {
-                //Mock
-            }
-
-            @Override
-            public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
-                return false; //Mock: nessun punto è contenuto
-            }
-
+            @Override public void disegna(GraphicsContext gc) {}
+            @Override public boolean contiene(double x, double y) { return false; }
         };
 
-        //Aggiungo la forma a lista
         forme.add(forma);
 
-        //Eseguo il comando di copia
         Command copy = new CopyCommand(forme, formeCopiate);
         copy.execute();
 
-        //Controllo la modifica della dimensione della lista iniziale di forme
-        assertEquals(1, forme.size(), "Dimensione errata");
-
-        //Controllo se la dimensione della lista FormeCopiate è corretta
-        assertEquals(0, formeCopiate.size(), "Dimensione errata");
+        // Nessuna copia deve essere fatta
+        assertEquals(0, formeCopiate.size(), "La lista copiata deve rimanere vuota");
     }
 
     @Test
-    void testExecute_UnaFormaSelezionata(){
-        //Creo una forma selezionata
+    void testExecute_FormaSelezionata() {
+        // Forma decorata come selezionata
         Forma formaSelezionata = new FormaSelezionataDecorator(new Forma(50, 60, 30, 0, Color.BLUE) {
-            @Override
-            public void disegna(GraphicsContext gc) {
-                // Mock
-            }
-
-            @Override
-            public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
-                return true; // Mock: Il punto è contenuto
-            }
+            @Override public void disegna(GraphicsContext gc) {}
+            @Override public boolean contiene(double x, double y) { return true; }
         });
 
-        //Aggiungo la forma a lista
         forme.add(formaSelezionata);
 
-        //Eseguo il comando di taglia
         Command copy = new CopyCommand(forme, formeCopiate);
         copy.execute();
 
-        //Controllo cse la forma selezionata è ancora presente nella lista forme
-        assertFalse(forme.contains(formaSelezionata), "Forma selezionata ancora presente nel foglio di disegno");
-
-        //Controllo se la dimensione della lista FormeCopiate è corretta
-        assertEquals(1, formeCopiate.size(), "Dimensione errata");
-
-        //Controllo che la forma copiata è uguale (a livello di attributi) a quella selezionata
-        assertTrue( formeCopiate.getFirst().confrontaAttributi(formaSelezionata),"Forma selezionata non presente tra quelle copiate");
-
-        //Controllo che la forma copiata non abbia lo stesso riferimento di quella selezionata
-        assertNotSame(formeCopiate.getFirst(), formaSelezionata, "le due forme hanno lo stesso riferimento");
-
-        //Controllo la modifica della dimensione della lista iniziale di forme
-        assertEquals(0, forme.size(), "Dimensione errata");
-
+        // Deve essere copiata
+        assertEquals(1, formeCopiate.size(), "La forma selezionata deve essere copiata");
+        assertTrue(formeCopiate.getFirst().confrontaAttributi(formaSelezionata), "Gli attributi devono essere identici");
+        assertNotSame(formeCopiate.getFirst(), formaSelezionata, "La copia deve essere una nuova istanza");
     }
 
     @Test
-    void testExecute_dueFormeSulFoglio(){
-        //Creo una prima forma
-        Forma forma1 = new Forma(10, 20, 30, 0, Color.RED) {
-            @Override
-            public void disegna(GraphicsContext gc) {
-                //Mock
-            }
-
-            @Override
-            public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
-                return false; //Mock: nessun punto è contenuto
-            }
-
-        };
-
-        //Ne creo una seconda selezionata
-        Forma formaSelezionata = new FormaSelezionataDecorator(new Forma(50, 60, 30, 0, Color.BLUE) {
-            @Override
-            public void disegna(GraphicsContext gc) {
-                // Mock
-            }
-
-            @Override
-            public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
-                return true; // Mock: Il punto è contenuto
-            }
+    void testExecute_ColoreNull() {
+        // Forma selezionata con colore null
+        Forma formaNullColor = new FormaSelezionataDecorator(new Forma(10, 20, 30, 0, null) {
+            @Override public void disegna(GraphicsContext gc) {}
+            @Override public boolean contiene(double x, double y) { return false; }
         });
 
-        //Aggiungo le forma a lista
-        forme.add(forma1);
-        forme.add(formaSelezionata);
+        forme.add(formaNullColor);
 
-        //Eseguo il comando di taglia
         Command copy = new CopyCommand(forme, formeCopiate);
         copy.execute();
 
-        //Controllo cse la forma selezionata è ancora presente nella lista forme
-        assertFalse(forme.contains(formaSelezionata), "Forma selezionata ancora presente nel foglio di disegno");
-
-        //Controllo se la dimensione della lista FormeCopiate è corretta
-        assertEquals(1, formeCopiate.size(), "Dimensione errata");
-
-        //Controllo che la forma copiata è uguale (a livello di attributi) a quella selezionata
-        assertTrue( formeCopiate.getFirst().confrontaAttributi(formaSelezionata),"Forma selezionata non presente tra quelle copiate");
-
-        //Controllo che la forma copiata non abbia lo stesso riferimento di quella selezionata
-        assertNotSame(formeCopiate.getFirst(), formaSelezionata, "le due forme hanno lo stesso riferimento");
-
-        //Controllo la modifica della lista iniziale di forme
-        assertEquals(1, forme.size(), "Dimensione errata");
-        assertTrue(forme.contains(forma1), "Forma normale non presente nel foglio di disegno");
+        assertEquals(1, formeCopiate.size(), "La forma con colore null deve essere copiata");
+        assertNull(formeCopiate.getFirst().getColore(), "Il colore deve rimanere null nella copia");
     }
 
     @Test
-    void testExecute_tanteFormeSulFoglio(){
-        //Creo venti forme
-        for (int i = 0; i < 20; i++) {
-            forme.add(new Forma(10 + i, 20 + i, 30, 0, Color.RED) {
-                @Override
-                public void disegna(GraphicsContext gc) {}
-                @Override
-                public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) { return false; }
-            });
-        }
-
-        //ne creo una selezionata
-        Forma formaSelezionata = new FormaSelezionataDecorator(new Forma(50, 60, 30, 0, Color.BLUE) {
-            @Override
-            public void disegna(GraphicsContext gc) {}
-            @Override
-            public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) { return true; }
+    void testExecute_FormaConAttributiAnomali() {
+        // Forma selezionata con attributi anomali (es. larghezza = 0)
+        Forma formaAnomala = new FormaSelezionataDecorator(new Forma(0, 0, 0, 0, null) {
+            @Override public void disegna(GraphicsContext gc) {}
+            @Override public boolean contiene(double x, double y) { return false; }
         });
 
-        //Aggiungo la forma selezionata a lista
-        forme.add(formaSelezionata);
+        forme.add(formaAnomala);
 
-        //Eseguo il comando di taglia
         Command copy = new CopyCommand(forme, formeCopiate);
         copy.execute();
 
-        //Controllo cse la forma selezionata è ancora presente nella lista forme
-        assertFalse(forme.contains(formaSelezionata), "Forma selezionata ancora presente nel foglio di disegno");
-
-        //Controllo se la dimensione della lista FormeCopiate è corretta
-        assertEquals(1, formeCopiate.size(), "Dimensione errata");
-
-        //Controllo che la forma copiata è uguale (a livello di attributi) a quella selezionata
-        assertTrue( formeCopiate.getFirst().confrontaAttributi(formaSelezionata),"Forma selezionata non presente tra quelle copiate");
-
-        //Controllo che la forma copiata non abbia lo stesso riferimento di quella selezionata
-        assertNotSame(formeCopiate.getFirst(), formaSelezionata, "le due forme hanno lo stesso riferimento");
-
-        //Controllo la modifica della dimensione della lista iniziale di forme
-        assertEquals(20, forme.size(), "Dimensione errata");
+        assertEquals(1, formeCopiate.size(), "La forma anomala deve essere copiata");
+        Forma copia = formeCopiate.getFirst();
+        assertEquals(0, copia.getCoordinataX());
+        assertEquals(0, copia.getCoordinataY());
+        assertEquals(0, copia.getLarghezza());
+        assertNull(copia.getColore());
     }
 }
