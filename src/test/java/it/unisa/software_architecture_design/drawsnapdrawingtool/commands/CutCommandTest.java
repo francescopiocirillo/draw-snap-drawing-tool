@@ -193,10 +193,10 @@ class CutCommandTest {
         assertEquals(1, forme.sizeFormeCopiate(), "Dimensione errata");
 
         //Controllo che la forma copiata è uguale (a livello di attributi) a quella selezionata
-        assertTrue( forme.getFirstFormaCopiata().confrontaAttributi(formaSelezionata),"Forma selezionata non presente tra quelle copiate");
+        assertTrue( forme.getLastFormaCopiata().confrontaAttributi(formaSelezionata),"Forma selezionata non presente tra quelle copiate");
 
         //Controllo che la forma copiata non abbia lo stesso riferimento di quella selezionata
-        assertNotSame(forme.getFirstFormaCopiata(), formaSelezionata, "le due forme hanno lo stesso riferimento");
+        assertNotSame(forme.getLastFormaCopiata(), formaSelezionata, "le due forme hanno lo stesso riferimento");
 
         //Controllo la modifica della dimensione della lista iniziale di forme
         assertEquals(20, forme.size(), "Dimensione errata");

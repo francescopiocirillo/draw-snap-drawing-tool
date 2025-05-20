@@ -75,6 +75,9 @@ public class SelectState implements DrawingState{
         }
     }*/
 
+    /**
+     * Metodo di utilità per disattivare la toolBar quando non necessaria
+     */
     public void disattivaToolBar() {
         if(toolBarFX != null) {
             toolBarFX.setDisable(true); //disabilita la barra in alto delle modifiche

@@ -21,4 +21,8 @@ public class ColorUtils {
             return String.format("#%02X%02X%02X", r, g, b);
         }
     }
+
+    public static Color fromHexString(String hex) {
+        return Color.web(hex);
+    }
 }
