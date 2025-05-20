@@ -18,7 +18,7 @@
    <children>
       <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <MenuBar>
+            <MenuBar id="fileBar">
                <menus>
                   <Menu mnemonicParsing="false" text="File">
                      <items>
@@ -111,7 +111,7 @@
                         </Button>
                      </children>
                      <StackPane.margin>
-                        <Insets bottom="100.0" />
+                        <Insets bottom="20.0" />
                      </StackPane.margin>
                   </HBox>
                </children>

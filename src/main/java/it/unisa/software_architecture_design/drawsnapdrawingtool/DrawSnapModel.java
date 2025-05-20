@@ -174,6 +174,11 @@ public class DrawSnapModel implements Serializable {
         return formaSelezionata;
     }
 
+    /**
+     * Deseleziona, rimuovendo il Decorator, tutte le Forme memorizzate eccetto quella
+     * fornita come parametro.
+     * @param formaSelezionata forma da non deselezionare
+     */
     public void deselezionaEccetto(Forma formaSelezionata) {
         if(formaSelezionata != null){
             forme.remove(formaSelezionata);
@@ -193,6 +198,10 @@ public class DrawSnapModel implements Serializable {
         }
     }
 
+    /**
+     * Popola la lista interna al Model con il contenuto dell'istanza di Model passata come parametro.
+     * @param nuovoModel -> istanza di Model da cui prendere le forme.
+     */
     public void rebuildForme(DrawSnapModel nuovoModel){
         forme.clear();
         Iterator<Forma> it = nuovoModel.getIteratorForme();
