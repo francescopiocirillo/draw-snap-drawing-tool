@@ -50,7 +50,7 @@
                      </graphic></Button>
               </items>
             </ToolBar>
-            <StackPane id="canvaContainer" VBox.vgrow="ALWAYS">
+            <StackPane id="canvaContainer" fx:id="canvasContainer" VBox.vgrow="ALWAYS">
                <children>
                   <Canvas fx:id="canvas" height="580.0" nodeOrientation="INHERIT" width="800.0" />
                   <HBox id="barra" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" spacing="30.0" StackPane.alignment="BOTTOM_CENTER">

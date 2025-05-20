@@ -12,6 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ public class DrawSnapController {
      */
     @FXML
     private Canvas canvas;
+    @FXML
+    private StackPane canvasContainer;
     private GraphicsContext gc;
     private DrawingContext drawingContext;
     private List<Forma> forme = null;
@@ -67,6 +70,13 @@ public class DrawSnapController {
         rectangleButton.setOnAction(event -> setDrawMode(event, Forme.RETTANGOLO));
         lineButton.setOnAction(event -> setDrawMode(event, Forme.LINEA));
         selectButton.setOnAction(event -> setSelectMode());
+
+        //Dimensione canvas adattiva
+        canvas.widthProperty().bind(canvasContainer.widthProperty());
+        canvas.heightProperty().bind(canvasContainer.heightProperty());
+
+        canvas.widthProperty().addListener((observable, oldValue, newValue) -> {redrawAll();});
+        canvas.heightProperty().addListener((observable, oldValue, newValue) -> {redrawAll();});
 
         initializeCanvasEventHandlers();
     }
