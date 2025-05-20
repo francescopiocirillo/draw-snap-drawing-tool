@@ -69,8 +69,8 @@ public abstract class Forma implements Serializable, Cloneable{
         this.colore = colore;
     }
 
-    public void setAngoloInclinazione(double angoloInclidazione) {
-        this.angoloInclinazione = angoloInclidazione;
+    public void setAngoloInclinazione(double angoloInclinazione) {
+        this.angoloInclinazione = angoloInclinazione;
     }
 
 
