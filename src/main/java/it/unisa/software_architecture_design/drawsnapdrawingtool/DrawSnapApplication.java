@@ -18,6 +18,10 @@ public class DrawSnapApplication extends Application {
 
         stage.setResizable(false);
         stage.setTitle("DrawSnap - Drawing Tool");
+        stage.setResizable(true); // finestra ridimensionabile
+        stage.setMinWidth(800); // Imposta altezza
+        stage.setMinHeight(600); // larghezza minime
+
         stage.setScene(scene);
         stage.show();
     }
