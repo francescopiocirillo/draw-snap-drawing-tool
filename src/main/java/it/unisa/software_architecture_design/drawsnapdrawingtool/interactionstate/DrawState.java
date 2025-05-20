@@ -68,10 +68,6 @@ public class DrawState implements DrawingState{
 
         }
 
-        if(attributiForma == null){
-            attributiForma = new AttributiForma();
-        }
-
         Forma formaCreata = null;
         double coordinataX = event.getX();
         double coordinataY = event.getY();
