@@ -61,7 +61,7 @@ public class LoadCommand implements Command {
      * Metodo di utilità che esegue l'effettivo caricamento della lista forme nel file specificato
      * @param file File dal quale caricare la lista
      */
-    private void caricaFormeDaFile(File file) {
+    void caricaFormeDaFile(File file) {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             List<Forma> formeCaricate = (List<Forma>) ois.readObject();
             forme.clear();
