@@ -1,5 +1,6 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.commands;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
 import javafx.scene.canvas.GraphicsContext;
@@ -41,7 +42,8 @@ class DeleteCommandTest {
             }
         });
 
-        List<Forma> forme = new ArrayList<>(List.of(forma1, formaSelezionata));
+        DrawSnapModel forme = new DrawSnapModel();
+        forme.addAll(List.of(forma1, formaSelezionata));
         DeleteCommand deleteCommand = new DeleteCommand(forme);
 
         deleteCommand.execute();
@@ -60,7 +62,8 @@ class DeleteCommandTest {
             public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) { return true; }
         });
 
-        List<Forma> forme = new ArrayList<>(List.of(formaSelezionata));
+        DrawSnapModel forme = new DrawSnapModel();
+        forme.addAll(List.of(formaSelezionata));
         DeleteCommand deleteCommand = new DeleteCommand(forme);
 
         deleteCommand.execute();
@@ -100,7 +103,8 @@ class DeleteCommandTest {
             }
         };
 
-        List<Forma> forme = new ArrayList<>(List.of(forma1, formaSelezionata, forma3));
+        DrawSnapModel forme = new DrawSnapModel();
+        forme.addAll(List.of(forma1, formaSelezionata, forma3));
         DeleteCommand deleteCommand = new DeleteCommand(forme);
 
         deleteCommand.execute();
@@ -114,7 +118,7 @@ class DeleteCommandTest {
     @Test
     void testExecute_tanteFormeSulFoglio() {
         // Arrange
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
         for (int i = 0; i < 20; i++) {
             forme.add(new Forma(10 + i, 20 + i, 30, 0, Color.RED) {
                 @Override

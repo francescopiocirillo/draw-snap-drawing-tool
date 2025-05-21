@@ -1,9 +1,10 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.commands;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
 
-import java.util.List;
+import java.util.Iterator;
 
 /**
  * La classe {@code CopyCommand} rappresenta un comando che copia le figure selezionate.
@@ -12,22 +13,12 @@ public class CopyCommand implements Command{
     /*
      * Attributi
      */
-    private final List<Forma> forme;
-    private List<Forma> formeCopiate;
+    private final DrawSnapModel forme;
 
     /*
      * Costruttore, getter e setter
      */
-    public CopyCommand(List<Forma> forme, List<Forma> formeCopiate) {
-        this.forme = forme;
-        this.formeCopiate = formeCopiate;
-    }
-
-    public List<Forma> getForme() {
-        return forme;
-    }
-
-    public List<Forma> getFormeCopiate() {return formeCopiate;}
+    public CopyCommand(DrawSnapModel forme) {this.forme = forme;}
 
     /*
      * Logica della classe
@@ -39,14 +30,16 @@ public class CopyCommand implements Command{
     @Override
     public void execute() {
         Forma formaDaCopiare = null;
-        for(Forma formaCorrente : forme){
+        Iterator<Forma> it = forme.getIteratorForme();
+        while (it.hasNext()) {
+            Forma formaCorrente = it.next();
             if(formaCorrente instanceof FormaSelezionataDecorator){
                 formaDaCopiare = formaCorrente;
                 break;
             }
         }
         if(formaDaCopiare != null){
-            formeCopiate.add(formaDaCopiare.clone());
+            forme.addFormaCopiata(formaDaCopiare.clone());
         }
     }
 }

@@ -1,5 +1,6 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.commands;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
 import javafx.scene.canvas.GraphicsContext;
@@ -7,100 +8,100 @@ import javafx.scene.paint.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class CopyCommandTest {
 
-    private List<Forma> forme;
-    private List<Forma> formeCopiate;
+    private DrawSnapModel model;
 
     @BeforeEach
     void setUp() {
-        forme = new ArrayList<>();
-        formeCopiate = new ArrayList<>();
+        model = new DrawSnapModel();
     }
 
+    // Verifica che se la lista delle forme è vuota, dopo l'esecuzione di CopyCommand la lista rimane vuota
     @Test
     void testExecute_ListaVuota() {
-        // Lista di partenza vuota
-        Command copy = new CopyCommand(forme, formeCopiate);
+        CopyCommand copy = new CopyCommand(model);
         copy.execute();
 
-        // Nessuna forma da copiare
-        assertEquals(0, formeCopiate.size(), "La lista copiata deve essere vuota");
+        assertEquals(0, model.sizeFormeCopiate(), "La lista copiata deve essere vuota");
     }
 
+    // Verifica che se nessuna forma è selezionata, CopyCommand non copia nulla nella lista delle forme copiate
     @Test
     void testExecute_NessunaFormaSelezionata() {
-        // Forma normale non selezionata
         Forma forma = new Forma(10, 20, 30, 0, Color.RED) {
             @Override public void disegna(GraphicsContext gc) {}
             @Override public boolean contiene(double x, double y) { return false; }
         };
+        model.add(forma);
 
-        forme.add(forma);
-
-        Command copy = new CopyCommand(forme, formeCopiate);
+        CopyCommand copy = new CopyCommand(model);
         copy.execute();
 
-        // Nessuna copia deve essere fatta
-        assertEquals(0, formeCopiate.size(), "La lista copiata deve rimanere vuota");
+        assertEquals(0, model.sizeFormeCopiate(), "La lista copiata deve rimanere vuota");
     }
 
+
+
+    // Verifica che CopyCommand copi solo le forme selezionate lasciando intatte
+    // quelle non selezionate
     @Test
-    void testExecute_FormaSelezionata() {
-        // Forma decorata come selezionata
-        Forma formaSelezionata = new FormaSelezionataDecorator(new Forma(50, 60, 30, 0, Color.BLUE) {
+    void testExecute_DueFormeUnaSelezionata() {
+        Forma forma1 = new Forma(10, 20, 30, 0, Color.RED) {
+            @Override public void disegna(GraphicsContext gc) {}
+            @Override public boolean contiene(double x, double y) { return false; }
+        };
+        Forma formaSelezionata = new FormaSelezionataDecorator(new Forma(70, 80, 30, 0, Color.GREEN) {
             @Override public void disegna(GraphicsContext gc) {}
             @Override public boolean contiene(double x, double y) { return true; }
         });
 
-        forme.add(formaSelezionata);
+        model.add(forma1);
+        model.add(formaSelezionata);
 
-        Command copy = new CopyCommand(forme, formeCopiate);
+        CopyCommand copy = new CopyCommand(model);
         copy.execute();
 
-        // Deve essere copiata
-        assertEquals(1, formeCopiate.size(), "La forma selezionata deve essere copiata");
-        assertTrue(formeCopiate.getFirst().confrontaAttributi(formaSelezionata), "Gli attributi devono essere identici");
-        assertNotSame(formeCopiate.getFirst(), formaSelezionata, "La copia deve essere una nuova istanza");
+        assertEquals(1, model.sizeFormeCopiate(), "Deve copiare solo la forma selezionata");
+        assertTrue(model.contains(forma1), "La forma non selezionata deve rimanere");
+        assertTrue(model.contains(formaSelezionata), "La forma selezionata deve rimanere");
     }
 
+
+
+    // Verifica che CopyCommand gestisca correttamente forme con colore null,
+    // copiandole senza modificare questo attributo
     @Test
     void testExecute_ColoreNull() {
-        // Forma selezionata con colore null
         Forma formaNullColor = new FormaSelezionataDecorator(new Forma(10, 20, 30, 0, null) {
             @Override public void disegna(GraphicsContext gc) {}
-            @Override public boolean contiene(double x, double y) { return false; }
+            @Override public boolean contiene(double x, double y) { return true; }
         });
+        model.add(formaNullColor);
 
-        forme.add(formaNullColor);
-
-        Command copy = new CopyCommand(forme, formeCopiate);
+        CopyCommand copy = new CopyCommand(model);
         copy.execute();
 
-        assertEquals(1, formeCopiate.size(), "La forma con colore null deve essere copiata");
-        assertNull(formeCopiate.getFirst().getColore(), "Il colore deve rimanere null nella copia");
+        assertEquals(1, model.sizeFormeCopiate());
+        assertNull(model.getFormaCopiata(0).getColore(), "Il colore deve rimanere null");
     }
 
+    // Verifica che CopyCommand copi correttamente anche forme con attributi anomali
+    // come larghezza 0, coordinate a 0 e colore null
     @Test
     void testExecute_FormaConAttributiAnomali() {
-        // Forma selezionata con attributi anomali (es. larghezza = 0)
         Forma formaAnomala = new FormaSelezionataDecorator(new Forma(0, 0, 0, 0, null) {
             @Override public void disegna(GraphicsContext gc) {}
-            @Override public boolean contiene(double x, double y) { return false; }
+            @Override public boolean contiene(double x, double y) { return true; }
         });
+        model.add(formaAnomala);
 
-        forme.add(formaAnomala);
-
-        Command copy = new CopyCommand(forme, formeCopiate);
+        CopyCommand copy = new CopyCommand(model);
         copy.execute();
 
-        assertEquals(1, formeCopiate.size(), "La forma anomala deve essere copiata");
-        Forma copia = formeCopiate.getFirst();
+        Forma copia = model.getFormaCopiata(0);
         assertEquals(0, copia.getCoordinataX());
         assertEquals(0, copia.getCoordinataY());
         assertEquals(0, copia.getLarghezza());

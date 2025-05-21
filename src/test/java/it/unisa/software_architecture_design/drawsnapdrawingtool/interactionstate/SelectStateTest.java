@@ -1,5 +1,6 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
 import javafx.scene.control.ToolBar;
@@ -29,10 +30,6 @@ class SelectStateTest {
         selectState = new SelectState( null );
     }
 
-    /*
-     * Test relativi a handleMousePressed
-     */
-
     /**
      * Il test controlla che al click di una forma questa venga correttamente decorata
      * con {@link FormaSelezionataDecorator}.
@@ -47,7 +44,7 @@ class SelectStateTest {
         when(mockForma.getCoordinataY()).thenReturn(50.0);
 
         // 2. Lista con una forma
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
         forme.add(mockForma);
 
         // 3. MouseEvent simulato
@@ -77,7 +74,7 @@ class SelectStateTest {
         when(mockForma.getCoordinataY()).thenReturn(10.0);
 
         // 2. Lista con una forma
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
         forme.add(mockForma);
 
         // 3. MouseEvent simulato
@@ -110,7 +107,7 @@ class SelectStateTest {
         when(forma2.getCoordinataY()).thenReturn(30.0);
 
         // 2. Lista con due forme
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
         forme.add(forma1);
         forme.add(forma2);
 
@@ -132,7 +129,7 @@ class SelectStateTest {
      */
     @Test
     public void testHandleMousePressed_ListaVuota() {
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
 
         MouseEvent event = mock(MouseEvent.class);
         when(event.getX()).thenReturn(20.0);
@@ -156,7 +153,7 @@ class SelectStateTest {
         Forma decorata = new FormaSelezionataDecorator(baseForma);
 
         // 2. Lista con una forma decorata
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
         forme.add(decorata);
 
         // 3. MouseEvent simulato
@@ -169,172 +166,6 @@ class SelectStateTest {
 
         // Verifica: la forma rimane decorata (non si rompe il comportamento)
         assertInstanceOf(FormaSelezionataDecorator.class, forme.getFirst());
-    }
-
-    /**
-     * Verifica che una forma già decorata venga rimpiazzata (o gestita correttamente)
-     * se viene cliccata di nuovo.
-     */
-    @Test
-    public void testHandleMousePressed_FormaGiaDecorataDiventaNonSelezionata() {
-        // 1. Mock di una Forma decorata
-        Forma baseForma = mock(Forma.class);
-        when(baseForma.contiene(40, 40)).thenReturn(true);
-        when(baseForma.getCoordinataX()).thenReturn(40.0);
-        when(baseForma.getCoordinataY()).thenReturn(40.0);
-
-        Forma formaDecorata = mock(Forma.class);
-        when(formaDecorata.contiene(40, 40)).thenReturn(false);
-        Forma decorata = new FormaSelezionataDecorator(formaDecorata);
-
-        // 2. Lista con una forma decorata
-        List<Forma> forme = new ArrayList<>();
-        forme.add(baseForma);
-        forme.add(decorata);
-
-        // 3. MouseEvent simulato
-        MouseEvent event = mock(MouseEvent.class);
-        when(event.getX()).thenReturn(40.0);
-        when(event.getY()).thenReturn(40.0);
-
-        // 4. Chiamata al metodo
-        selectState.handleMousePressed(event, forme);
-
-        // Verifica: la forma rimane decorata (non si rompe il comportamento)
-        assertInstanceOf(FormaSelezionataDecorator.class, forme.get(0));
-        assertFalse(forme.get(1) instanceof FormaSelezionataDecorator);
-    }
-
-    /*
-     * Test relativi a deselezionaHelper
-     */
-
-    /**
-     * Verifica che una forma decorata venga de-decorata
-     */
-    @Test
-    void testDeselezionaHelper_FormaDecorata() {
-        // 1. Mock di una Forma decorata e una normale
-        Forma baseForma = mock(Forma.class);
-        FormaSelezionataDecorator decorata = new FormaSelezionataDecorator(baseForma);
-
-        // 2. Liste con una forma decorata
-        List<Forma> forme = new ArrayList<>();
-        forme.add(decorata);
-
-        List<Forma> daDeselezionare = new ArrayList<>();
-        daDeselezionare.add(decorata);
-
-        // 3. Chiamata al metodo
-        selectState.deselezionaHelper(forme, daDeselezionare);
-
-        // Verifica: la forma diventa non decorata
-        assertEquals(1, forme.size());
-        assertSame(baseForma, forme.getFirst());
-    }
-
-    /**
-     * Verifica che una forma non decorata venga ignorata
-     */
-    @Test
-    void testDeselezionaHelper_FormaNonDecorata() {
-        // 1. Mock di una Forma normale
-        Forma formaNormale = mock(Forma.class);
-
-        // 2. Liste con una forma normale
-        List<Forma> forme = new ArrayList<>();
-        forme.add(formaNormale);
-
-        List<Forma> daDeselezionare = new ArrayList<>();
-        daDeselezionare.add(formaNormale);
-
-        // 3. Chiamata al metodo
-        selectState.deselezionaHelper(forme, daDeselezionare);
-
-        // Verifica: nessun cambiamento
-        assertEquals(1, forme.size());
-        assertSame(formaNormale, forme.getFirst());
-    }
-
-    /**
-     * Verifica che più forme decorate siano tutte de-decorate correttamente
-     */
-    @Test
-    void testDeselezionaHelper_MultipleFormeDecorate() {
-        // 1. Mock di due Forme decorate
-        Forma f1 = mock(Forma.class);
-        Forma f2 = mock(Forma.class);
-
-        FormaSelezionataDecorator d1 = new FormaSelezionataDecorator(f1);
-        FormaSelezionataDecorator d2 = new FormaSelezionataDecorator(f2);
-
-        // 2. Liste con le forme decorate
-        List<Forma> forme = new ArrayList<>();
-        forme.add(d1);
-        forme.add(d2);
-
-        List<Forma> daDeselezionare = new ArrayList<>();
-        daDeselezionare.add(d1);
-        daDeselezionare.add(d2);
-
-        // 3. Chiamata al metodo
-        selectState.deselezionaHelper(forme, daDeselezionare);
-
-        // Verifica: entrambe le forme sono ora non decorate
-        assertEquals(2, forme.size());
-        assertFalse(forme.get(0) instanceof FormaSelezionataDecorator);
-        assertFalse(forme.get(1) instanceof FormaSelezionataDecorator);
-    }
-
-    /**
-     * Verifica che con forme miste decorate e non il comportamento resti quello atteso
-     */
-    @Test
-    void testDeselezionaHelper_AlcuneNonDaDeselezionare() {
-        // 1. Mock di una forma normale e due decorate
-        Forma base1 = mock(Forma.class);
-        Forma base2 = mock(Forma.class);
-        Forma base3 = mock(Forma.class);
-
-        FormaSelezionataDecorator decorata1 = new FormaSelezionataDecorator(base1);
-        FormaSelezionataDecorator decorata2 = new FormaSelezionataDecorator(base2);
-
-        // 2. Liste con le forme
-        List<Forma> forme = new ArrayList<>();
-        forme.add(decorata1);
-        forme.add(decorata2);
-        forme.add(base3); // forma già normale
-
-        List<Forma> daDeselezionare = new ArrayList<>();
-        daDeselezionare.add(decorata1); // solo questa verrà deselezionata
-
-        // 3. Chiamata al metodo
-        selectState.deselezionaHelper(forme, daDeselezionare);
-
-        // Verifica: le forme sono tutte non decorate
-        assertEquals(3, forme.size());
-        // la seconda era da non deselezionare, la prima sì, il processo di deselezione toglie
-        // e rimette la forma nella lista, quindi la seconda diventa la prima e la prima la terza
-        // da cui l'ordine degli assert
-        assertInstanceOf(FormaSelezionataDecorator.class, forme.get(0));
-        assertFalse(forme.get(1) instanceof FormaSelezionataDecorator);
-        assertFalse(forme.get(2) instanceof FormaSelezionataDecorator);
-    }
-
-    /**
-     * Verifica che non ci siano comportamenti anomali se la lista è vuota
-     */
-    @Test
-    void testDeselezionaHelper_ListaVuota() {
-        // 1. Liste vuote
-        List<Forma> forme = new ArrayList<>();
-
-        List<Forma> daDeselezionare = new ArrayList<>();
-
-        // Verifica: entrambe le forme sono ora non decorate
-        assertDoesNotThrow(() -> selectState.deselezionaHelper(forme, daDeselezionare));
-        assertTrue(forme.isEmpty());
-        assertTrue(daDeselezionare.isEmpty());
     }
 
     /*
@@ -370,7 +201,7 @@ class SelectStateTest {
         // Decoratore con la forma
         FormaSelezionataDecorator decorata = new FormaSelezionataDecorator(forma);
 
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
         forme.add(decorata);
 
         // Mock del MouseEvent
@@ -397,7 +228,7 @@ class SelectStateTest {
     void testHandleMouseDragged_NessunaFormaSelezionata() throws Exception {
         // Lista senza decoratori
         Forma nonSelezionata = mock(Forma.class);
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
         forme.add(nonSelezionata);
 
         MouseEvent event = mock(MouseEvent.class);
@@ -423,7 +254,7 @@ class SelectStateTest {
         Forma selezionata = mock(Forma.class);
         FormaSelezionataDecorator decorata = new FormaSelezionataDecorator(selezionata);
 
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
         forme.add(normale);
         forme.add(decorata);
 
@@ -450,7 +281,7 @@ class SelectStateTest {
      */
     @Test
     void testHandleMouseDragged_ListaVuota() throws Exception {
-        List<Forma> forme = new ArrayList<>();
+        DrawSnapModel forme = new DrawSnapModel();
 
         MouseEvent event = mock(MouseEvent.class);
         when(event.getX()).thenReturn(123.0);

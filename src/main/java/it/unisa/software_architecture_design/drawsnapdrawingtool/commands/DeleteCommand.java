@@ -1,8 +1,10 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.commands;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -12,17 +14,13 @@ public class DeleteCommand implements Command{
     /*
      * Attributi
      */
-    private final List<Forma> forme;
+    private final DrawSnapModel forme;
 
     /*
      * Costruttore, getter e setter
      */
-    public DeleteCommand(List<Forma> forme) {
+    public DeleteCommand(DrawSnapModel forme) {
         this.forme = forme;
-    }
-
-    public List<Forma> getForme() {
-        return forme;
     }
 
     /*
@@ -35,7 +33,9 @@ public class DeleteCommand implements Command{
     @Override
     public void execute() {
         Forma formaDaRimuovere = null;
-        for(Forma formaCorrente : forme){
+        Iterator<Forma> it = forme.getIteratorForme();
+        while (it.hasNext()) {
+            Forma formaCorrente = it.next();
             if(formaCorrente instanceof FormaSelezionataDecorator){
                 formaDaRimuovere = formaCorrente;
                 break;

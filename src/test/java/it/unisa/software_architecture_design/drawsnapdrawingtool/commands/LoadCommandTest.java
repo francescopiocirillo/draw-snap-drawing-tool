@@ -1,5 +1,6 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.commands;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiForma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Rettangolo;
@@ -29,7 +30,7 @@ class LoadCommandTest {
     @TempDir
     Path tempDir;
 
-    private List<Forma> forme;
+    private DrawSnapModel forme;
     private Stage mockStage;
     private LoadCommand loadCommand;
 
@@ -38,7 +39,7 @@ class LoadCommandTest {
      */
     @BeforeEach
     void setUp() {
-        forme = new ArrayList<>();
+        forme = new DrawSnapModel();
         mockStage = mock(Stage.class);
         loadCommand = new LoadCommand(forme, mockStage);
     }
@@ -48,7 +49,7 @@ class LoadCommandTest {
      */
     @Test
     void caricaFormeDaFile_DovrebbeCaricareCorrettamenteLeForme() {
-        List<Forma> formeOriginali = new ArrayList<>(); //forme presenti nel file salvato
+        List formeOriginali = new ArrayList<>(); //forme presenti nel file salvato
 
         AttributiForma attr = new AttributiForma();
         Forma forma = new Rettangolo(attr.getCoordinataX(), attr.getCoordinataY(), attr.getLarghezza(),
@@ -57,7 +58,8 @@ class LoadCommandTest {
         formeOriginali.add(forma);
 
         // si crea un altra lista per non intaccare quelle originali
-        List<Forma> formeSalvate = new ArrayList<>(formeOriginali);
+        DrawSnapModel formeSalvate = new DrawSnapModel();
+        formeSalvate.addAll(formeOriginali);
 
         //Simulo il salvataggio su file
         SaveCommand save = new SaveCommand(formeSalvate, mockStage);
@@ -69,9 +71,9 @@ class LoadCommandTest {
         assertTrue(fileSalvato.length() > 0, "il file salvato è vuoto");
 
         //Mock del fileChooser
-        try (MockedConstruction<FileChooser> mockedFileChooser = mockConstruction(FileChooser.class,
+        try (MockedConstruction mockedFileChooser = mockConstruction(FileChooser.class,
                 (mockFileChooser, context) -> {
-                    ObservableList<FileChooser.ExtensionFilter> filters = FXCollections.observableArrayList();
+                    ObservableList filters = FXCollections.observableArrayList();
                     when(mockFileChooser.getExtensionFilters()).thenReturn(filters);
                     when(mockFileChooser.showOpenDialog(mockStage)).thenReturn(fileSalvato);
                 })) {
@@ -80,7 +82,7 @@ class LoadCommandTest {
             loadCommand.execute();
 
             //Verifico che il filechooser è stato aperto
-            FileChooser chooser = mockedFileChooser.constructed().get(0);
+            FileChooser chooser = (FileChooser) mockedFileChooser.constructed().get(0);
             verify(chooser).showOpenDialog(mockStage);
 
             //Controllo che la lista di forme presente nell'applicativo sia stato modificato
@@ -99,7 +101,7 @@ class LoadCommandTest {
         forme.clear();
 
         //Definisco le forme presenti nel file salvato
-        List<Forma> formeOriginali = new ArrayList<>(); //forme presenti nel file salvato
+        List formeOriginali = new ArrayList<>(); //forme presenti nel file salvato
 
         AttributiForma attr = new AttributiForma();
         Forma forma = new Rettangolo(attr.getCoordinataX(), attr.getCoordinataY(), attr.getLarghezza(),
@@ -108,7 +110,7 @@ class LoadCommandTest {
         formeOriginali.add(forma);
 
         // si crea un altra lista per non intaccare quelle originali
-        List<Forma> formeSalvate = new ArrayList<>(formeOriginali);
+        DrawSnapModel formeSalvate = new DrawSnapModel();
 
         //Simulo il salvataggio su file
         SaveCommand save = new SaveCommand(formeSalvate, mockStage);
@@ -120,9 +122,9 @@ class LoadCommandTest {
         assertTrue(fileSalvato.length() > 0, "il file salvato è vuoto");
 
         //Mock del fileChooser
-        try (MockedConstruction<FileChooser> mockedFileChooser = mockConstruction(FileChooser.class,
+        try (MockedConstruction mockedFileChooser = mockConstruction(FileChooser.class,
                 (mockFileChooser, context) -> {
-                    ObservableList<FileChooser.ExtensionFilter> filters = FXCollections.observableArrayList();
+                    ObservableList filters = FXCollections.observableArrayList();
                     when(mockFileChooser.getExtensionFilters()).thenReturn(filters);
                     when(mockFileChooser.showOpenDialog(mockStage)).thenReturn(null);
                 })) {
@@ -131,7 +133,7 @@ class LoadCommandTest {
             loadCommand.execute();
 
             //Verifico che il filechooser è stato aperto
-            FileChooser createdFileChooser = mockedFileChooser.constructed().get(0);
+            FileChooser createdFileChooser = (FileChooser) mockedFileChooser.constructed().get(0);
             verify(createdFileChooser).showOpenDialog(mockStage);
 
             //Controllo che la lista di forme presente nell'applicativo sia stato modificato
@@ -156,7 +158,7 @@ class LoadCommandTest {
         int formeDim = forme.size();
 
         //Definisco le forme presenti nel file salvato
-        List<Forma> formeOriginali = new ArrayList<>(); //forme presenti nel file salvato
+        List formeOriginali = new ArrayList<>(); //forme presenti nel file salvato
 
         AttributiForma attr2 = new AttributiForma();
         Forma forma2 = new Rettangolo(attr2.getCoordinataX(), attr2.getCoordinataY(), attr2.getLarghezza(),
@@ -165,7 +167,7 @@ class LoadCommandTest {
         formeOriginali.add(forma2);
 
         // si crea un altra lista per non intaccare quelle originali
-        List<Forma> formeSalvate = new ArrayList<>(formeOriginali);
+        DrawSnapModel formeSalvate = new DrawSnapModel();
 
         //Simulo il salvataggio su file
         SaveCommand save = new SaveCommand(formeSalvate, mockStage);
@@ -176,16 +178,16 @@ class LoadCommandTest {
         assertTrue(fileSalvato.exists(), "Il file non esiste");
         assertTrue(fileSalvato.length() > 0, "il file salvato è vuoto");
 
-        try (MockedConstruction<FileChooser> mockedFileChooser = mockConstruction(FileChooser.class,
+        try (MockedConstruction mockedFileChooser = mockConstruction(FileChooser.class,
                 (mockFileChooser, context) -> {
-                    ObservableList<FileChooser.ExtensionFilter> filters = FXCollections.observableArrayList();
+                    ObservableList filters = FXCollections.observableArrayList();
                     when(mockFileChooser.getExtensionFilters()).thenReturn(filters);
                     when(mockFileChooser.showOpenDialog(mockStage)).thenReturn(null);
                 })) {
 
             loadCommand.execute();
 
-            FileChooser createdFileChooser = mockedFileChooser.constructed().get(0);
+            FileChooser createdFileChooser = (FileChooser) mockedFileChooser.constructed().get(0);
             verify(createdFileChooser).showOpenDialog(mockStage);
 
             assertEquals(formeDim, forme.size(), "La lista delle forme non dovrebbe cambiare.");
