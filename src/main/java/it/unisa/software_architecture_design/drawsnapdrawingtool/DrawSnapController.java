@@ -15,11 +15,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ContextMenu;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 
 
 public class DrawSnapController {
@@ -33,11 +30,8 @@ public class DrawSnapController {
     private StackPane canvasContainer;
     private GraphicsContext gc;
     private DrawingContext drawingContext;
-    private List<Forma> forme = null;
+    private DrawSnapModel forme = null;
     private Stage stage;
-    private static List<Forma> formeCopiate; //Lista per tenere salvate le variabili copiate
-    private double lastClickX = -1; //coordinate dell'ultimo punto cliccato
-    private double lastClickY = -1;
 
     //Menù contestuale
     private ContextMenu contextMenu;
@@ -61,6 +55,8 @@ public class DrawSnapController {
      * Attributi per la logica
      */
     private Invoker invoker = null;
+    private double lastClickX = -1;
+    private double lastClickY = -1;
 
 
     /**
@@ -68,8 +64,6 @@ public class DrawSnapController {
      */
     @FXML
     void initialize() {
-        forme = new ArrayList<>();
-        formeCopiate = new ArrayList<>();
         gc = canvas.getGraphicsContext2D();
         drawingContext = new DrawingContext(new SelectState(toolBarFX)); // stato di default, sarà cambiato quando avremo lo stato sposta o seleziona
         invoker = new Invoker();
@@ -79,6 +73,8 @@ public class DrawSnapController {
         rectangleButton.setOnAction(event -> setDrawMode(event, Forme.RETTANGOLO));
         lineButton.setOnAction(event -> setDrawMode(event, Forme.LINEA));
         selectButton.setOnAction(event -> setSelectMode());
+
+        //inizializzazione menu contestuale per l'operazione di incolla
         contextMenu = new ContextMenu();
         pasteButton = new MenuItem("Incolla");
         pasteButton.setOnAction(this::onPastePressed);
@@ -97,6 +93,11 @@ public class DrawSnapController {
     public void setStage(Stage stage) {
         this.stage = stage;
     }
+
+    public void setModel(DrawSnapModel model) {
+        this.forme = model;
+    }
+
 
     /**
      * Inizializza gli event handler per gli eventi di interesse relativi al {@link Canvas}
@@ -125,7 +126,7 @@ public class DrawSnapController {
             lastClickY = mouseEvent.getY();
             drawingContext.handleMousePressed(mouseEvent, forme);
             redrawAll();
-        } else if (mouseEvent.getButton() == MouseButton.SECONDARY) { //tasto destro
+        } else if (mouseEvent.getButton() == MouseButton.SECONDARY && !forme.isEmptyFormeCopiate()) { //tasto destro
             System.out.println("Clic destro");
             lastClickX = mouseEvent.getX();
             lastClickY = mouseEvent.getY();
@@ -140,14 +141,15 @@ public class DrawSnapController {
      */
     void redrawAll() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight()); // l'area da ripulire è tutto il canvas
-        for (Forma f : forme) {
-            System.out.println("Disegno forma tipo: " + f.getClass().getSimpleName() + " a " + f.getCoordinataX() + ", " + f.getCoordinataY());
+        Iterator<Forma> it = forme.getIteratorForme();
+        while (it.hasNext()) {
+            Forma f = it.next();
             f.disegna(gc);
         }
     }
 
+
     private void handleMouseDragged(MouseEvent mouseEvent) {
-        System.out.println("Mouse dragged");
         drawingContext.handleMouseDragged(mouseEvent, forme); // passa la forma da creare al DrawState
         redrawAll();
     }
@@ -213,7 +215,7 @@ public class DrawSnapController {
      */
     @FXML
     void onCutPressed(ActionEvent event) {
-        invoker.setCommand(new CutCommand(forme, formeCopiate));
+        invoker.setCommand(new CutCommand(forme));
         invoker.executeCommand();
         toolBarFX.setDisable(true);
         redrawAll();
@@ -225,12 +227,11 @@ public class DrawSnapController {
      */
     @FXML
     void onCopyPressed(ActionEvent event) {
-        invoker.setCommand(new CopyCommand(forme, formeCopiate));
+        invoker.setCommand(new CopyCommand(forme));
         invoker.executeCommand();
         toolBarFX.setDisable(true);
         redrawAll();
     }
-
 
     /**
      * Metodo per incollare una figura selezionata
@@ -238,14 +239,11 @@ public class DrawSnapController {
      */
     @FXML
     void onPastePressed(ActionEvent event) {
-        invoker.setCommand(new PasteCommand(forme, formeCopiate, lastClickX, lastClickY));
+        invoker.setCommand(new PasteCommand(forme, lastClickX, lastClickY));
         invoker.executeCommand();
         toolBarFX.setDisable(true);
         redrawAll();
     }
-
-
-
 
 
 

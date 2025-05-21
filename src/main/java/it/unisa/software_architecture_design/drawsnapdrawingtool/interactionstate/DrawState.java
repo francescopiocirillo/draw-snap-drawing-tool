@@ -1,5 +1,6 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.*;
 import javafx.geometry.Insets;
@@ -59,13 +60,12 @@ public class DrawState implements DrawingState{
      * @param forme lista di tutte le forme presenti sul canvas
      */
     @Override
-    public void handleMousePressed(MouseEvent event, List<Forma> forme) {
+    public void handleMousePressed(MouseEvent event, DrawSnapModel forme) {
         AttributiForma attributiForma = helpUIHandleMousePressed(formaCorrente);
 
         if (attributiForma == null) { // se l'utente ha premuto "Annulla" non fare nulla
             System.out.println("Creazione forma annullata dall'utente.");
             return;
-
         }
 
         Forma formaCreata = null;
@@ -104,7 +104,6 @@ public class DrawState implements DrawingState{
      * @param tipoForma il tipo di figura geometrica selezionata
      * @return un oggetto {@link AttributiForma} contenente i colori selezionati se l'utente conferma, oppure {@code null} se l'utente annulla
      */
-
     protected AttributiForma helpUIHandleMousePressed(Forme tipoForma) {
         Dialog<AttributiForma> dialog = new Dialog<>(); //modale di dialogo
         dialog.setTitle("Conferma Disegno");
@@ -220,7 +219,7 @@ public class DrawState implements DrawingState{
      * @param forme lista di tutte le forme presenti sul canvas
      */
     @Override
-    public void handleMouseDragged(MouseEvent event, List<Forma> forme) {
+    public void handleMouseDragged(MouseEvent event, DrawSnapModel forme) {
         //NA
     }
 

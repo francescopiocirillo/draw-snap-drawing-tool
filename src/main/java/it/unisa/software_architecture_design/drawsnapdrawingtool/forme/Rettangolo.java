@@ -240,7 +240,7 @@ public class Rettangolo extends Forma  {
         String colore = in.readUTF();
         this.setColore(Color.web(colore));
         String coloreInterno = in.readUTF();
-        this.setColoreInterno(Color.web(coloreInterno));
+        this.setColoreInterno(ColorUtils.fromHexString(coloreInterno));
     }
 
     /**

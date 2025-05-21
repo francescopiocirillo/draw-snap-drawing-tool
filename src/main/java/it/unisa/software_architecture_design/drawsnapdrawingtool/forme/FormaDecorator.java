@@ -36,6 +36,4 @@ public abstract class FormaDecorator extends Forma{
         return (Forma) formaDecorata.clone();
     }
 
-
 }
-//double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore

@@ -1,8 +1,10 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.commands;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -12,22 +14,14 @@ public class CutCommand implements Command{
     /*
      * Attributi
      */
-    private final List<Forma> forme;
-    private List<Forma> formeCopiate;
+    private final DrawSnapModel forme;
 
     /*
      * Costruttore, getter e setter
      */
-    public CutCommand(List<Forma> forme, List<Forma> formeCopiate) {
+    public CutCommand(DrawSnapModel forme) {
         this.forme = forme;
-        this.formeCopiate = formeCopiate;
     }
-
-    public List<Forma> getForme() {
-        return forme;
-    }
-
-    public List<Forma> getFormeCopiate() {return formeCopiate;}
 
     /*
      * Logica della classe
@@ -39,14 +33,16 @@ public class CutCommand implements Command{
     @Override
     public void execute() {
         Forma formaDaTagliare = null;
-        for(Forma formaCorrente : forme){
+        Iterator<Forma> it = forme.getIteratorForme();
+        while (it.hasNext()) {
+            Forma formaCorrente = it.next();
             if(formaCorrente instanceof FormaSelezionataDecorator){
                 formaDaTagliare = formaCorrente;
                 break;
             }
         }
         if(formaDaTagliare != null){
-            formeCopiate.add(formaDaTagliare.clone());
+            forme.addFormaCopiata(formaDaTagliare.clone());
             forme.remove(formaDaTagliare);
         }
     }
