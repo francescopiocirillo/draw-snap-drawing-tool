@@ -129,7 +129,7 @@ class PasteCommandTest {
 
     // Verifica che se nella lista forme ci sono già delle forme, PasteCommand aggiunge senza rimuovere quelle esistenti
     @Test
-    void testExecute_ConformePreesistenti() {
+    void testExecute_ConFormePreesistenti() {
         Forma formaPreesistente = new Forma(5, 5, 20, 0, Color.BLACK) {
             @Override public void disegna(GraphicsContext gc) {}
             @Override public boolean contiene(double x, double y) { return false; }
