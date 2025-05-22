@@ -116,37 +116,55 @@ public class DrawSnapController {
 
     /**
      * Gestisce l'evento di pressione del mouse sul {@link Canvas}.
-     * Mostra una finestra di dialogo di conferma che chiede all'utente se desidera inserire una figura
-     * nel punto selezionato. Se l'utente conferma, il metodo delega la gestione dell'evento al
-     * {@code drawingContext}, passando anche la lista delle forme {@code forme}, e aggiorna il canvas
-     * richiamando {@code redrawAll()}.
+     * Controlla se viene cliccato il tasto destro o il sinistro e si comporta di conseguenza
+     * Se cliccato il tasto sinistro chiama {@code handleMousePressed()} del {@code drawingContext}
+     * e ridisegna tutto richiamando {@code redrawAll()}.
+     * Se cliccato il tasto destro mostra il menu contestuale con i bottoni di {@code pasteButton}
+     * {@code copyButton} e {@code cutButton} a seconda delle casistiche
      * @param mouseEvent -> evento generato dalla pressione del mouse sul canvas
      */
     private void handleMousePressed(MouseEvent mouseEvent) {
         if (contextMenu.isShowing()) {
             contextMenu.hide();
         }
-        if (mouseEvent.getButton() == MouseButton.PRIMARY) { //tasto sinistro
-            System.out.println("Clic sinistro");
+        if (mouseEvent.getButton() == MouseButton.PRIMARY) { //Click Sinistro
             lastClickX = mouseEvent.getX();
             lastClickY = mouseEvent.getY();
             drawingContext.handleMousePressed(mouseEvent, forme);
             redrawAll();
-        } else if (mouseEvent.getButton() == MouseButton.SECONDARY && !forme.isEmptyFormeCopiate() && !forme.thereIsFormaSelezionata()) { //tasto destro
-            System.out.println("Clic destro");
+        } else if(mouseEvent.getButton() == MouseButton.SECONDARY) {//Click destro
             lastClickX = mouseEvent.getX();
             lastClickY = mouseEvent.getY();
             contextMenu.getItems().clear();
-            contextMenu.getItems().add(pasteButton);
-            contextMenu.show(canvas, mouseEvent.getScreenX(), mouseEvent.getScreenY());
-        }else if (mouseEvent.getButton() == MouseButton.SECONDARY && forme.thereIsFormaSelezionata()){
-            System.out.println("Clic destro");
-            lastClickX = mouseEvent.getX();
-            lastClickY = mouseEvent.getY();
-            contextMenu.getItems().clear();
-            contextMenu.getItems().addAll(copyButton, cutButton);
-            contextMenu.show(canvas, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+
+            boolean hasSelection = forme.thereIsFormaSelezionata();//controlla se c'è una forma selezionata
+            boolean hasClipboard = !forme.isEmptyFormeCopiate();//controlla se ci sono forme copiate precedentemente
+            boolean clickInterno = false;
+
+            //Se c'è una forma selezionata controlla se il click è avvenuto all'interno di essa
+            if(hasSelection){
+                Forma formaSelezionata = forme.getFormaSelezionata();
+                if(formaSelezionata!= null){
+                    clickInterno = formaSelezionata.contiene(lastClickX, lastClickY);
+                }
+            }
+
+            //Se vi è una forma selezionata e il click è avvenuto al suo interno mostra copia e taglia
+            if(hasSelection && clickInterno){
+                contextMenu.getItems().addAll(copyButton, cutButton);
+                //Se ci sono forme copiate mostra anche incolla
+                if(hasClipboard){
+                    contextMenu.getItems().add(pasteButton);
+                }
+            }else if(hasClipboard){//altrimenti mostra solo incolla
+                contextMenu.getItems().add(pasteButton);
+            }
+
+            if(!contextMenu.getItems().isEmpty()){
+                contextMenu.show(canvas, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+            }
         }
+
     }
 
     /**

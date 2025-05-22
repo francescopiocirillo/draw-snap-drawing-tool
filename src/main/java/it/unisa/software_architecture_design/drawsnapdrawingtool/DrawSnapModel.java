@@ -211,6 +211,24 @@ public class DrawSnapModel implements Serializable {
         }
     }
 
+    /**
+     * Metodo che prendere la forma selezionata
+     * @return -> la forma selezionata
+     */
+    public Forma getFormaSelezionata(){
+        Forma formaSelezionata = null;
+        for(Forma f:forme){
+            if(f instanceof FormaSelezionataDecorator){
+                formaSelezionata = f;
+            }
+        }
+        return formaSelezionata;
+    }
+
+    /**
+     * Metodo che controlla se c'è una forma selezionata nella lista
+     * @return {@code true} se è presente una forma selezionata, altrimenti {@cide false}
+     */
     public boolean thereIsFormaSelezionata(){
         boolean result = false;
         for(Forma f:forme){
