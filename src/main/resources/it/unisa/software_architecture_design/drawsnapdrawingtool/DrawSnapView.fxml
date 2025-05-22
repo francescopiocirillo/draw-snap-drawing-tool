@@ -54,6 +54,24 @@
                            </image>
                         </ImageView>
                      </graphic></Button>
+                  <Button id="button" alignment="TOP_CENTER" minWidth="107.0" mnemonicParsing="false" onAction="#onDeletePressed" prefHeight="35.0" prefWidth="110.0">
+                     <graphic>
+                        <ImageView fitHeight="31.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/back-to-front.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button id="button" alignment="TOP_CENTER" minWidth="107.0" mnemonicParsing="false" onAction="#onDeletePressed" prefHeight="35.0" prefWidth="110.0">
+                     <graphic>
+                        <ImageView fitHeight="31.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/front-to-back.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                </items>
             </ToolBar>
             <StackPane id="canvaContainer" fx:id="canvasContainer" VBox.vgrow="ALWAYS">
