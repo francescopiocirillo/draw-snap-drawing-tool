@@ -322,6 +322,28 @@ public class DrawSnapController {
         redrawAll();
     }
 
+    /**
+     * Metodo per mettere in primo piano la figura selezionata
+     * @param event -> evento che causa l'operazione di incolla
+     */
+    @FXML
+    void onBackToFrontPressed(ActionEvent event) {
+        invoker.setCommand(new BackToFrontCommand(forme));
+        invoker.executeCommand();
+        redrawAll();
+    }
+
+    /**
+     * Metodo per mettere in secondo piano la figura selezionata
+     * @param event -> evento che causa l'operazione di messa in secondo piano
+     */
+    @FXML
+    void onFrontToBackPressed(ActionEvent event) {
+        invoker.setCommand(new FrontToBackCommand(forme));
+        invoker.executeCommand();
+        redrawAll();
+    }
+
 
 
 }

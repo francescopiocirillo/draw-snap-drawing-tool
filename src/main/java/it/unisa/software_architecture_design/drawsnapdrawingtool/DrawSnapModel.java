@@ -161,6 +161,25 @@ public class DrawSnapModel implements Serializable {
      */
     public Forma getLastFormaCopiata(){return formeCopiate.getLast();}
 
+
+    /**
+     * Metodo per inserire una forma all'inizio della lista
+     * @param f la forma da spostare
+     */
+    public void moveToBack(Forma f) {
+        forme.remove(f);
+        forme.addFirst(f);
+    }
+
+    /**
+     * Metodo per inserire una forma alla fine della lista
+     * @param f la forma da spostare
+     */
+    public void moveToFront(Forma f) {
+        forme.remove(f);
+        forme.add(f);
+    }
+
     /**
      * La Forma Selezionata viene rimossa dalla lista forme e reinserita dopo la decorazione
      * @param formaSelezionata
