@@ -97,6 +97,7 @@ public class DrawSnapController {
         pasteButton.setOnAction(this::onPastePressed);
         copyButton.setOnAction(this::onCopyPressed);
         cutButton.setOnAction(this::onCutPressed);
+        contextMenu.getItems().addAll(copyButton, cutButton, pasteButton);
 
 
         initializeCanvasEventHandlers();
@@ -141,11 +142,13 @@ public class DrawSnapController {
         } else if(mouseEvent.getButton() == MouseButton.SECONDARY) {//Click destro
             lastClickX = mouseEvent.getX();
             lastClickY = mouseEvent.getY();
-            contextMenu.getItems().clear();
 
             boolean hasSelection = forme.thereIsFormaSelezionata();//controlla se c'è una forma selezionata
             boolean hasClipboard = !forme.isEmptyFormeCopiate();//controlla se ci sono forme copiate precedentemente
             boolean clickInterno = false;
+            copyButton.setDisable(false);
+            cutButton.setDisable(false);
+            pasteButton.setDisable(false);
 
             //Se c'è una forma selezionata controlla se il click è avvenuto all'interno di essa
             if(hasSelection){
@@ -157,13 +160,14 @@ public class DrawSnapController {
 
             //Se vi è una forma selezionata e il click è avvenuto al suo interno mostra copia e taglia
             if(hasSelection && clickInterno){
-                contextMenu.getItems().addAll(copyButton, cutButton);
-                //Se ci sono forme copiate mostra anche incolla
-                if(hasClipboard){
-                    contextMenu.getItems().add(pasteButton);
-                }
-            }else if(hasClipboard){//altrimenti mostra solo incolla
-                contextMenu.getItems().add(pasteButton);
+                pasteButton.setDisable(!hasClipboard);
+                copyButton.setDisable(false);
+                cutButton.setDisable(false);
+
+            }else{
+                copyButton.setDisable(true);
+                cutButton.setDisable(true);
+                pasteButton.setDisable(!hasClipboard);
             }
 
             if(!contextMenu.getItems().isEmpty()){
