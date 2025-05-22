@@ -19,6 +19,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.Iterator;
+import java.util.List;
 
 
 public class DrawSnapController {
@@ -56,6 +57,7 @@ public class DrawSnapController {
     private Button selectButton;
     @FXML
     private ToolBar toolBarFX; // barra in alto delle modifiche
+    private List<Button> bottoniBarraPrincipale = null;
 
     /*
      * Attributi per la logica
@@ -63,6 +65,7 @@ public class DrawSnapController {
     private Invoker invoker = null;
     private double lastClickX = -1;
     private double lastClickY = -1;
+
 
 
     /**
@@ -84,7 +87,12 @@ public class DrawSnapController {
         });
 
         // inizializzazione bottoni per la selezione forma
-        ellipseButton.setOnAction(event -> setDrawMode(event, Forme.ELLISSE));
+        bottoniBarraPrincipale = List.of(ellipseButton, rectangleButton, lineButton, selectButton);
+        ellipseButton.setOnAction(event -> {
+            bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
+            setDrawMode(event, Forme.ELLISSE);
+            ellipseButton.getStyleClass().add("selected");
+        });
         rectangleButton.setOnAction(event -> setDrawMode(event, Forme.RETTANGOLO));
         lineButton.setOnAction(event -> setDrawMode(event, Forme.LINEA));
         selectButton.setOnAction(event -> setSelectMode());

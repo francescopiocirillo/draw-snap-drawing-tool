@@ -43,7 +43,6 @@ public class SelectState implements DrawingState{
                 // offset utili per lo spostamento della figura in caso di MouseDragged
                 offsetX = coordinataX - f.getCoordinataX();
                 offsetY = coordinataY - f.getCoordinataY();
-                break;
             }
         }
 

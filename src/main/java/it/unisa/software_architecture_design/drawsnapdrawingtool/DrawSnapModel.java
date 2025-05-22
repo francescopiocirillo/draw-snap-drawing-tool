@@ -183,21 +183,26 @@ public class DrawSnapModel implements Serializable {
      * @param formaSelezionata forma da non deselezionare
      */
     public void deselezionaEccetto(Forma formaSelezionata) {
+        int index = 0;
         if(formaSelezionata != null){
+            index = forme.indexOf(formaSelezionata);
             forme.remove(formaSelezionata);
         }
 
         List<Forma> formeDaDeselezionare = new ArrayList<>();
         formeDaDeselezionare.addAll(forme);
+        forme.clear();
         for(Forma f : formeDaDeselezionare){
+            forme.remove(f);
             if(f instanceof  FormaSelezionataDecorator){
-                forme.remove(f);
                 forme.add(((FormaSelezionataDecorator) f).getForma());
+            }else{
+                forme.add(f);
             }
         }
 
         if(formaSelezionata != null){
-            forme.add(formaSelezionata);
+            forme.add(index, formaSelezionata);
         }
     }
 

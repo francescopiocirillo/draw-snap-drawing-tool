@@ -30,6 +30,19 @@
 }
 
 /*
+ * Nuovo stile per il bottone selezionato, la classe
+ * deve essere imposta al bottone selezionato in modo dinamico
+ */
+.tool-button.selected {
+	-fx-scale-x: 1;
+	-fx-scale-y: 1;
+	-fx-border-color: #d2e0e8;
+	-fx-border-radius: 70px;
+	-fx-border-width: 2px;
+	-fx-effect: dropshadow(gaussian, #d2e0e8, 10, 0.5, 0, 0);
+}
+
+/*
  *	css per la barra degli strumenti
  */
 #barra {
