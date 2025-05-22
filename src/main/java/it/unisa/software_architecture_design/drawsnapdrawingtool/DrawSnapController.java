@@ -5,6 +5,7 @@ import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawState;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawingContext;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.SelectState;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -13,6 +14,7 @@ import javafx.scene.control.*;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -27,7 +29,9 @@ public class DrawSnapController {
     @FXML
     private Canvas canvas;
     @FXML
-    private StackPane canvasContainer;
+    private AnchorPane canvasContainer;
+    @FXML
+    private ScrollPane scrollPane;
     private GraphicsContext gc;
     private DrawingContext drawingContext;
     private DrawSnapModel forme = null;
@@ -68,6 +72,15 @@ public class DrawSnapController {
         drawingContext = new DrawingContext(new SelectState(toolBarFX)); // stato di default, sarà cambiato quando avremo lo stato sposta o seleziona
         invoker = new Invoker();
 
+        double canvasWidth = 4096;
+        double canvasHeight = 4096;
+        canvasContainer.setPrefSize(canvasWidth, canvasHeight);
+        // Ritarda l'applicazione ella posizione iniziale del canvas al momento successivo al caricamento della UI
+        Platform.runLater(() -> {
+            scrollPane.setHvalue(0.5);
+            scrollPane.setVvalue(0.5);
+        });
+
         // inizializzazione bottoni per la selezione forma
         ellipseButton.setOnAction(event -> setDrawMode(event, Forme.ELLISSE));
         rectangleButton.setOnAction(event -> setDrawMode(event, Forme.RETTANGOLO));
@@ -79,13 +92,6 @@ public class DrawSnapController {
         pasteButton = new MenuItem("Incolla");
         pasteButton.setOnAction(this::onPastePressed);
         contextMenu.getItems().add(pasteButton);
-
-        //Dimensione canvas adattiva
-        canvas.widthProperty().bind(canvasContainer.widthProperty());
-        canvas.heightProperty().bind(canvasContainer.heightProperty());
-
-        canvas.widthProperty().addListener((observable, oldValue, newValue) -> {redrawAll();});
-        canvas.heightProperty().addListener((observable, oldValue, newValue) -> {redrawAll();});
 
         initializeCanvasEventHandlers();
     }
