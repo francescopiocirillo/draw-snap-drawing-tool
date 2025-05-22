@@ -93,9 +93,21 @@ public class DrawSnapController {
             setDrawMode(event, Forme.ELLISSE);
             ellipseButton.getStyleClass().add("selected");
         });
-        rectangleButton.setOnAction(event -> setDrawMode(event, Forme.RETTANGOLO));
-        lineButton.setOnAction(event -> setDrawMode(event, Forme.LINEA));
-        selectButton.setOnAction(event -> setSelectMode());
+        rectangleButton.setOnAction(event -> {
+            bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
+            setDrawMode(event, Forme.RETTANGOLO);
+            rectangleButton.getStyleClass().add("selected");
+        });
+        lineButton.setOnAction(event -> {
+            bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
+            setDrawMode(event, Forme.LINEA);
+            lineButton.getStyleClass().add("selected");
+        });
+        selectButton.setOnAction(event -> {
+            bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
+            setSelectMode();
+            selectButton.getStyleClass().add("selected");
+        });
 
         //inizializzazione menu contestuale per l'operazione di incolla
         contextMenu = new ContextMenu();

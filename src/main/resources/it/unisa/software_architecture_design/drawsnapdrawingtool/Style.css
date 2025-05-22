@@ -33,7 +33,7 @@
  * Nuovo stile per il bottone selezionato, la classe
  * deve essere imposta al bottone selezionato in modo dinamico
  */
-.tool-button.selected {
+#button.selected {
 	-fx-scale-x: 1;
 	-fx-scale-y: 1;
 	-fx-border-color: #d2e0e8;
