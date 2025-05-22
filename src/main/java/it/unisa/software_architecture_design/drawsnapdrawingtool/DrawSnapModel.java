@@ -167,9 +167,12 @@ public class DrawSnapModel implements Serializable {
      */
     public Forma selezionaForma(Forma formaSelezionata){
         if (!(formaSelezionata instanceof FormaSelezionataDecorator)) {
-            forme.remove(formaSelezionata);
-            formaSelezionata = new FormaSelezionataDecorator(formaSelezionata);
-            forme.add(formaSelezionata);
+            int index = forme.indexOf(formaSelezionata);
+            if (index != -1) {
+                forme.remove(index);
+                formaSelezionata = new FormaSelezionataDecorator(formaSelezionata);
+                forme.add(index, formaSelezionata);
+            }
         }
         return formaSelezionata;
     }
