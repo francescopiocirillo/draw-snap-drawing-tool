@@ -12,6 +12,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -43,6 +45,9 @@ public class DrawSnapController {
     private MenuItem pasteButton;
     private MenuItem copyButton;
     private MenuItem cutButton;
+    private ImageView imageCopy;
+    private ImageView imageCut;
+    private ImageView imagePaste;
 
     /*
      * Attributi per i bottoni
@@ -117,6 +122,18 @@ public class DrawSnapController {
         pasteButton.setOnAction(this::onPastePressed);
         copyButton.setOnAction(this::onCopyPressed);
         cutButton.setOnAction(this::onCutPressed);
+        imageCopy = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/copy3.png")));
+        imageCut = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/taglia.png")));
+        imagePaste = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/paste.png")));
+        imageCopy.setFitWidth(16);
+        imageCut.setFitWidth(16);
+        imagePaste.setFitWidth(16);
+        imageCopy.setFitHeight(16);
+        imageCut.setFitHeight(16);
+        imagePaste.setFitHeight(16);
+        copyButton.setGraphic(imageCopy);
+        cutButton.setGraphic(imageCut);
+        pasteButton.setGraphic(imagePaste);
         contextMenu.getItems().addAll(copyButton, cutButton, pasteButton);
 
 
