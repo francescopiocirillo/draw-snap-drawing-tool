@@ -211,6 +211,16 @@ public class DrawSnapModel implements Serializable {
         }
     }
 
+    public boolean thereIsFormaSelezionata(){
+        boolean result = false;
+        for(Forma f:forme){
+            if(f instanceof FormaSelezionataDecorator){
+                result = true;
+            }
+        }
+        return result;
+    }
+
     public List<Forma> getCopy() { return new ArrayList<>(forme); }
 
 }

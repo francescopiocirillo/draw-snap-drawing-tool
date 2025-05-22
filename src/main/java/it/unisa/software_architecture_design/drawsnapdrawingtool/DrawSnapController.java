@@ -36,6 +36,8 @@ public class DrawSnapController {
     //Menù contestuale
     private ContextMenu contextMenu;
     private MenuItem pasteButton;
+    private MenuItem copyButton;
+    private MenuItem cutButton;
 
     /*
      * Attributi per i bottoni
@@ -76,9 +78,13 @@ public class DrawSnapController {
 
         //inizializzazione menu contestuale per l'operazione di incolla
         contextMenu = new ContextMenu();
+        copyButton = new MenuItem("Copia");
+        cutButton = new MenuItem("Taglia");
         pasteButton = new MenuItem("Incolla");
         pasteButton.setOnAction(this::onPastePressed);
-        contextMenu.getItems().add(pasteButton);
+        copyButton.setOnAction(this::onCopyPressed);
+        cutButton.setOnAction(this::onCutPressed);
+
 
         //Dimensione canvas adattiva
         canvas.widthProperty().bind(canvasContainer.widthProperty());
@@ -126,10 +132,19 @@ public class DrawSnapController {
             lastClickY = mouseEvent.getY();
             drawingContext.handleMousePressed(mouseEvent, forme);
             redrawAll();
-        } else if (mouseEvent.getButton() == MouseButton.SECONDARY && !forme.isEmptyFormeCopiate()) { //tasto destro
+        } else if (mouseEvent.getButton() == MouseButton.SECONDARY && !forme.isEmptyFormeCopiate() && !forme.thereIsFormaSelezionata()) { //tasto destro
             System.out.println("Clic destro");
             lastClickX = mouseEvent.getX();
             lastClickY = mouseEvent.getY();
+            contextMenu.getItems().clear();
+            contextMenu.getItems().add(pasteButton);
+            contextMenu.show(canvas, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+        }else if (mouseEvent.getButton() == MouseButton.SECONDARY && forme.thereIsFormaSelezionata()){
+            System.out.println("Clic destro");
+            lastClickX = mouseEvent.getX();
+            lastClickY = mouseEvent.getY();
+            contextMenu.getItems().clear();
+            contextMenu.getItems().addAll(copyButton, cutButton);
             contextMenu.show(canvas, mouseEvent.getScreenX(), mouseEvent.getScreenY());
         }
     }
@@ -213,7 +228,6 @@ public class DrawSnapController {
      * Metodo per tagliare una figura selezionata
      * @param event -> evento che causa l'operazione di taglia
      */
-    @FXML
     void onCutPressed(ActionEvent event) {
         invoker.setCommand(new CutCommand(forme));
         invoker.executeCommand();
@@ -225,7 +239,6 @@ public class DrawSnapController {
      * Metodo per copiare una figura selezionata
      * @param event -> evento che causa l'operazione di copia
      */
-    @FXML
     void onCopyPressed(ActionEvent event) {
         invoker.setCommand(new CopyCommand(forme));
         invoker.executeCommand();
@@ -237,7 +250,6 @@ public class DrawSnapController {
      * Metodo per incollare una figura selezionata
      * @param event -> evento che causa l'operazione di incolla
      */
-    @FXML
     void onPastePressed(ActionEvent event) {
         invoker.setCommand(new PasteCommand(forme, lastClickX, lastClickY));
         invoker.executeCommand();
