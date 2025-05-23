@@ -304,7 +304,11 @@ public class DrawSnapController {
         }
     }
 
-
+    /**
+     * Gestisce l'evento di mouse trascinato delegandone la gestione all'omonimo metodo di {@codeDrawingContext} che
+     * a sua volta delega all'omonimo metodo della classe corrispondente allo stato attuale.
+     * @param mouseEvent -> l'evento scatenante
+     */
     private void handleMouseDragged(MouseEvent mouseEvent) {
         dragged = drawingContext.handleMouseDragged(mouseEvent, forme); // passa la forma da creare al DrawStateù
         updateState(false);

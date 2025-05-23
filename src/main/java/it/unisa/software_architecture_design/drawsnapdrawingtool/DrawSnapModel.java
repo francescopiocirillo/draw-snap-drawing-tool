@@ -12,14 +12,21 @@ import java.util.List;
 
 import java.util.Iterator;
 
+/**
+ * Classe che rappresenta i dati e la logica di business dell'applicativo
+ */
 public class DrawSnapModel implements Serializable {
-
+    /*
+     * Attributi
+     */
     private List<Forma> forme = null;
     private transient List<Forma> formeCopiate = null; //Lista per tenere salvate le variabili copiate
     @Serial
     private static final long serialVersionUID = 1001L;
 
-    //Costruttore
+    /*
+     * Costruttore
+     */
     public DrawSnapModel() {
         forme = new ArrayList<Forma>();
         formeCopiate = new ArrayList<Forma>();
@@ -47,7 +54,6 @@ public class DrawSnapModel implements Serializable {
     public void clear(){
         forme.clear();
     }
-
 
     /**
      * Metodo per aggiungere una lista di forme al disegno
@@ -183,7 +189,8 @@ public class DrawSnapModel implements Serializable {
 
     /**
      * La Forma Selezionata viene rimossa dalla lista forme e reinserita dopo la decorazione
-     * @param formaSelezionata
+     * @param formaSelezionata -> la forma da selezionare
+     * @return la forma selezionata
      */
     public Forma selezionaForma(Forma formaSelezionata){
         if (!(formaSelezionata instanceof FormaSelezionataDecorator)) {
