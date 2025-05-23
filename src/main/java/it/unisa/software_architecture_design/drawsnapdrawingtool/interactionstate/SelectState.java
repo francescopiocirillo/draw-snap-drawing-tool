@@ -16,12 +16,21 @@ import java.util.List;
  * permettendo la selezione di una figura e il suo spostamento.
  */
 public class SelectState implements DrawingState{
-
+    /*
+     * Attributi
+     */
     private double offsetX;
     private double offsetY;
     private ToolBar toolBarFX; // barra in alto delle modifiche
 
+    /*
+     * Costruttore
+     */
     public SelectState(ToolBar toolBarFX) { this.toolBarFX = toolBarFX; }
+
+    /*
+     * Logica della classe
+     */
 
     /**
      * Gestisce l'evento di pressione del mouse sul canvas per permettere la selezione di una figura
