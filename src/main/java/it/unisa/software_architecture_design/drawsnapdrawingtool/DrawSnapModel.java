@@ -1,8 +1,11 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Ellisse;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Rettangolo;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.memento.DrawSnapMemento;
+import javafx.scene.paint.Color;
 
 import javax.swing.*;
 import java.io.Serial;
@@ -301,4 +304,28 @@ public class DrawSnapModel implements Serializable {
         this.forme.addAll(memento.getSavedState());
     }
 
+    /**
+     * Cambia il colore del riempimento della figura selezionata con @colore. La figura non può essere una
+     * linea perchè il bottone sarà disattivato se la figura selezionata non ha un colore interno
+     * @param colore colore deciso dall'utente per aggiornare la figura selezionata
+     */
+    public void changeFillColor(Color colore) {
+        System.out.println("model: " + colore);
+
+        for(Forma f:forme){
+            if(f instanceof FormaSelezionataDecorator){
+                System.out.println("forma selezionata nel command" );
+                FormaSelezionataDecorator formaCorrente = (FormaSelezionataDecorator)f;
+                if(formaCorrente.getForma() instanceof Ellisse){
+                    Ellisse ellisse = (Ellisse) formaCorrente.getForma();
+                    ellisse.setColoreInterno(colore);
+                    System.out.println("cambio colore dell'ellissi in " + colore);
+                } else if (formaCorrente.getForma() instanceof Rettangolo) {
+                    Rettangolo rettangolo = (Rettangolo) formaCorrente.getForma();
+                    rettangolo.setColoreInterno(colore);
+                    System.out.println("cambio colore del rettangolo in " + colore);
+                }
+            }
+        }
+    }
 }
