@@ -83,7 +83,6 @@
                   </ScrollPane>
                   <HBox alignment="CENTER" maxHeight="-Infinity" prefHeight="60.0" spacing="30.0" StackPane.alignment="BOTTOM_CENTER">
                      <children>
-                        <HBox prefHeight="100.0" prefWidth="200.0" />
                         <HBox id="barra" alignment="CENTER" layoutX="1849.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" spacing="30.0">
                            <children>
                               <Button id="button" fx:id="undoButton" alignment="CENTER" contentDisplay="RIGHT" layoutX="159.0" layoutY="18.0" mnemonicParsing="false" onAction="#onUndoPressed" textAlignment="CENTER">
@@ -162,17 +161,17 @@
                                     <Font name="System Bold" size="20.0" />
                                  </font>
                                  <HBox.margin>
-                                    <Insets left="10.0" right="10.0" />
+                                    <Insets left="10.0" right="5.0" />
                                  </HBox.margin>
                               </Button>
                               <ComboBox id="button" fx:id="zoom" onAction="#zoomChangePressed">
                                  <HBox.margin>
-                                    <Insets left="10.0" right="10.0" />
+                                    <Insets />
                                  </HBox.margin>
                               </ComboBox>
                               <Button id="button" alignment="CENTER" mnemonicParsing="false" onAction="#zoomOutPressed" text="-" textAlignment="CENTER">
                                  <HBox.margin>
-                                    <Insets left="10.0" right="10.0" />
+                                    <Insets left="5.0" right="10.0" />
                                  </HBox.margin>
                                  <font>
                                     <Font name="System Bold" size="20.0" />
