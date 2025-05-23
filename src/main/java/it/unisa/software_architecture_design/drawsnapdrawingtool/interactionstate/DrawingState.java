@@ -9,9 +9,9 @@ import javafx.scene.input.MouseEvent;
  * in questa interfaccia
  */
 public interface DrawingState {
-    void handleMousePressed(MouseEvent event, DrawSnapModel forme);
+    boolean handleMousePressed(MouseEvent event, DrawSnapModel forme);
 
-    void handleMouseDragged(MouseEvent event, DrawSnapModel forme);
+    boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme);
 
-    void handleMouseReleased(MouseEvent event);
+    boolean handleMouseReleased(MouseEvent event);
 }

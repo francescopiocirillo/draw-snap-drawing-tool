@@ -1,22 +1,14 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool;
 
-import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiForma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawState;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawingContext;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.SelectState;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -118,7 +110,7 @@ class DrawSnapControllerTest {
                 formeField.setAccessible(true);
                 formeField.set(controller, java.util.Arrays.asList(mockForma1, mockForma2));
 
-                controller.redrawAll();
+                controller.updateState(false);
 
                 verify(mockForma1).disegna(canvas.getGraphicsContext2D());
                 verify(mockForma2).disegna(canvas.getGraphicsContext2D());

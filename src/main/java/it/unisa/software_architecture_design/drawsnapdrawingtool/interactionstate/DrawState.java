@@ -60,12 +60,12 @@ public class DrawState implements DrawingState{
      * @param forme lista di tutte le forme presenti sul canvas
      */
     @Override
-    public void handleMousePressed(MouseEvent event, DrawSnapModel forme) {
+    public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme) {
         AttributiForma attributiForma = helpUIHandleMousePressed(formaCorrente);
 
         if (attributiForma == null) { // se l'utente ha premuto "Annulla" non fare nulla
             System.out.println("Creazione forma annullata dall'utente.");
-            return;
+            return false;
         }
 
         Forma formaCreata = null;
@@ -93,6 +93,7 @@ public class DrawState implements DrawingState{
                 break;
         }
         forme.add(formaCreata);
+        return true;
     }
 
     /**
@@ -219,8 +220,9 @@ public class DrawState implements DrawingState{
      * @param forme lista di tutte le forme presenti sul canvas
      */
     @Override
-    public void handleMouseDragged(MouseEvent event, DrawSnapModel forme) {
+    public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme) {
         //NA
+        return false;
     }
 
     /**
@@ -228,7 +230,8 @@ public class DrawState implements DrawingState{
      * @param event evento di rilascio del mouse
      */
     @Override
-    public void handleMouseReleased(MouseEvent event) {
+    public boolean handleMouseReleased(MouseEvent event) {
         //WIP
+        return false;
     }
 }

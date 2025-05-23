@@ -1,7 +1,11 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Ellisse;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Rettangolo;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.memento.DrawSnapMemento;
+import javafx.scene.paint.Color;
 
 import javax.swing.*;
 import java.io.Serial;
@@ -11,14 +15,21 @@ import java.util.List;
 
 import java.util.Iterator;
 
+/**
+ * Classe che rappresenta i dati e la logica di business dell'applicativo
+ */
 public class DrawSnapModel implements Serializable {
-
+    /*
+     * Attributi
+     */
     private List<Forma> forme = null;
     private transient List<Forma> formeCopiate = null; //Lista per tenere salvate le variabili copiate
     @Serial
     private static final long serialVersionUID = 1001L;
 
-    //Costruttore
+    /*
+     * Costruttore
+     */
     public DrawSnapModel() {
         forme = new ArrayList<Forma>();
         formeCopiate = new ArrayList<Forma>();
@@ -46,7 +57,6 @@ public class DrawSnapModel implements Serializable {
     public void clear(){
         forme.clear();
     }
-
 
     /**
      * Metodo per aggiungere una lista di forme al disegno
@@ -182,7 +192,8 @@ public class DrawSnapModel implements Serializable {
 
     /**
      * La Forma Selezionata viene rimossa dalla lista forme e reinserita dopo la decorazione
-     * @param formaSelezionata
+     * @param formaSelezionata -> la forma da selezionare
+     * @return la forma selezionata
      */
     public Forma selezionaForma(Forma formaSelezionata){
         if (!(formaSelezionata instanceof FormaSelezionataDecorator)) {
@@ -198,10 +209,19 @@ public class DrawSnapModel implements Serializable {
 
     /**
      * Deseleziona, rimuovendo il Decorator, tutte le Forme memorizzate eccetto quella
-     * fornita come parametro.
+     * fornita come parametro. La deselezione avviene sulla lista interna al Model.
      * @param formaSelezionata forma da non deselezionare
      */
     public void deselezionaEccetto(Forma formaSelezionata) {
+        deselezionaEccetto(formaSelezionata, this.forme);
+    }
+
+    /**
+     * Deseleziona, rimuovendo il Decorator, tutte le Forme memorizzate eccetto quella
+     * fornita come parametro. La deselezione avviene sulla lista fornita.
+     * @param formaSelezionata forma da non deselezionare
+     */
+    public void deselezionaEccetto(Forma formaSelezionata, List<Forma> forme) {
         int index = 0;
         if(formaSelezionata != null){
             index = forme.indexOf(formaSelezionata);
@@ -266,6 +286,59 @@ public class DrawSnapModel implements Serializable {
         return result;
     }
 
-    public List<Forma> getCopy() { return new ArrayList<>(forme); }
+    /**
+     * Fornisce una copia della lista di forme
+     * @return una copia della lista di forme
+     */
+    public List<Forma> getCopy() {
+        List<Forma> copia = new ArrayList<>();
+        for (Forma f : forme) {
+            copia.add(f.clone());
+        }
+        return copia;
+    }
 
+    /**
+     * Salva lo stato attuale dell'applicazione in un memento
+     * @return il memento contenente lo stato attuale dell'applicazione
+     */
+    public DrawSnapMemento saveToMemento() {
+        List<Forma> copia = getCopy();
+        deselezionaEccetto(null, copia);
+        return new DrawSnapMemento(copia); // deep copy dello stato corrente
+    }
+
+    /**
+     * Ripristina lo stato dell'applicazione a quello del memento fornito
+     * @param memento -> il memento da ripristinare
+     */
+    public void restoreFromMemento(DrawSnapMemento memento) {
+        this.forme.clear();
+        this.forme.addAll(memento.getSavedState());
+    }
+
+    /**
+     * Cambia il colore del riempimento della figura selezionata con @colore. La figura non può essere una
+     * linea perchè il bottone sarà disattivato se la figura selezionata non ha un colore interno
+     * @param colore colore deciso dall'utente per aggiornare la figura selezionata
+     */
+    public void changeFillColor(Color colore) {
+        System.out.println("model: " + colore);
+
+        for(Forma f:forme){
+            if(f instanceof FormaSelezionataDecorator){
+                System.out.println("forma selezionata nel command" );
+                FormaSelezionataDecorator formaCorrente = (FormaSelezionataDecorator)f;
+                if(formaCorrente.getForma() instanceof Ellisse){
+                    Ellisse ellisse = (Ellisse) formaCorrente.getForma();
+                    ellisse.setColoreInterno(colore);
+                    System.out.println("cambio colore dell'ellissi in " + colore);
+                } else if (formaCorrente.getForma() instanceof Rettangolo) {
+                    Rettangolo rettangolo = (Rettangolo) formaCorrente.getForma();
+                    rettangolo.setColoreInterno(colore);
+                    System.out.println("cambio colore del rettangolo in " + colore);
+                }
+            }
+        }
+    }
 }
