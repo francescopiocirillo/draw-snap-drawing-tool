@@ -79,6 +79,7 @@ public class DrawSnapController {
     private double lastClickY = -1;
     private final Double[] zoomLevels = {0.5, 1.0, 1.5, 2.0};
     private int currentZoomIndex = 1;
+    private boolean dragged = false;
 
 
 
@@ -224,6 +225,10 @@ public class DrawSnapController {
      * @param mouseEvent -> evento generato dalla pressione del mouse sul canvas
      */
     private void handleMousePressed(MouseEvent mouseEvent) {
+        // alla pressione del mouse si suppone sempre che non si tratta di un drag, solo all'interno del metodo
+        // di drag la flag viene asserita
+        dragged = false;
+
         if (contextMenu.isShowing()) {
             contextMenu.hide();
         }
@@ -297,13 +302,20 @@ public class DrawSnapController {
 
 
     private void handleMouseDragged(MouseEvent mouseEvent) {
-        boolean stateChanged = drawingContext.handleMouseDragged(mouseEvent, forme); // passa la forma da creare al DrawState
-        updateState(stateChanged);
+        dragged = drawingContext.handleMouseDragged(mouseEvent, forme); // passa la forma da creare al DrawStateù
+        updateState(false);
     }
 
+    /**
+     * Aggiornare il canvas durante il dragging è corretto ma il salvataggio del memento va effettuato solo al termine
+     * dell'evento di drag, da cui la necessità di questo metodo e dell'attributo dragged che per ogni interazione con
+     * il canvas conserva l'informazioni che dice se si tratta di un drag o meno
+     * @param mouseEvent
+     */
     private void handleMouseReleased(MouseEvent mouseEvent) {
-        // NA
-        // METODO MOMENTANEAMENTE NON NECESSARIO
+        if(dragged){
+            updateState(dragged);
+        }
     }
 
     /**

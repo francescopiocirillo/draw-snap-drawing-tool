@@ -289,7 +289,7 @@ public class DrawSnapModel implements Serializable {
     public DrawSnapMemento saveToMemento() {
         List<Forma> copia = getCopy();
         deselezionaEccetto(null, copia);
-        return new DrawSnapMemento(copia); // deep copy of current state
+        return new DrawSnapMemento(copia); // deep copy dello stato corrente
     }
 
     /**
