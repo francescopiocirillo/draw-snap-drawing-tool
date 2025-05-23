@@ -280,7 +280,13 @@ public class DrawSnapModel implements Serializable {
      * Fornisce una copia della lista di forme
      * @return una copia della lista di forme
      */
-    public List<Forma> getCopy() { return new ArrayList<>(forme); }
+    public List<Forma> getCopy() {
+        List<Forma> copia = new ArrayList<>();
+        for (Forma f : forme) {
+            copia.add(f.clone());
+        }
+        return copia;
+    }
 
     /**
      * Salva lo stato attuale dell'applicazione in un memento
