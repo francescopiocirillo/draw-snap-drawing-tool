@@ -38,7 +38,7 @@ public class SelectState implements DrawingState{
      * @param forme lista delle forme presenti sul foglio di disegno
      */
     @Override
-    public void handleMousePressed(MouseEvent event, DrawSnapModel forme) {
+    public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme) {
         double coordinataX = event.getX();
         double coordinataY = event.getY();
 
@@ -67,6 +67,7 @@ public class SelectState implements DrawingState{
         }
 
         forme.deselezionaEccetto(formaSelezionata);
+        return false;
     }
 
     /**
@@ -84,7 +85,7 @@ public class SelectState implements DrawingState{
      * @param forme la lista di forme presenti sul canvas
      */
     @Override
-    public void handleMouseDragged(MouseEvent event, DrawSnapModel forme) {
+    public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme) {
         double mouseX = event.getX();
         double mouseY = event.getY();
 
@@ -102,6 +103,7 @@ public class SelectState implements DrawingState{
                 break; // Presupponendo una sola forma selezionata
             }
         }
+        return true;
     }
 
     /**
@@ -109,7 +111,8 @@ public class SelectState implements DrawingState{
      * @param event evento di rilascio del mouse
      */
     @Override
-    public void handleMouseReleased(MouseEvent event) {
+    public boolean handleMouseReleased(MouseEvent event) {
         //NA
+        return false;
     }
 }

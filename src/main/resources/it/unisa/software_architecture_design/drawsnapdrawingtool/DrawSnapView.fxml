@@ -31,6 +31,15 @@
             </MenuBar>
             <ToolBar id="toolBar" fx:id="toolBarFX" disable="true">
                <items>
+                  <Button id="button" alignment="TOP_CENTER" layoutX="10.0" layoutY="8.0" minWidth="107.0" mnemonicParsing="false" onAction="#onUndoPressed" prefHeight="35.0" prefWidth="110.0">
+                     <graphic>
+                        <ImageView fitHeight="31.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/up-right-arrow.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                   <Button id="button" alignment="TOP_CENTER" minWidth="107.0" mnemonicParsing="false" onAction="#onDeletePressed" prefHeight="35.0" prefWidth="110.0">
                      <graphic>
                         <ImageView fitHeight="31.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">

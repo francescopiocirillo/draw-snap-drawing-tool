@@ -2,6 +2,7 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool;
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.memento.DrawSnapMemento;
 
 import javax.swing.*;
 import java.io.Serial;
@@ -198,10 +199,19 @@ public class DrawSnapModel implements Serializable {
 
     /**
      * Deseleziona, rimuovendo il Decorator, tutte le Forme memorizzate eccetto quella
-     * fornita come parametro.
+     * fornita come parametro. La deselezione avviene sulla lista interna al Model.
      * @param formaSelezionata forma da non deselezionare
      */
     public void deselezionaEccetto(Forma formaSelezionata) {
+        deselezionaEccetto(formaSelezionata, this.forme);
+    }
+
+    /**
+     * Deseleziona, rimuovendo il Decorator, tutte le Forme memorizzate eccetto quella
+     * fornita come parametro. La deselezione avviene sulla lista fornita.
+     * @param formaSelezionata forma da non deselezionare
+     */
+    public void deselezionaEccetto(Forma formaSelezionata, List<Forma> forme) {
         int index = 0;
         if(formaSelezionata != null){
             index = forme.indexOf(formaSelezionata);
@@ -266,6 +276,29 @@ public class DrawSnapModel implements Serializable {
         return result;
     }
 
+    /**
+     * Fornisce una copia della lista di forme
+     * @return una copia della lista di forme
+     */
     public List<Forma> getCopy() { return new ArrayList<>(forme); }
+
+    /**
+     * Salva lo stato attuale dell'applicazione in un memento
+     * @return il memento contenente lo stato attuale dell'applicazione
+     */
+    public DrawSnapMemento saveToMemento() {
+        List<Forma> copia = getCopy();
+        deselezionaEccetto(null, copia);
+        return new DrawSnapMemento(copia); // deep copy of current state
+    }
+
+    /**
+     * Ripristina lo stato dell'applicazione a quello del memento fornito
+     * @param memento -> il memento da ripristinare
+     */
+    public void restoreFromMemento(DrawSnapMemento memento) {
+        this.forme.clear();
+        this.forme.addAll(memento.getSavedState());
+    }
 
 }

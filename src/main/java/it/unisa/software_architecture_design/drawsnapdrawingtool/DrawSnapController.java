@@ -5,6 +5,7 @@ import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawState;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawingContext;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.SelectState;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.memento.DrawSnapHistory;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,7 +18,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.Iterator;
@@ -67,6 +67,7 @@ public class DrawSnapController {
     /*
      * Attributi per la logica
      */
+    private DrawSnapHistory history = null;
     private Invoker invoker = null;
     private double lastClickX = -1;
     private double lastClickY = -1;
@@ -81,6 +82,7 @@ public class DrawSnapController {
         gc = canvas.getGraphicsContext2D();
         drawingContext = new DrawingContext(new SelectState(toolBarFX)); // stato di default, sarà cambiato quando avremo lo stato sposta o seleziona
         invoker = new Invoker();
+        history = new DrawSnapHistory();
 
         double canvasWidth = 4096;
         double canvasHeight = 4096;
@@ -174,8 +176,8 @@ public class DrawSnapController {
         if (mouseEvent.getButton() == MouseButton.PRIMARY) { //Click Sinistro
             lastClickX = mouseEvent.getX();
             lastClickY = mouseEvent.getY();
-            drawingContext.handleMousePressed(mouseEvent, forme);
-            redrawAll();
+            boolean stateChanged = drawingContext.handleMousePressed(mouseEvent, forme);
+            updateState(stateChanged);
         } else if(mouseEvent.getButton() == MouseButton.SECONDARY) {//Click destro
             lastClickX = mouseEvent.getX();
             lastClickY = mouseEvent.getY();
@@ -215,6 +217,17 @@ public class DrawSnapController {
     }
 
     /**
+     * Metodo che salva lo stato dopo un cambiamento e poi ricarica il canvas
+     * @param stateChanged boolean che decide se lo stato va salvato o meno
+     */
+    void updateState(boolean stateChanged){
+        if(stateChanged){
+            history.saveState(forme.saveToMemento());
+        }
+        redrawAll();
+    }
+
+    /**
      * Metodo che cancella il contenuto del {@link Canvas} e ridisegna tutte le forme presenti
      * nella lista {@code forme} utilizzando il {@link GraphicsContext}.
      * Chiamato dopo una modifica nel canvas per aggiornarne la visualizzazione.
@@ -230,12 +243,13 @@ public class DrawSnapController {
 
 
     private void handleMouseDragged(MouseEvent mouseEvent) {
-        drawingContext.handleMouseDragged(mouseEvent, forme); // passa la forma da creare al DrawState
-        redrawAll();
+        boolean stateChanged = drawingContext.handleMouseDragged(mouseEvent, forme); // passa la forma da creare al DrawState
+        updateState(stateChanged);
     }
 
     private void handleMouseReleased(MouseEvent mouseEvent) {
-
+        // NA
+        // METODO MOMENTANEAMENTE NON NECESSARIO
     }
 
     /**
@@ -245,7 +259,7 @@ public class DrawSnapController {
      */
     void setDrawMode(ActionEvent event, Forme forma) {
         drawingContext.setCurrentState(new DrawState(forma), forme);
-        redrawAll();
+        updateState(false);
     }
 
     /**
@@ -253,7 +267,7 @@ public class DrawSnapController {
      */
     void setSelectMode() {
         drawingContext.setCurrentState(new SelectState(toolBarFX), forme);
-        redrawAll();
+        updateState(false);
     }
 
     /**
@@ -274,7 +288,7 @@ public class DrawSnapController {
     void onLoadPressed(ActionEvent event) {
         invoker.setCommand(new LoadCommand(forme, stage));
         invoker.executeCommand();
-        redrawAll();
+        updateState(true);
     }
 
     /**
@@ -286,7 +300,7 @@ public class DrawSnapController {
         invoker.setCommand(new DeleteCommand(forme));
         invoker.executeCommand();
         toolBarFX.setDisable(true); // disattiva la toolBar visto che la figura non è più in focus essendo eliminata
-        redrawAll();
+        updateState(true);
     }
 
     /**
@@ -297,7 +311,7 @@ public class DrawSnapController {
         invoker.setCommand(new CutCommand(forme));
         invoker.executeCommand();
         toolBarFX.setDisable(true);
-        redrawAll();
+        updateState(true);
     }
 
     /**
@@ -308,7 +322,7 @@ public class DrawSnapController {
         invoker.setCommand(new CopyCommand(forme));
         invoker.executeCommand();
         toolBarFX.setDisable(true);
-        redrawAll();
+        updateState(false);
     }
 
     /**
@@ -319,7 +333,7 @@ public class DrawSnapController {
         invoker.setCommand(new PasteCommand(forme, lastClickX, lastClickY));
         invoker.executeCommand();
         toolBarFX.setDisable(true);
-        redrawAll();
+        updateState(true);
     }
 
     /**
@@ -330,7 +344,7 @@ public class DrawSnapController {
     void onBackToFrontPressed(ActionEvent event) {
         invoker.setCommand(new BackToFrontCommand(forme));
         invoker.executeCommand();
-        redrawAll();
+        updateState(true);
     }
 
     /**
@@ -341,9 +355,18 @@ public class DrawSnapController {
     void onFrontToBackPressed(ActionEvent event) {
         invoker.setCommand(new FrontToBackCommand(forme));
         invoker.executeCommand();
-        redrawAll();
+        updateState(true);
     }
 
-
+    /**
+     * Metodo per invocare il comando di ripristino dello stato precedente dell'applicazione
+     * @param event -> evento di pressione del mouse sul tasto undo
+     */
+    @FXML
+    void onUndoPressed(ActionEvent event) {
+        invoker.setCommand(new UndoCommand(forme, history));
+        invoker.executeCommand();
+        updateState(false);
+    }
 
 }

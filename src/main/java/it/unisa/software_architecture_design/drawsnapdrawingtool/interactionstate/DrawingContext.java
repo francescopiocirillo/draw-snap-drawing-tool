@@ -1,6 +1,7 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import javafx.scene.input.MouseEvent;
 
 /**
@@ -28,7 +29,7 @@ public class DrawingContext {
     public void setCurrentState(DrawingState currentState, DrawSnapModel forme) {
         // quando si esce dallo stato di selezione è necessario deselezionare tutte le figure
         if(this.currentState instanceof SelectState){
-            forme.deselezionaEccetto(null);
+            forme.deselezionaEccetto((Forma) null); // il cast è necessario per l'overloading del metodo, senza non capirebbe quale metodo chiamare
             ((SelectState) this.currentState).disattivaToolBar();
         }
         this.currentState = currentState;
@@ -43,8 +44,8 @@ public class DrawingContext {
      * @param event l'evento di pressione del Mouse
      * @param forme la lista delle forme presenti sul canvas
      */
-    public void handleMousePressed(MouseEvent event, DrawSnapModel forme){
-        currentState.handleMousePressed(event, forme);
+    public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme){
+        return currentState.handleMousePressed(event, forme);
     }
 
     /**
@@ -52,16 +53,16 @@ public class DrawingContext {
      * @param event l'evento di pressione del Mouse
      * @param forme la lista delle forme presenti sul canvas
      */
-    public void handleMouseDragged(MouseEvent event, DrawSnapModel forme){
-        currentState.handleMouseDragged(event, forme);
+    public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme){
+        return currentState.handleMouseDragged(event, forme);
     }
 
     /**
      * DrawingContext delega la gestione dell'evento di rilascio del mouse allo stato corrente
      * @param event l'evento di rilascio del Mouse
      */
-    public void handleMouseReleased(MouseEvent event){
-        currentState.handleMouseReleased(event);
+    public boolean handleMouseReleased(MouseEvent event){
+        return currentState.handleMouseReleased(event);
     }
 
 }
