@@ -21,7 +21,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class DrawSnapController {
@@ -49,6 +51,10 @@ public class DrawSnapController {
     private ImageView imageCut;
     private ImageView imagePaste;
 
+    //Attributi barra secondaria
+    @FXML
+    private ComboBox<Double> zoom;
+
     /*
      * Attributi per i bottoni
      */
@@ -71,6 +77,8 @@ public class DrawSnapController {
     private Invoker invoker = null;
     private double lastClickX = -1;
     private double lastClickY = -1;
+    private final Double[] zoomLevels = {0.5, 1.0, 1.5, 2.0};
+    private int currentZoomIndex = 1;
 
 
 
@@ -116,7 +124,56 @@ public class DrawSnapController {
             selectButton.getStyleClass().add("selected");
         });
 
-        //inizializzazione menu contestuale per l'operazione di incolla
+        initializeContextMenu();
+
+        initializeZoom();
+
+        initializeCanvasEventHandlers();
+    }
+
+    /**
+     * Inizializza gli elementi grafici per lo {@code zoom}
+     */
+    private void initializeZoom(){
+        zoom.getItems().addAll(zoomLevels);
+        zoom.setValue(zoomLevels[currentZoomIndex]);
+        zoom.setButtonCell(new ListCell<>(){
+            private final ImageView zoomImage = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/zoom.png")));
+            {
+                zoomImage.setFitWidth(16);
+                zoomImage.setFitHeight(16);
+            }
+
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                }else{
+                    setText((int) (item*100) + "%");
+                    setGraphic(zoomImage);
+                }
+            }
+        });
+
+        zoom.setCellFactory(lv -> new ListCell<Double>(){
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                }else{
+                    setText(String.format("%.0f%%", item*100));
+                }
+            }
+        });
+    }
+
+    /**
+     * Inizializza gli elementi grafici del menu contestuale
+     */
+    private void initializeContextMenu() {
         contextMenu = new ContextMenu();
         copyButton = new MenuItem("Copia");
         cutButton = new MenuItem("Taglia");
@@ -137,9 +194,6 @@ public class DrawSnapController {
         cutButton.setGraphic(imageCut);
         pasteButton.setGraphic(imagePaste);
         contextMenu.getItems().addAll(copyButton, cutButton, pasteButton);
-
-
-        initializeCanvasEventHandlers();
     }
 
     public void setStage(Stage stage) {
@@ -356,6 +410,51 @@ public class DrawSnapController {
         invoker.setCommand(new FrontToBackCommand(forme));
         invoker.executeCommand();
         updateState(true);
+    }
+
+    /**
+     * Metodo per modificare lo zoom con il livello selezionato
+     * @param event -> evento che causa il cambio di zoom
+     */
+    @FXML
+    void zoomChangePressed(ActionEvent event) {
+        int selectedIndex = zoom.getSelectionModel().getSelectedIndex();
+        if(selectedIndex >= 0){
+            currentZoomIndex = selectedIndex;
+            invoker.setCommand(new ZoomCommand(canvas, zoomLevels, currentZoomIndex));
+            invoker.executeCommand();
+            redrawAll();
+        }
+    }
+
+    /**
+     * Metodo per aumentare lo zoom di un livello
+     * @param event -> evento che causa l'aumento di zoom
+     */
+    @FXML
+    void zoomInPressed(ActionEvent event) {
+        if(currentZoomIndex < zoomLevels.length - 1 ){
+            currentZoomIndex++;
+            invoker.setCommand(new ZoomCommand(canvas, zoomLevels, currentZoomIndex));
+            invoker.executeCommand();
+            zoom.getSelectionModel().select(currentZoomIndex);
+            redrawAll();
+        }
+    }
+
+    /**
+     * Metodo per diminuire lo zoom di un livello
+     * @param event -> evento che causa la riduzione di zoom
+     */
+    @FXML
+    void zoomOutPressed(ActionEvent event) {
+        if(currentZoomIndex > 0){
+            currentZoomIndex--;
+            invoker.setCommand(new ZoomCommand(canvas, zoomLevels, currentZoomIndex));
+            invoker.executeCommand();
+            zoom.getSelectionModel().select(currentZoomIndex);
+            redrawAll();
+        }
     }
 
     /**
