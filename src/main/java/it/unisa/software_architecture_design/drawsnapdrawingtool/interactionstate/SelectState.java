@@ -93,13 +93,11 @@ public class SelectState implements DrawingState{
         while (it.hasNext()) {
             Forma f = it.next();
             if (f instanceof FormaSelezionataDecorator) {
-                Forma formaOriginale = ((FormaSelezionataDecorator) f).getForma();
-
                 double newX = mouseX - offsetX;
                 double newY = mouseY - offsetY;
 
-                formaOriginale.setCoordinataX(newX);
-                formaOriginale.setCoordinataY(newY);
+                f.setCoordinataX(newX);
+                f.setCoordinataY(newY);
                 break; // Presupponendo una sola forma selezionata
             }
         }

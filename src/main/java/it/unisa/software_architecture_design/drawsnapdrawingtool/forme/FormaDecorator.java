@@ -25,6 +25,15 @@ public abstract class FormaDecorator extends Forma{
         return formaDecorata.getCoordinataX();
     }
 
+    public void setCoordinataY(double coordinataY) {
+        formaDecorata.setCoordinataY(coordinataY);
+    }
+
+    public void setCoordinataX(double coordinataX) {
+        formaDecorata.setCoordinataX(coordinataX);
+    }
+
+
     @Override
     public boolean confrontaAttributi(Forma forma) {
         FormaDecorator decorator = (FormaDecorator) forma;
