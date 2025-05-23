@@ -9,6 +9,8 @@ import it.unisa.software_architecture_design.drawsnapdrawingtool.memento.DrawSna
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -18,12 +20,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class DrawSnapController {
@@ -487,6 +488,56 @@ public class DrawSnapController {
         invoker.executeCommand();
         updateState(false);
         canvas.requestFocus();
+    }
+
+    /**
+     * Metodo per invocare il comando di ripristino dello stato precedente dell'applicazione
+     * @param event -> evento di pressione del mouse sul tasto undo
+     */
+    @FXML
+    void changeFillColorPressed(ActionEvent event) {
+        // Creazione del Dialog
+        Dialog<Color> dialog = new Dialog<>();
+        dialog.setTitle("Seleziona Colore");
+        dialog.setHeaderText("Scegli un colore per il riempimento:");
+
+        // Impostazione dell'interfaccia del dialog
+        Label colorLabel = new Label("Colore di riempimento:");
+        colorLabel.setStyle("-fx-font-size: 16px;");
+        ColorPicker colorPicker = new ColorPicker(Color.WHITE); // Imposta colore di default
+
+        VBox dialogContent = new VBox(10, colorLabel, colorPicker);
+        dialogContent.setAlignment(Pos.CENTER);
+        dialogContent.setPadding(new Insets(20));
+
+        dialog.getDialogPane().setContent(dialogContent);
+        dialog.getDialogPane().setMinWidth(300);
+        dialog.getDialogPane().setMinHeight(200);
+
+        // Aggiunta dei pulsanti OK e Annulla
+        ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
+
+        // Impostazione del comportamento alla conferma
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == confirmButton) {
+                System.out.println("colore scelto: " + colorPicker.getValue());
+                return colorPicker.getValue(); // Restituisce il colore scelto
+            }
+            System.out.println("colore non scelto");
+            return null; // Nessun colore scelto
+        });
+
+        // Mostra il dialog e gestisce il risultato
+        Optional<Color> result = dialog.showAndWait();
+        result.ifPresent(coloreSelezionato -> {
+            System.out.println("azione colore scelto");
+            invoker.setCommand(new ChangeFillColorCommand(forme, coloreSelezionato));
+            invoker.executeCommand();
+            updateState(true);
+            System.out.println("Colore selezionato: " + coloreSelezionato.toString());
+        });
     }
 
 }
