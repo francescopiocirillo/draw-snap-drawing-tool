@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DrawSnapModelTest {
 
     @Test
-    void testSaveToMemento() {
+    void testSaveToMementoEllisseDecorato() {
         DrawSnapModel model = new DrawSnapModel();
 
         Ellisse ellisse = new Ellisse(100, 100, 50, 0, Color.BLUE, 80, Color.YELLOW);
@@ -50,4 +50,68 @@ class DrawSnapModelTest {
         assertEquals(ellisse.getColore(), ellisseSalvata.getColore());
         assertEquals(ellisse.getColoreInterno(), ellisseSalvata.getColoreInterno());
     }
+
+    @Test
+    void testSaveToMementoModelVuoto() {
+        DrawSnapModel model = new DrawSnapModel();
+
+        DrawSnapMemento memento = model.saveToMemento();
+
+        assertTrue(memento.getSavedState().isEmpty(), "il memento dovrebbe essere vuoto visto che il model è vuoto");
+    }
+
+    @Test
+    void testSaveToMementoMultepliciForme() {
+        DrawSnapModel model = new DrawSnapModel();
+
+        Ellisse e1 = new Ellisse(10, 20, 30, 0, Color.RED, 40, Color.BLUE);
+        Ellisse e2 = new Ellisse(50, 60, 70, 0, Color.GREEN, 80, Color.YELLOW);
+        model.add(e1);
+        model.add(e2);
+
+        DrawSnapMemento memento = model.saveToMemento();
+
+        List<Forma> saved = memento.getSavedState();
+        assertEquals(2, saved.size());
+        assertTrue(saved.get(0) instanceof Ellisse);
+        assertTrue(saved.get(1) instanceof Ellisse);
+    }
+
+    @Test
+    void testSaveToMementoRimuoveDecoratorDaMultepliciForme() {
+        DrawSnapModel model = new DrawSnapModel();
+
+        Ellisse e1 = new Ellisse(10, 20, 30, 0, Color.RED, 40, Color.BLUE);
+        Ellisse e2 = new Ellisse(50, 60, 70, 0, Color.GREEN, 80, Color.YELLOW);
+        model.add(e1);
+        model.add(e2);
+
+        model.selezionaForma(e1);
+        model.selezionaForma(e2);
+
+        DrawSnapMemento memento = model.saveToMemento();
+
+        for (Forma f : memento.getSavedState()) {
+            assertFalse(f instanceof FormaSelezionataDecorator, "FormaSelezionataDecorator dovrebbe essere rimosso");
+        }
+    }
+
+    @Test
+    void testSaveToMementoDeepCopy() {
+        DrawSnapModel model = new DrawSnapModel();
+
+        Ellisse original = new Ellisse(10, 20, 30, 0, Color.BLACK, 40, Color.WHITE);
+        model.add(original);
+
+        DrawSnapMemento memento = model.saveToMemento();
+        Ellisse saved = (Ellisse) memento.getSavedState().get(0);
+
+        // modifica dell'originale
+        original.setColoreInterno(Color.RED);
+
+        // verifica che il memento non è impattato dalla modifica dell'originale
+        assertNotEquals(original.getColoreInterno(), saved.getColoreInterno(),
+                "Memento dovrebbe conservare una deep copy, non una reference");
+    }
+
 }
