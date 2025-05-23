@@ -21,7 +21,9 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class DrawSnapController {
@@ -49,6 +51,10 @@ public class DrawSnapController {
     private ImageView imageCut;
     private ImageView imagePaste;
 
+    //Attributi barra secondaria
+    @FXML
+    private ComboBox<Double> zoom;
+
     /*
      * Attributi per i bottoni
      */
@@ -70,6 +76,7 @@ public class DrawSnapController {
     private Invoker invoker = null;
     private double lastClickX = -1;
     private double lastClickY = -1;
+    private final Double[] zoomLevels = {0.5, 1.0, 1.5, 2.0};
 
 
 
@@ -114,28 +121,9 @@ public class DrawSnapController {
             selectButton.getStyleClass().add("selected");
         });
 
-        //inizializzazione menu contestuale per l'operazione di incolla
-        contextMenu = new ContextMenu();
-        copyButton = new MenuItem("Copia");
-        cutButton = new MenuItem("Taglia");
-        pasteButton = new MenuItem("Incolla");
-        pasteButton.setOnAction(this::onPastePressed);
-        copyButton.setOnAction(this::onCopyPressed);
-        cutButton.setOnAction(this::onCutPressed);
-        imageCopy = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/copy3.png")));
-        imageCut = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/taglia.png")));
-        imagePaste = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/paste.png")));
-        imageCopy.setFitWidth(16);
-        imageCut.setFitWidth(16);
-        imagePaste.setFitWidth(16);
-        imageCopy.setFitHeight(16);
-        imageCut.setFitHeight(16);
-        imagePaste.setFitHeight(16);
-        copyButton.setGraphic(imageCopy);
-        cutButton.setGraphic(imageCut);
-        pasteButton.setGraphic(imagePaste);
-        contextMenu.getItems().addAll(copyButton, cutButton, pasteButton);
+        initializeContextMenu();
 
+        initializeZoom();
 
         initializeCanvasEventHandlers();
     }
@@ -156,6 +144,71 @@ public class DrawSnapController {
         canvas.setOnMousePressed(this::handleMousePressed);
         canvas.setOnMouseDragged(this::handleMouseDragged);
         canvas.setOnMouseReleased(this::handleMouseReleased);
+    }
+
+    /**
+     * Inizializza gli elementi grafici per lo {@code zoom}
+     */
+    private void initializeZoom(){
+        zoom.getItems().addAll(zoomLevels);
+        zoom.setValue(1.0);
+        zoom.setButtonCell(new ListCell<>(){
+            private final ImageView zoomImage = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/zoom.png")));
+            {
+                zoomImage.setFitWidth(16);
+                zoomImage.setFitHeight(16);
+            }
+
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                }else{
+                    setText((int) (item*100) + "%");
+                    setGraphic(zoomImage);
+                }
+            }
+        });
+
+        zoom.setCellFactory(lv -> new ListCell<Double>(){
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                }else{
+                    setText(String.format("%.0f%%", item*100));
+                }
+            }
+        });
+    }
+
+    /**
+     * Inizializza gli elementi grafici del menu contestuale
+     */
+    private void initializeContextMenu() {
+        contextMenu = new ContextMenu();
+        copyButton = new MenuItem("Copia");
+        cutButton = new MenuItem("Taglia");
+        pasteButton = new MenuItem("Incolla");
+        pasteButton.setOnAction(this::onPastePressed);
+        copyButton.setOnAction(this::onCopyPressed);
+        cutButton.setOnAction(this::onCutPressed);
+        imageCopy = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/copy3.png")));
+        imageCut = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/taglia.png")));
+        imagePaste = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/paste.png")));
+        imageCopy.setFitWidth(16);
+        imageCut.setFitWidth(16);
+        imagePaste.setFitWidth(16);
+        imageCopy.setFitHeight(16);
+        imageCut.setFitHeight(16);
+        imagePaste.setFitHeight(16);
+        copyButton.setGraphic(imageCopy);
+        cutButton.setGraphic(imageCut);
+        pasteButton.setGraphic(imagePaste);
+        contextMenu.getItems().addAll(copyButton, cutButton, pasteButton);
     }
 
     /**
