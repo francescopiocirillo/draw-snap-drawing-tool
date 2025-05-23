@@ -77,6 +77,7 @@ public class DrawSnapController {
     private double lastClickX = -1;
     private double lastClickY = -1;
     private final Double[] zoomLevels = {0.5, 1.0, 1.5, 2.0};
+    private int currentZoomIndex = 1;
 
 
 
@@ -151,7 +152,7 @@ public class DrawSnapController {
      */
     private void initializeZoom(){
         zoom.getItems().addAll(zoomLevels);
-        zoom.setValue(1.0);
+        zoom.setValue(zoomLevels[currentZoomIndex]);
         zoom.setButtonCell(new ListCell<>(){
             private final ImageView zoomImage = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/zoom.png")));
             {
@@ -395,6 +396,51 @@ public class DrawSnapController {
         invoker.setCommand(new FrontToBackCommand(forme));
         invoker.executeCommand();
         redrawAll();
+    }
+
+    /**
+     * Metodo per modificare lo zoom con il livello selezionato
+     * @param event -> evento che causa il cambio di zoom
+     */
+    @FXML
+    void zoomChangePressed(ActionEvent event) {
+        int selectedIndex = zoom.getSelectionModel().getSelectedIndex();
+        if(selectedIndex >= 0){
+            currentZoomIndex = selectedIndex;
+            invoker.setCommand(new ZoomCommand(canvas, zoomLevels, currentZoomIndex));
+            invoker.executeCommand();
+            redrawAll();
+        }
+    }
+
+    /**
+     * Metodo per aumentare lo zoom di un livello
+     * @param event -> evento che causa l'aumento di zoom
+     */
+    @FXML
+    void zoomInPressed(ActionEvent event) {
+        if(currentZoomIndex < zoomLevels.length - 1 ){
+            currentZoomIndex++;
+            invoker.setCommand(new ZoomCommand(canvas, zoomLevels, currentZoomIndex));
+            invoker.executeCommand();
+            zoom.getSelectionModel().select(currentZoomIndex);
+            redrawAll();
+        }
+    }
+
+    /**
+     * Metodo per diminuire lo zoom di un livello
+     * @param event -> evento che causa la riduzione di zoom
+     */
+    @FXML
+    void zoomOutPressed(ActionEvent event) {
+        if(currentZoomIndex > 0){
+            currentZoomIndex--;
+            invoker.setCommand(new ZoomCommand(canvas, zoomLevels, currentZoomIndex));
+            invoker.executeCommand();
+            zoom.getSelectionModel().select(currentZoomIndex);
+            redrawAll();
+        }
     }
 
 
