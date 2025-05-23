@@ -482,6 +482,7 @@ public class DrawSnapController {
         invoker.setCommand(new UndoCommand(forme, history));
         invoker.executeCommand();
         updateState(false);
+        canvas.requestFocus();
     }
 
 }
