@@ -3,12 +3,12 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionsta
 import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Linea;
+import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseEvent;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * La classe {@code SelectState} rappresenta lo stato di selezione e per mezzo del Pattern State
@@ -22,11 +22,14 @@ public class SelectState implements DrawingState{
     private double offsetX;
     private double offsetY;
     private ToolBar toolBarFX; // barra in alto delle modifiche
-
+    private Button changeFillColorButton;
     /*
      * Costruttore
      */
-    public SelectState(ToolBar toolBarFX) { this.toolBarFX = toolBarFX; }
+    public SelectState(ToolBar toolBarFX, Button changeFillColorButton) {
+        this.toolBarFX = toolBarFX;
+        this.changeFillColorButton = changeFillColorButton;
+    }
 
     /*
      * Logica della classe
@@ -67,6 +70,7 @@ public class SelectState implements DrawingState{
         }
 
         forme.deselezionaEccetto(formaSelezionata);
+        disattivaChangeFillColorButton(formaSelezionata);
         return false;
     }
 
@@ -76,6 +80,17 @@ public class SelectState implements DrawingState{
     public void disattivaToolBar() {
         if(toolBarFX != null) {
             toolBarFX.setDisable(true); //disabilita la barra in alto delle modifiche
+        }
+    }
+
+    public void disattivaChangeFillColorButton(Forma formaSelezionata) {
+        if(formaSelezionata != null) {
+            Forma formaDecorata = ((FormaSelezionataDecorator)formaSelezionata).getForma();
+            if (formaDecorata instanceof Linea) {
+                changeFillColorButton.setDisable(true);
+            } else {
+                changeFillColorButton.setDisable(false);
+            }
         }
     }
 

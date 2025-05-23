@@ -27,7 +27,7 @@ class SelectStateTest {
      */
     @BeforeEach
     public void setUp() {
-        selectState = new SelectState( null );
+        selectState = new SelectState( null, null );
     }
 
     /**

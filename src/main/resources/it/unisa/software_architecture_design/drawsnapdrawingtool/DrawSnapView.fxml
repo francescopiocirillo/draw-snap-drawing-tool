@@ -43,7 +43,7 @@
                      </graphic></Button>
                   <Button id="button" alignment="TOP_CENTER" minWidth="107.0" mnemonicParsing="false" onAction="#onBackToFrontPressed" prefHeight="35.0" prefWidth="110.0">
                      <graphic>
-                        <ImageView fitHeight="28.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="31.0" fitWidth="51.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@images/inPrimoPiano.png" />
                            </image>
@@ -59,7 +59,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button id="button" alignment="TOP_CENTER" layoutX="353.0" layoutY="9.0" minWidth="107.0" mnemonicParsing="false" onAction="#changeFillColorPressed" prefHeight="35.0" prefWidth="110.0">
+                  <Button id="button" fx:id="changeFillColorButton" alignment="TOP_CENTER" layoutX="353.0" layoutY="9.0" minWidth="107.0" mnemonicParsing="false" onAction="#onChangeFillColorPressed" prefHeight="35.0" prefWidth="110.0">
                      <graphic>
                         <ImageView fitHeight="36.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -68,11 +68,20 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button id="button" alignment="TOP_CENTER" layoutX="353.0" layoutY="6.0" minWidth="107.0" mnemonicParsing="false" onAction="#changeOutlineColorPressed" prefHeight="35.0" prefWidth="110.0">
+                  <Button id="button" alignment="TOP_CENTER" layoutX="353.0" layoutY="6.0" minWidth="107.0" mnemonicParsing="false" onAction="#onChangeOutlineColorPressed" prefHeight="35.0" prefWidth="110.0">
                      <graphic>
                         <ImageView fitHeight="36.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@images/coloreBordo.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button id="button" alignment="TOP_CENTER" layoutX="468.0" layoutY="10.0" minWidth="107.0" mnemonicParsing="false" onAction="#onResizePressed" prefHeight="35.0" prefWidth="110.0">
+                     <graphic>
+                        <ImageView fitHeight="36.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/ridimensiona.png" />
                            </image>
                         </ImageView>
                      </graphic>

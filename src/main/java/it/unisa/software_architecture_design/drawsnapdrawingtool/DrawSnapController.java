@@ -69,6 +69,8 @@ public class DrawSnapController {
     private Button selectButton;
     @FXML
     private ToolBar toolBarFX; // barra in alto delle modifiche
+    @FXML
+    private Button changeFillColorButton;
     private List<Button> bottoniBarraPrincipale = null;
 
     /*
@@ -90,7 +92,7 @@ public class DrawSnapController {
     @FXML
     void initialize() {
         gc = canvas.getGraphicsContext2D();
-        drawingContext = new DrawingContext(new SelectState(toolBarFX)); // stato di default, sarà cambiato quando avremo lo stato sposta o seleziona
+        drawingContext = new DrawingContext(new SelectState(toolBarFX, changeFillColorButton)); // stato di default, sarà cambiato quando avremo lo stato sposta o seleziona
         invoker = new Invoker();
         history = new DrawSnapHistory();
 
@@ -341,7 +343,7 @@ public class DrawSnapController {
      * Metodo per passare alla modalità di selezione
      */
     void setSelectMode() {
-        drawingContext.setCurrentState(new SelectState(toolBarFX), forme);
+        drawingContext.setCurrentState(new SelectState(toolBarFX, changeFillColorButton), forme);
         updateState(false);
     }
 
@@ -495,11 +497,11 @@ public class DrawSnapController {
      * @param event -> evento di pressione del mouse sul tasto changeFillColor
      */
     @FXML
-    void changeFillColorPressed(ActionEvent event) {
+    void onChangeFillColorPressed(ActionEvent event) {
         // Creazione del Dialog
         Dialog<Color> dialog = new Dialog<>();
         dialog.setTitle("Seleziona Colore");
-        dialog.setHeaderText("Scegli un colore per il riempimento:");
+        dialog.setHeaderText("Vuoi cambiare il colore di riempimento?");
 
         // Impostazione dell'interfaccia del dialog
         Label colorLabel = new Label("Colore di riempimento:");
@@ -545,11 +547,11 @@ public class DrawSnapController {
      * @param event -> evento di pressione del mouse sul tasto undo
      */
     @FXML
-    void changeOutlineColorPressed(ActionEvent event) {
+    void onChangeOutlineColorPressed(ActionEvent event) {
         // Creazione del Dialog
         Dialog<Color> dialog = new Dialog<>();
         dialog.setTitle("Seleziona Colore");
-        dialog.setHeaderText("Scegli un colore per il contorno:");
+        dialog.setHeaderText("Vuoi cambiare il colore di contorno?");
 
         // Impostazione dell'interfaccia del dialog
         Label colorLabel = new Label("Colore di contorno:");
@@ -588,5 +590,14 @@ public class DrawSnapController {
             updateState(true);
             System.out.println("Colore selezionato: " + coloreSelezionato.toString());
         });
+    }
+
+    @FXML
+    public void onResizePressed(ActionEvent event) {
+        // Creazione del Dialog
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Seleziona Dimensioni");
+        dialog.setHeaderText("Vuoi cambiare le dimensioni della figura?");
+
     }
 }
