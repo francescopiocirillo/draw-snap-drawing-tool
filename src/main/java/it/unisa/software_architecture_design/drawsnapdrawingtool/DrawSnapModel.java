@@ -341,4 +341,20 @@ public class DrawSnapModel implements Serializable {
             }
         }
     }
+
+    /**
+     * Cambia il colore del contorno della figura selezionata con @colore.
+     * @param colore colore deciso dall'utente per aggiornare la figura selezionata
+     */
+    public void changeOutlineColor(Color colore) {
+        System.out.println("model: " + colore);
+
+        for(Forma f:forme){
+            if(f instanceof FormaSelezionataDecorator){
+
+                System.out.println("colore aggiornato");
+                ((FormaSelezionataDecorator) f).getForma().setColore(colore);
+            }
+        }
+    }
 }
