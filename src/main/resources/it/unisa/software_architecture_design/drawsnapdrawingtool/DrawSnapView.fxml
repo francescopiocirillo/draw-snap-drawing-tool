@@ -154,7 +154,7 @@
                               <Insets left="80.0" right="80.0" />
                            </HBox.margin>
                         </HBox>
-                        <HBox id="barra" alignment="CENTER" prefWidth="200.0" spacing="30.0">
+                        <HBox id="barra" alignment="CENTER" prefWidth="200.0" spacing="10.0">
                            <children>
                               <Button id="button" alignment="CENTER" mnemonicParsing="false" onAction="#zoomInPressed" text="+" textAlignment="CENTER">
                                  <font>
