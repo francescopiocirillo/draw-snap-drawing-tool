@@ -439,7 +439,7 @@ public class DrawSnapController {
             currentZoomIndex = selectedIndex;
             invoker.setCommand(new ZoomCommand(canvas, zoomLevels, currentZoomIndex));
             invoker.executeCommand();
-            redrawAll();
+            updateState(false);
         }
     }
 
@@ -454,7 +454,7 @@ public class DrawSnapController {
             invoker.setCommand(new ZoomCommand(canvas, zoomLevels, currentZoomIndex));
             invoker.executeCommand();
             zoom.getSelectionModel().select(currentZoomIndex);
-            redrawAll();
+            updateState(false);
         }
     }
 
@@ -469,7 +469,7 @@ public class DrawSnapController {
             invoker.setCommand(new ZoomCommand(canvas, zoomLevels, currentZoomIndex));
             invoker.executeCommand();
             zoom.getSelectionModel().select(currentZoomIndex);
-            redrawAll();
+            updateState(false);
         }
     }
 
