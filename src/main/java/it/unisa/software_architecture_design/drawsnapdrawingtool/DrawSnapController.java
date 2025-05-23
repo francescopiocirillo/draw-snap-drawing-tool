@@ -491,8 +491,8 @@ public class DrawSnapController {
     }
 
     /**
-     * Metodo per invocare il comando di ripristino dello stato precedente dell'applicazione
-     * @param event -> evento di pressione del mouse sul tasto undo
+     * Metodo per invocare il comando di cambio del colore interno della figura
+     * @param event -> evento di pressione del mouse sul tasto changeFillColor
      */
     @FXML
     void changeFillColorPressed(ActionEvent event) {
@@ -540,4 +540,53 @@ public class DrawSnapController {
         });
     }
 
+    /**
+     * Metodo per invocare il comando di ripristino dello stato precedente dell'applicazione
+     * @param event -> evento di pressione del mouse sul tasto undo
+     */
+    @FXML
+    void changeOutlineColorPressed(ActionEvent event) {
+        // Creazione del Dialog
+        Dialog<Color> dialog = new Dialog<>();
+        dialog.setTitle("Seleziona Colore");
+        dialog.setHeaderText("Scegli un colore per il contorno:");
+
+        // Impostazione dell'interfaccia del dialog
+        Label colorLabel = new Label("Colore di contorno:");
+        colorLabel.setStyle("-fx-font-size: 16px;");
+        ColorPicker colorPicker = new ColorPicker(Color.WHITE); // Imposta colore di default
+
+        VBox dialogContent = new VBox(10, colorLabel, colorPicker);
+        dialogContent.setAlignment(Pos.CENTER);
+        dialogContent.setPadding(new Insets(20));
+
+        dialog.getDialogPane().setContent(dialogContent);
+        dialog.getDialogPane().setMinWidth(300);
+        dialog.getDialogPane().setMinHeight(200);
+
+        // Aggiunta dei pulsanti OK e Annulla
+        ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
+
+        // Impostazione del comportamento alla conferma
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == confirmButton) {
+                System.out.println("colore scelto: " + colorPicker.getValue());
+                return colorPicker.getValue(); // Restituisce il colore scelto
+            }
+            System.out.println("colore non scelto");
+            return null; // Nessun colore scelto
+        });
+
+        // Mostra il dialog e gestisce il risultato
+        Optional<Color> result = dialog.showAndWait();
+        result.ifPresent(coloreSelezionato -> {
+            System.out.println("azione colore scelto");
+            invoker.setCommand(new ChangeOutlineColorCommand(forme, coloreSelezionato));
+            invoker.executeCommand();
+            updateState(true);
+            System.out.println("Colore selezionato: " + coloreSelezionato.toString());
+        });
+    }
 }
