@@ -156,8 +156,8 @@ public class DrawSnapController {
         zoom.setButtonCell(new ListCell<>(){
             private final ImageView zoomImage = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/zoom.png")));
             {
-                zoomImage.setFitWidth(16);
-                zoomImage.setFitHeight(16);
+                zoomImage.setFitWidth(24);
+                zoomImage.setFitHeight(24);
             }
 
             @Override
@@ -197,9 +197,9 @@ public class DrawSnapController {
         pasteButton.setOnAction(this::onPastePressed);
         copyButton.setOnAction(this::onCopyPressed);
         cutButton.setOnAction(this::onCutPressed);
-        imageCopy = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/copy3.png")));
+        imageCopy = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/copia.png")));
         imageCut = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/taglia.png")));
-        imagePaste = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/paste.png")));
+        imagePaste = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/incolla.png")));
         imageCopy.setFitWidth(16);
         imageCut.setFitWidth(16);
         imagePaste.setFitWidth(16);
