@@ -100,6 +100,9 @@ public class DrawSnapController {
         Platform.runLater(() -> {
             scrollPane.setHvalue(0.5);
             scrollPane.setVvalue(0.5);
+            // in questo modo si può scegliere manualmente quale bottone deve essere in focus al caricamento
+            // dell'app, altrimenti JavaFX mette in focus il primo controllo che rileva
+            canvas.requestFocus();
         });
 
         // inizializzazione bottoni per la selezione forma
@@ -124,6 +127,7 @@ public class DrawSnapController {
             setSelectMode();
             selectButton.getStyleClass().add("selected");
         });
+        selectButton.getStyleClass().add("selected");
 
         initializeContextMenu();
 
