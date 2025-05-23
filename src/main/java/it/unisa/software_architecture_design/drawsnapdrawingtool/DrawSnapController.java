@@ -533,13 +533,6 @@ public class DrawSnapController {
             invoker.executeCommand();
             updateState(true);
             System.out.println("Colore selezionato: " + coloreSelezionato.toString());
-            // Esempio: applica il colore a una figura
-            // figura.setFill(coloreSelezionato);
-            /**
-             * il Model deve avere un metodo che prende un colore e lo assegna alla figura selezionata
-             * un Command tipo changeFillColorCommand, alla creazione si prende il colore nuovo e il Model
-             * e quando viene chiamato execute chiama il metodo del Model dandogli il colore
-             */
         });
     }
 
