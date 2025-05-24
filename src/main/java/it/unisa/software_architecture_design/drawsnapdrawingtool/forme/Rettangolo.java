@@ -63,6 +63,12 @@ public class Rettangolo extends Forma  {
 
     public void setAltezza(double altezza) {
         this.altezza = altezza;
+        updateVertici();
+    }
+
+    public void setLarghezza(double larghezza) {
+        super.setLarghezza(larghezza);
+        updateVertici();
     }
 
     public Color getColoreInterno() {

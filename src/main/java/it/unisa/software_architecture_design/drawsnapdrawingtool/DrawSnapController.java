@@ -2,6 +2,8 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool;
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.commands.*;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Linea;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawState;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawingContext;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.SelectState;
@@ -594,10 +596,79 @@ public class DrawSnapController {
 
     @FXML
     public void onResizePressed(ActionEvent event) {
-        // Creazione del Dialog
+        Forma tipoForma = forme.getFormaSelezionata();
         Dialog<Void> dialog = new Dialog<>();
-        dialog.setTitle("Seleziona Dimensioni");
+        dialog.setTitle("Ridimensiona Figura");
         dialog.setHeaderText("Vuoi cambiare le dimensioni della figura?");
 
+        VBox contentBox = new VBox(15);
+        contentBox.setPadding(new Insets(20));
+
+        // Spinner per dimensioni
+        Spinner<Double> spinnerAltezza = new Spinner<>(10.0, 500.0, 100.0, 1.0);
+        Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, 100.0, 1.0);
+
+        spinnerAltezza.setEditable(true);
+        spinnerLarghezza.setEditable(true);
+
+        VBox dimensioniBox = new VBox(10);
+        dimensioniBox.setAlignment(Pos.CENTER);
+
+        if ( ( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea ) {
+            System.out.println("tipoForma: " + tipoForma);
+            dimensioniBox.getChildren().addAll(
+                    new Label("Lunghezza:"), spinnerLarghezza
+            );
+        } else {
+            dimensioniBox.getChildren().addAll(
+                    new Label("Altezza:"), spinnerAltezza,
+                    new Label("Larghezza:"), spinnerLarghezza
+            );
+        }
+
+        contentBox.getChildren().add(dimensioniBox);
+        dialog.getDialogPane().setContent(contentBox);
+        dialog.getDialogPane().setMinWidth(400);
+
+        // Pulsanti di conferma e annullamento
+        ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
+
+        // Impostazione del comportamento alla conferma
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == confirmButton) {
+                if (tipoForma instanceof Linea) {
+                    double lunghezza = spinnerLarghezza.getValue();
+                    invoker.setCommand(new ResizeCommand(forme, spinnerLarghezza.getValue(), 0));
+                    invoker.executeCommand();
+                    updateState(true);
+                    System.out.println("Nuova Lunghezza: " + lunghezza);
+                } else {
+                    double altezza = spinnerAltezza.getValue();
+                    double larghezza = spinnerLarghezza.getValue();
+                    invoker.setCommand(new ResizeCommand(forme, spinnerLarghezza.getValue(), spinnerAltezza.getValue()));
+                    invoker.executeCommand();
+                    updateState(true);
+                    System.out.println("Nuova Altezza: " + altezza);
+                    System.out.println("Nuova Larghezza: " + larghezza);
+                }
+            }
+            return null;
+        });
+
+        // Mostra il dialog e gestisce il risultato
+        Optional<Void> result = dialog.showAndWait();
+        result.ifPresent(ignored -> {
+            if (tipoForma instanceof Linea) {
+                invoker.setCommand(new ResizeCommand(forme, spinnerLarghezza.getValue(), 0));
+                invoker.executeCommand();
+                updateState(true);
+            } else {
+                invoker.setCommand(new ResizeCommand(forme, spinnerLarghezza.getValue(), spinnerAltezza.getValue()));
+                invoker.executeCommand();
+                updateState(true);
+            }
+        });
     }
 }

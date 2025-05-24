@@ -324,7 +324,6 @@ public class DrawSnapModel implements Serializable {
      */
     public void changeFillColor(Color colore) {
         System.out.println("model: " + colore);
-
         for(Forma f:forme){
             if(f instanceof FormaSelezionataDecorator){
                 System.out.println("forma selezionata nel command" );
@@ -354,6 +353,28 @@ public class DrawSnapModel implements Serializable {
 
                 System.out.println("colore aggiornato");
                 ((FormaSelezionataDecorator) f).getForma().setColore(colore);
+            }
+        }
+    }
+
+    public void resize(double primaDimensione, double secondaDimensione) {
+        System.out.println("model: " );
+        for(Forma f:forme){
+            if(f instanceof FormaSelezionataDecorator){
+                System.out.println("cambio larghezza della figura in"+ primaDimensione );
+                FormaSelezionataDecorator formaCorrente = (FormaSelezionataDecorator)f;
+                formaCorrente.getForma().setLarghezza(primaDimensione);
+                if(formaCorrente.getForma() instanceof Ellisse){
+                    Ellisse ellisse = (Ellisse) formaCorrente.getForma();
+                    ellisse.setAltezza(secondaDimensione);
+                    System.out.println("cambio altezza dell'ellissi in " + secondaDimensione);
+                } else if (formaCorrente.getForma() instanceof Rettangolo) {
+                    Rettangolo rettangolo = (Rettangolo) formaCorrente.getForma();
+                    rettangolo.setAltezza(secondaDimensione);
+                    System.out.println("cambio altezza del rettangolo in " + secondaDimensione);
+                } else {
+                    System.out.println("la linea non ha altezza");
+                }
             }
         }
     }

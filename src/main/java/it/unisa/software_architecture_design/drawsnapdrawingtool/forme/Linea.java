@@ -50,6 +50,13 @@ public class Linea extends Forma  {
     }
 
     @Override
+    public void setLarghezza(double larghezza) {
+        super.setLarghezza(larghezza);
+        updateCoordinateYInizioFine();
+        updateCoordinateXInizioFine();
+    }
+
+    @Override
     public void setCoordinataY(double coordinataY) {
         super.setCoordinataY(coordinataY);
         updateCoordinateYInizioFine();
