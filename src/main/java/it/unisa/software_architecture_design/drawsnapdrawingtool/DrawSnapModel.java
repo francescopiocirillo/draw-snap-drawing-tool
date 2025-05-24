@@ -7,7 +7,6 @@ import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Rettangol
 import it.unisa.software_architecture_design.drawsnapdrawingtool.memento.DrawSnapMemento;
 import javafx.scene.paint.Color;
 
-import javax.swing.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -357,21 +356,21 @@ public class DrawSnapModel implements Serializable {
         }
     }
 
-    public void resize(double primaDimensione, double secondaDimensione) {
-        System.out.println("model: " );
+    public void resize(double larghezza, double altezza) {
+        System.out.println("model" );
         for(Forma f:forme){
             if(f instanceof FormaSelezionataDecorator){
-                System.out.println("cambio larghezza della figura in"+ primaDimensione );
+                System.out.println("cambio larghezza della figura in"+ larghezza);
                 FormaSelezionataDecorator formaCorrente = (FormaSelezionataDecorator)f;
-                formaCorrente.getForma().setLarghezza(primaDimensione);
+                formaCorrente.getForma().setLarghezza(larghezza);
                 if(formaCorrente.getForma() instanceof Ellisse){
                     Ellisse ellisse = (Ellisse) formaCorrente.getForma();
-                    ellisse.setAltezza(secondaDimensione);
-                    System.out.println("cambio altezza dell'ellissi in " + secondaDimensione);
+                    ellisse.setAltezza(altezza);
+                    System.out.println("cambio altezza dell'ellissi in " + altezza);
                 } else if (formaCorrente.getForma() instanceof Rettangolo) {
                     Rettangolo rettangolo = (Rettangolo) formaCorrente.getForma();
-                    rettangolo.setAltezza(secondaDimensione);
-                    System.out.println("cambio altezza del rettangolo in " + secondaDimensione);
+                    rettangolo.setAltezza(altezza);
+                    System.out.println("cambio altezza del rettangolo in " + altezza);
                 } else {
                     System.out.println("la linea non ha altezza");
                 }

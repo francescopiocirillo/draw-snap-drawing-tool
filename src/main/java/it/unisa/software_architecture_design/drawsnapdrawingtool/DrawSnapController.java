@@ -594,6 +594,10 @@ public class DrawSnapController {
         });
     }
 
+    /**
+     *
+     * @param event
+     */
     @FXML
     public void onResizePressed(ActionEvent event) {
         Forma tipoForma = forme.getFormaSelezionata();
