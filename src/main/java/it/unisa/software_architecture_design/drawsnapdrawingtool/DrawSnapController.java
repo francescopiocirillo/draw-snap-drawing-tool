@@ -6,6 +6,7 @@ import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSele
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Linea;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawState;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.DrawingContext;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.MoveCanvasState;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate.SelectState;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.memento.DrawSnapHistory;
 import javafx.application.Platform;
@@ -13,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -39,6 +41,10 @@ public class DrawSnapController {
     @FXML
     private AnchorPane canvasContainer;
     @FXML
+    private ScrollBar scrollBarH;
+    @FXML
+    private ScrollBar scrollBarV;
+    @FXML
     private ScrollPane scrollPane;
     private GraphicsContext gc;
     private DrawingContext drawingContext;
@@ -61,6 +67,8 @@ public class DrawSnapController {
     /*
      * Attributi per i bottoni
      */
+    @FXML
+    private Button handButton;
     @FXML
     private Button ellipseButton;
     @FXML
@@ -111,7 +119,12 @@ public class DrawSnapController {
         });
 
         // inizializzazione bottoni per la selezione forma
-        bottoniBarraPrincipale = List.of(ellipseButton, rectangleButton, lineButton, selectButton);
+        bottoniBarraPrincipale = List.of(handButton, ellipseButton, rectangleButton, lineButton, selectButton);
+        handButton.setOnAction(e -> {
+            bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
+            setMoveCanvasMode();
+            handButton.getStyleClass().add("selected");
+        });
         ellipseButton.setOnAction(event -> {
             bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
             setDrawMode(event, Forme.ELLISSE);
@@ -338,6 +351,7 @@ public class DrawSnapController {
      */
     void setDrawMode(ActionEvent event, Forme forma) {
         drawingContext.setCurrentState(new DrawState(forma), forme);
+        canvas.setCursor(Cursor.DEFAULT);
         updateState(false);
     }
 
@@ -346,6 +360,16 @@ public class DrawSnapController {
      */
     void setSelectMode() {
         drawingContext.setCurrentState(new SelectState(toolBarFX, changeFillColorButton), forme);
+        canvas.setCursor(Cursor.DEFAULT);
+        updateState(false);
+    }
+
+    /**
+     * Metodo per passare alla modalità di panning (scorrimento)
+     */
+    void setMoveCanvasMode() {
+        drawingContext.setCurrentState(new MoveCanvasState(scrollPane), forme);
+        canvas.setCursor(Cursor.HAND);
         updateState(false);
     }
 
