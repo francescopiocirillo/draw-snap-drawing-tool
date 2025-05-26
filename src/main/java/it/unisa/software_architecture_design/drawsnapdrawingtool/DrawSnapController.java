@@ -328,6 +328,9 @@ public class DrawSnapController {
         }
     }
 
+    /**
+     * Metodo per disegnare la griglia all'interno del canvas
+     */
     void drawGrid(){
         gc.setStroke(Color.LIGHTGRAY);
         gc.setLineWidth(1);
@@ -721,6 +724,10 @@ public class DrawSnapController {
         });
     }
 
+    /**
+     * Metodo perrendere la griglia visibile e permetterne il disegno
+     * @param event -> evento che ne causa la visualizzazione
+     */
     @FXML
     public void onGridPressed(ActionEvent event) {
         gridVisible = !gridVisible;
