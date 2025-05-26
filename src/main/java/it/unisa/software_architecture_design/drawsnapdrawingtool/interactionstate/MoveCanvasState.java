@@ -1,8 +1,11 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
+import javafx.scene.Cursor;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.canvas.Canvas;
+
 
 /**
  * La classe {@code MoveCanvasState} rappresenta lo stato di movimento sul canva e per mezzo del Pattern State
@@ -13,13 +16,15 @@ public class MoveCanvasState implements DrawingState {
     /*
      * Attributi
      */
+    private final Canvas canvas;
     private final ScrollPane scrollPane;
     private double lastX;
     private double lastY;
     /*
      * Costruttore
      */
-    public MoveCanvasState(ScrollPane scrollPane) {
+    public MoveCanvasState(Canvas canvas, ScrollPane scrollPane) {
+        this.canvas = canvas;
         this.scrollPane = scrollPane;
     }
 
@@ -32,6 +37,7 @@ public class MoveCanvasState implements DrawingState {
     public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme) {
         lastX = event.getSceneX();
         lastY = event.getSceneY();
+        canvas.setCursor(Cursor.CLOSED_HAND);
         return true;
     }
 
@@ -44,33 +50,48 @@ public class MoveCanvasState implements DrawingState {
      */
     @Override
     public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme) {
-        double currentX = event.getSceneX();
-        double currentY = event.getSceneY();
+        double currentSceneX = event.getSceneX();
+        double currentSceneY = event.getSceneY();
 
-        double deltaX = currentX - lastX;
-        double deltaY = currentY - lastY;
+        double deltaX = currentSceneX - lastX;
+        double deltaY = currentSceneY - lastY;
 
-        // Calcolo dei nuovi valori di scorrimento
-        double newHValue = scrollPane.getHvalue() - deltaX / scrollPane.getContent().getBoundsInLocal().getWidth();
-        double newVValue = scrollPane.getVvalue() - deltaY / scrollPane.getContent().getBoundsInLocal().getHeight();
+        double contentWidth = scrollPane.getContent().getBoundsInLocal().getWidth();
+        double contentHeight = scrollPane.getContent().getBoundsInLocal().getHeight();
 
-        // Limita i valori tra 0 e 1
-        scrollPane.setHvalue(Math.max(0, Math.min(1, newHValue)));
-        scrollPane.setVvalue(Math.max(0, Math.min(1, newVValue)));
+        double viewportWidth = scrollPane.getViewportBounds().getWidth();
+        double viewportHeight = scrollPane.getViewportBounds().getHeight();
 
-        lastX = currentX;
-        lastY = currentY;
+        double hDelta = deltaX / (contentWidth - viewportWidth);
+        double vDelta = deltaY / (contentHeight - viewportHeight);
+
+        // Applica lo spostamento ai valori di scorrimento, limitandoli all'intervallo [0, 1]
+        scrollPane.setHvalue(clamp(scrollPane.getHvalue() - hDelta, 0, 1));
+        scrollPane.setVvalue(clamp(scrollPane.getVvalue() - vDelta, 0, 1));
+
+        lastX = currentSceneX;
+        lastY = currentSceneY;
 
         return true;
     }
-
     /**
-     * METODO MOMENTANEAMENTE NON NECESSARI0
+     * Gestisce l'evento di rilascio del mouse sul canvas e rende il cursore una manina aperta
      * @param event evento di rilascio del mouse
      */
     @Override
     public boolean handleMouseReleased(MouseEvent event) {
-        //NA
-        return false;
+        canvas.setCursor(Cursor.OPEN_HAND);
+        return true;
+    }
+
+    /**
+     * Restringe un valore all'interno di un intervallo specificato.
+     * @param value il valore da limitare
+     * @param min il valore minimo consentito
+     * @param max il valore massimo consentito
+     * @return il valore limitato nell'intervallo [min, max]
+     */
+    private double clamp(double value, double min, double max) {
+        return Math.max(min, Math.min(max, value));
     }
 }

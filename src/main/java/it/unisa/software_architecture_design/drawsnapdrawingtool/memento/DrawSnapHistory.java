@@ -48,4 +48,8 @@ public class DrawSnapHistory {
 
         return previousState;
     }
+
+    public boolean isEmpty(){
+        return history.isEmpty();
+    }
 }

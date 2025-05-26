@@ -81,6 +81,8 @@ public class DrawSnapController {
     private ToolBar toolBarFX; // barra in alto delle modifiche
     @FXML
     private Button changeFillColorButton;
+    @FXML
+    private Button undoButton;
     private List<Button> bottoniBarraPrincipale = null;
 
     /*
@@ -147,6 +149,8 @@ public class DrawSnapController {
             selectButton.getStyleClass().add("selected");
         });
         selectButton.getStyleClass().add("selected");
+
+        undoButton.setDisable(true);
 
         initializeContextMenu();
 
@@ -305,6 +309,7 @@ public class DrawSnapController {
     void updateState(boolean stateChanged){
         if(stateChanged){
             history.saveState(forme.saveToMemento());
+            undoButton.setDisable(false);
         }
         redrawAll();
     }
@@ -363,6 +368,7 @@ public class DrawSnapController {
      * @param mouseEvent
      */
     private void handleMouseReleased(MouseEvent mouseEvent) {
+        drawingContext.handleMouseReleased(mouseEvent);
         if(dragged){
             updateState(dragged);
         }
@@ -392,8 +398,8 @@ public class DrawSnapController {
      * Metodo per passare alla modalità di panning (scorrimento)
      */
     void setMoveCanvasMode() {
-        drawingContext.setCurrentState(new MoveCanvasState(scrollPane), forme);
-        canvas.setCursor(Cursor.HAND);
+        drawingContext.setCurrentState(new MoveCanvasState(canvas, scrollPane), forme);
+        canvas.setCursor(Cursor.OPEN_HAND);
         updateState(false);
     }
 
@@ -539,6 +545,10 @@ public class DrawSnapController {
         invoker.setCommand(new UndoCommand(forme, history));
         invoker.executeCommand();
         updateState(false);
+        toolBarFX.setDisable(true);
+        if(history.isEmpty()){
+            undoButton.setDisable(true);
+        }
         canvas.requestFocus();
     }
 
@@ -731,6 +741,6 @@ public class DrawSnapController {
     @FXML
     public void onGridPressed(ActionEvent event) {
         gridVisible = !gridVisible;
-        updateState(true);
+        updateState(false);
     }
 }
