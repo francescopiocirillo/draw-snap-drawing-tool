@@ -93,7 +93,9 @@ public class DrawSnapController {
     private final Double[] zoomLevels = {0.5, 1.0, 1.5, 2.0};
     private int currentZoomIndex = 1;
     private boolean dragged = false;
-
+    private final double canvasWidth = 4096;
+    private final double canvasHeight = 4096;
+    private boolean gridVisible = false;
 
 
     /**
@@ -106,8 +108,7 @@ public class DrawSnapController {
         invoker = new Invoker();
         history = new DrawSnapHistory();
 
-        double canvasWidth = 4096;
-        double canvasHeight = 4096;
+
         canvasContainer.setPrefSize(canvasWidth, canvasHeight);
         // Ritarda l'applicazione ella posizione iniziale del canvas al momento successivo al caricamento della UI
         Platform.runLater(() -> {
@@ -315,10 +316,33 @@ public class DrawSnapController {
      */
     void redrawAll() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight()); // l'area da ripulire è tutto il canvas
+
+        if(gridVisible){
+            drawGrid();
+        }
+
         Iterator<Forma> it = forme.getIteratorForme();
         while (it.hasNext()) {
             Forma f = it.next();
             f.disegna(gc);
+        }
+    }
+
+    /**
+     * Metodo per disegnare la griglia all'interno del canvas
+     */
+    void drawGrid(){
+        gc.setStroke(Color.LIGHTGRAY);
+        gc.setLineWidth(1);
+
+        int spaziatura = 20;
+
+        for(int i = 0; i < canvasWidth; i+=spaziatura){
+            gc.strokeLine(i, 0, i, canvasHeight);
+        }
+
+        for(int i = 0; i<canvasHeight; i+=spaziatura){
+            gc.strokeLine(0, i, canvasWidth, i);
         }
     }
 
@@ -467,7 +491,7 @@ public class DrawSnapController {
      * @param event -> evento che causa il cambio di zoom
      */
     @FXML
-    void zoomChangePressed(ActionEvent event) {
+    void onZoomChangePressed(ActionEvent event) {
         int selectedIndex = zoom.getSelectionModel().getSelectedIndex();
         if(selectedIndex >= 0){
             currentZoomIndex = selectedIndex;
@@ -482,7 +506,7 @@ public class DrawSnapController {
      * @param event -> evento che causa l'aumento di zoom
      */
     @FXML
-    void zoomInPressed(ActionEvent event) {
+    void onZoomInPressed(ActionEvent event) {
         if(currentZoomIndex < zoomLevels.length - 1 ){
             currentZoomIndex++;
             invoker.setCommand(new ZoomCommand(canvas, zoomLevels, currentZoomIndex));
@@ -497,7 +521,7 @@ public class DrawSnapController {
      * @param event -> evento che causa la riduzione di zoom
      */
     @FXML
-    void zoomOutPressed(ActionEvent event) {
+    void onZoomOutPressed(ActionEvent event) {
         if(currentZoomIndex > 0){
             currentZoomIndex--;
             invoker.setCommand(new ZoomCommand(canvas, zoomLevels, currentZoomIndex));
@@ -699,5 +723,15 @@ public class DrawSnapController {
                 updateState(true);
             }
         });
+    }
+
+    /**
+     * Metodo perrendere la griglia visibile e permetterne il disegno
+     * @param event -> evento che ne causa la visualizzazione
+     */
+    @FXML
+    public void onGridPressed(ActionEvent event) {
+        gridVisible = !gridVisible;
+        updateState(true);
     }
 }

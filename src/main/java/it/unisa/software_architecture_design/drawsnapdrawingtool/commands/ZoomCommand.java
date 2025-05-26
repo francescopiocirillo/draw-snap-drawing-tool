@@ -1,7 +1,6 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.commands;
 
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 
 /**
  * La classe {@code ZoomCommand} rappresenta un comando per zoommare il foglio di disegno.

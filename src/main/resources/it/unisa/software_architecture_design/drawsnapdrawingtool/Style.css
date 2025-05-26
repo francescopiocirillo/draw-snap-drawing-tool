@@ -1,7 +1,7 @@
 /*
  *	css per i bottoni
  */
-#button {
+#button, #toggle{
 	-fx-background-color: #bbcbda;
 	-fx-border-radius: 70px;
 	-fx-background-radius: 70px;
@@ -10,7 +10,7 @@
 /*
  *	css per i bottoni quando si passa sopra con il mouse
  */
-#button:hover {
+#button:hover, #toggle:hover{
 	-fx-background-color: #bbcbda;
 	-fx-background-radius: 70px;
 	-fx-scale-x: 1.1;/*Aumento di dimensione*/
@@ -41,6 +41,15 @@
 	-fx-border-width: 2px;
 	-fx-effect: dropshadow(gaussian, #d2e0e8, 10, 0.5, 0, 0);
 }
+
+#toggle:selected{
+	-fx-background-color: #bbcbda;
+	-fx-border-color: #d2e0e8;
+	-fx-effect: dropshadow(gaussian, #d2e0e8, 10, 0.5, 0, 0);
+	-fx-scale-x: 1;
+	-fx-scale-y: 1;
+}
+
 
 /*
  *	css per la barra degli strumenti
