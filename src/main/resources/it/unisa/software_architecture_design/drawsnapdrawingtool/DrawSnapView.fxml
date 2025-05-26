@@ -8,6 +8,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -186,7 +187,7 @@
                         </HBox>
                         <HBox id="barra" alignment="CENTER" prefWidth="200.0" spacing="10.0">
                            <children>
-                              <Button id="button" alignment="CENTER" mnemonicParsing="false" onAction="#zoomInPressed" text="+" textAlignment="CENTER">
+                              <Button id="button" alignment="CENTER" mnemonicParsing="false" onAction="#onZoomInPressed" text="+" textAlignment="CENTER">
                                  <font>
                                     <Font name="System Bold" size="20.0" />
                                  </font>
@@ -194,12 +195,12 @@
                                     <Insets left="20.0" right="5.0" />
                                  </HBox.margin>
                               </Button>
-                              <ComboBox id="button" fx:id="zoom" onAction="#zoomChangePressed">
+                              <ComboBox id="button" fx:id="zoom" onAction="#onZoomChangePressed">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
                               </ComboBox>
-                              <Button id="button" alignment="CENTER" mnemonicParsing="false" onAction="#zoomOutPressed" text="-" textAlignment="CENTER">
+                              <Button id="button" alignment="CENTER" mnemonicParsing="false" onAction="#onZoomOutPressed" text="-" textAlignment="CENTER">
                                  <HBox.margin>
                                     <Insets left="5.0" right="10.0" />
                                  </HBox.margin>
@@ -207,7 +208,7 @@
                                     <Font name="System Bold" size="20.0" />
                                  </font>
                               </Button>
-                              <Button id="button" mnemonicParsing="false">
+                              <ToggleButton id="toggle" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onGridPressed">
                                  <graphic>
                                     <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -218,7 +219,7 @@
                                  <HBox.margin>
                                     <Insets right="20.0" />
                                  </HBox.margin>
-                              </Button>
+                              </ToggleButton>
                            </children>
                         </HBox>
                      </children>
