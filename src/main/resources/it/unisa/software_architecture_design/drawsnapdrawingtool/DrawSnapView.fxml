@@ -100,7 +100,7 @@
                         </AnchorPane>
                      </content>
                   </ScrollPane>
-                  <HBox alignment="CENTER" maxHeight="-Infinity" prefHeight="60.0" spacing="30.0" StackPane.alignment="BOTTOM_CENTER">
+                  <HBox alignment="CENTER" maxHeight="-Infinity" pickOnBounds="false" prefHeight="60.0" spacing="30.0" StackPane.alignment="BOTTOM_CENTER">
                      <children>
                         <HBox id="barra" alignment="CENTER" layoutX="1849.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="60.0" spacing="30.0">
                            <children>
