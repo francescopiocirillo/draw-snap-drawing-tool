@@ -368,6 +368,7 @@ public class DrawSnapController {
      * @param mouseEvent
      */
     private void handleMouseReleased(MouseEvent mouseEvent) {
+        drawingContext.handleMouseReleased(mouseEvent);
         if(dragged){
             updateState(dragged);
         }
@@ -397,8 +398,8 @@ public class DrawSnapController {
      * Metodo per passare alla modalità di panning (scorrimento)
      */
     void setMoveCanvasMode() {
-        drawingContext.setCurrentState(new MoveCanvasState(scrollPane), forme);
-        canvas.setCursor(Cursor.HAND);
+        drawingContext.setCurrentState(new MoveCanvasState(canvas, scrollPane), forme);
+        canvas.setCursor(Cursor.OPEN_HAND);
         updateState(false);
     }
 
