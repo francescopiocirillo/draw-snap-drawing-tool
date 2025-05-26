@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -128,4 +129,101 @@ class DrawSnapControllerTest {
     }
 
 
+    /**
+     * Questo test verifica che il controller, quando chiama {@code redrawAll()} se il parametro
+     * {@code gridVisible} è messo a {@code true} allora viene disegnata più di una volta
+     * una linea per il disegno della griglia.
+     * @throws Exception in caso di errori durante il caricamento della vista o l'accesso riflessivo
+     */
+    @Test
+    void testDrawGrid_WhenGridVisible() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+           try{
+               FXMLLoader loader = new FXMLLoader(getClass().getResource("DrawSnapView.fxml"));
+               Parent root = loader.load();
+               DrawSnapController controller = loader.getController();
+
+               GraphicsContext mockGc = mock(GraphicsContext.class);
+
+               Field gcField = DrawSnapController.class.getDeclaredField("gc");
+               gcField.setAccessible(true);
+               gcField.set(controller, mockGc);
+
+               Field canvasField = DrawSnapController.class.getDeclaredField("canvas");
+               canvasField.setAccessible(true);
+               Canvas canvas = new Canvas(500, 500);
+               canvasField.set(controller, canvas);
+
+               Field formeField = DrawSnapController.class.getDeclaredField("forme");
+               formeField.setAccessible(true);
+               formeField.set(controller, mock(DrawSnapModel.class));
+
+               Field gridVisibleField = DrawSnapController.class.getDeclaredField("gridVisible");
+               gridVisibleField.setAccessible(true);
+               gridVisibleField.set(controller, true);
+
+               controller.redrawAll();
+
+               verify(mockGc, atLeast(1)).strokeLine(anyDouble(), anyDouble(), anyDouble(), anyDouble());
+           }catch(Exception e){
+               fail("Eccezione durante il test: " + e.getMessage());
+           }finally {
+               latch.countDown();
+           }
+        });
+
+        if (!latch.await(5, TimeUnit.SECONDS)) {
+            throw new IllegalStateException("Test non completato entro il timeout");
+        }
+    }
+
+    /**
+     * Questo test verifica che il controller, quando chiama {@code redrawAll()} se il parametro
+     * {@code gridVisible} è messo a {@code false} allora non viene disegnata nemmeno una volta
+     * una linea per il disegno della griglia.
+     * @throws Exception in caso di errori durante il caricamento della vista o l'accesso riflessivo
+     */
+    @Test
+    void testDrawGrid_WhenGridNotVisible() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            try{
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("DrawSnapView.fxml"));
+                Parent root = loader.load();
+                DrawSnapController controller = loader.getController();
+
+                GraphicsContext mockGc = mock(GraphicsContext.class);
+
+                Field gcField = DrawSnapController.class.getDeclaredField("gc");
+                gcField.setAccessible(true);
+                gcField.set(controller, mockGc);
+
+                Field canvasField = DrawSnapController.class.getDeclaredField("canvas");
+                canvasField.setAccessible(true);
+                Canvas canvas = new Canvas(500, 500);
+                canvasField.set(controller, canvas);
+
+                Field formeField = DrawSnapController.class.getDeclaredField("forme");
+                formeField.setAccessible(true);
+                formeField.set(controller, mock(DrawSnapModel.class));
+
+                Field gridVisibleField = DrawSnapController.class.getDeclaredField("gridVisible");
+                gridVisibleField.setAccessible(true);
+                gridVisibleField.set(controller, false);
+
+                controller.redrawAll();
+
+                verify(mockGc, never()).strokeLine(anyDouble(), anyDouble(), anyDouble(), anyDouble());
+            }catch(Exception e){
+                fail("Eccezione durante il test: " + e.getMessage());
+            }finally {
+                latch.countDown();
+            }
+        });
+
+        if (!latch.await(5, TimeUnit.SECONDS)) {
+            throw new IllegalStateException("Test non completato entro il timeout");
+        }
+    }
 }
