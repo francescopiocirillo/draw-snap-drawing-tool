@@ -81,6 +81,8 @@ public class DrawSnapController {
     private ToolBar toolBarFX; // barra in alto delle modifiche
     @FXML
     private Button changeFillColorButton;
+    @FXML
+    private Button undoButton;
     private List<Button> bottoniBarraPrincipale = null;
 
     /*
@@ -147,6 +149,8 @@ public class DrawSnapController {
             selectButton.getStyleClass().add("selected");
         });
         selectButton.getStyleClass().add("selected");
+
+        undoButton.setDisable(true);
 
         initializeContextMenu();
 
@@ -305,6 +309,7 @@ public class DrawSnapController {
     void updateState(boolean stateChanged){
         if(stateChanged){
             history.saveState(forme.saveToMemento());
+            undoButton.setDisable(false);
         }
         redrawAll();
     }
@@ -540,7 +545,9 @@ public class DrawSnapController {
         invoker.executeCommand();
         updateState(false);
         toolBarFX.setDisable(true);
-
+        if(history.isEmpty()){
+            undoButton.setDisable(true);
+        }
         canvas.requestFocus();
     }
 
