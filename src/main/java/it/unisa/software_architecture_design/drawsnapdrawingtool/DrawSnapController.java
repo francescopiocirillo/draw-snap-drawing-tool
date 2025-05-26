@@ -92,7 +92,7 @@ public class DrawSnapController {
     private Invoker invoker = null;
     private double lastClickX = -1;
     private double lastClickY = -1;
-    private final Double[] zoomLevels = {0.5, 1.0, 1.5, 2.0};
+    private final Double[] zoomLevels = {1.0, 1.5, 2.0, 2.5};
     private int currentZoomIndex = 1;
     private boolean dragged = false;
     private final double canvasWidth = 4096;
@@ -179,7 +179,7 @@ public class DrawSnapController {
                     setText(null);
                     setGraphic(null);
                 }else{
-                    setText((int) (item*100) + "%");
+                    setText((int) ((item-0.5)*100) + "%");
                     setGraphic(zoomImage);
                 }
             }
@@ -192,7 +192,7 @@ public class DrawSnapController {
                 if (empty || item == null) {
                     setText(null);
                 }else{
-                    setText(String.format("%.0f%%", item*100));
+                    setText(String.format("%.0f%%", (item-0.5)*100));
                 }
             }
         });
@@ -255,6 +255,7 @@ public class DrawSnapController {
         // alla pressione del mouse si suppone sempre che non si tratta di un drag, solo all'interno del metodo
         // di drag la flag viene asserita
         dragged = false;
+        double scale = canvas.getScaleX();
 
         if (contextMenu.isShowing()) {
             contextMenu.hide();
