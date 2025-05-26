@@ -646,7 +646,7 @@ public class DrawSnapController {
     @FXML
     public void onResizePressed(ActionEvent event) {
         Forma tipoForma = forme.getFormaSelezionata();
-        Dialog<Void> dialog = new Dialog<>();
+        Dialog<Map<String, Double>> dialog = new Dialog<>();
         dialog.setTitle("Ridimensiona Figura");
         dialog.setHeaderText("Vuoi cambiare le dimensioni della figura?");
 
@@ -687,34 +687,33 @@ public class DrawSnapController {
         // Impostazione del comportamento alla conferma
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButton) {
+                Map<String, Double> map = new HashMap<>();
                 if (tipoForma instanceof Linea) {
                     double lunghezza = spinnerLarghezza.getValue();
-                    invoker.setCommand(new ResizeCommand(forme, spinnerLarghezza.getValue(), 0));
-                    invoker.executeCommand();
-                    updateState(true);
+                    map.put("Lunghezza", lunghezza);
                     System.out.println("Nuova Lunghezza: " + lunghezza);
                 } else {
                     double altezza = spinnerAltezza.getValue();
                     double larghezza = spinnerLarghezza.getValue();
-                    invoker.setCommand(new ResizeCommand(forme, spinnerLarghezza.getValue(), spinnerAltezza.getValue()));
-                    invoker.executeCommand();
-                    updateState(true);
+                    map.put("Larghezza", larghezza);
+                    map.put("Altezza", altezza);
                     System.out.println("Nuova Altezza: " + altezza);
                     System.out.println("Nuova Larghezza: " + larghezza);
                 }
+                return map;
             }
             return null;
         });
 
         // Mostra il dialog e gestisce il risultato
-        Optional<Void> result = dialog.showAndWait();
-        result.ifPresent(ignored -> {
+        Optional<Map<String, Double>> result = dialog.showAndWait();
+        result.ifPresent(nuoveDimensioni -> {
             if (tipoForma instanceof Linea) {
-                invoker.setCommand(new ResizeCommand(forme, spinnerLarghezza.getValue(), 0));
+                invoker.setCommand(new ResizeCommand(forme, nuoveDimensioni.get("Lunghezza"), 0));
                 invoker.executeCommand();
                 updateState(true);
             } else {
-                invoker.setCommand(new ResizeCommand(forme, spinnerLarghezza.getValue(), spinnerAltezza.getValue()));
+                invoker.setCommand(new ResizeCommand(forme, nuoveDimensioni.get("Larghezza"), nuoveDimensioni.get("Altezza")));
                 invoker.executeCommand();
                 updateState(true);
             }
