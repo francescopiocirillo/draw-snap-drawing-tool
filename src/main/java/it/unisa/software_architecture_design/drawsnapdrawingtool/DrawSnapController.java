@@ -539,6 +539,8 @@ public class DrawSnapController {
         invoker.setCommand(new UndoCommand(forme, history));
         invoker.executeCommand();
         updateState(false);
+        toolBarFX.setDisable(true);
+
         canvas.requestFocus();
     }
 
@@ -731,6 +733,6 @@ public class DrawSnapController {
     @FXML
     public void onGridPressed(ActionEvent event) {
         gridVisible = !gridVisible;
-        updateState(true);
+        updateState(false);
     }
 }
