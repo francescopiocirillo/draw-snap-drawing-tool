@@ -40,7 +40,7 @@ public class MoveCanvasState implements DrawingState {
         lastX = coordinataX;
         lastY = coordinataY;
         canvas.setCursor(Cursor.CLOSED_HAND);
-        return true;
+        return false;
     }
 
     /**
@@ -73,7 +73,7 @@ public class MoveCanvasState implements DrawingState {
         lastX = coordinataX;
         lastY = coordinataY;
 
-        return true;
+        return false;
     }
     /**
      * Gestisce l'evento di rilascio del mouse sul canvas e rende il cursore una manina aperta
@@ -84,7 +84,7 @@ public class MoveCanvasState implements DrawingState {
     @Override
     public boolean handleMouseReleased(MouseEvent event, double coordinataX, double coordinataY) {
         canvas.setCursor(Cursor.OPEN_HAND);
-        return true;
+        return false;
     }
 
     /**
