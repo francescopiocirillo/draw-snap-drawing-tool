@@ -86,10 +86,16 @@ public class SelectState implements DrawingState{
         if(formaSelezionata != null) {
             Forma formaDecorata = ((FormaSelezionataDecorator)formaSelezionata).getForma();
             if (formaDecorata instanceof Linea) {
-                changeFillColorButton.setDisable(true);
+                changeFillColorButtonDisable(true);
             } else {
-                changeFillColorButton.setDisable(false);
+                changeFillColorButtonDisable(false);
             }
+        }
+    }
+
+    private void changeFillColorButtonDisable(boolean disable) {
+        if(changeFillColorButton != null) {
+            changeFillColorButton.setDisable(disable);
         }
     }
 

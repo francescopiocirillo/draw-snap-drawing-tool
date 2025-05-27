@@ -26,7 +26,7 @@ class SelectStateTest {
     private SelectState selectState;
 
 
-/**
+    /**
      * Inizializza l'istanza di {@link SelectState} prima di ciascun test.
      */
 
@@ -36,7 +36,7 @@ class SelectStateTest {
     }
 
 
-/**
+    /**
      * Il test controlla che al click di una forma questa venga correttamente decorata
      * con {@link FormaSelezionataDecorator}.
      * Il test utilizza un mock di {@link Forma}.
