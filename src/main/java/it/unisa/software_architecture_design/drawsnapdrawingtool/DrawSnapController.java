@@ -587,9 +587,17 @@ public class DrawSnapController {
         dialog.setHeaderText("Vuoi cambiare il colore di riempimento?");
 
         // Impostazione dell'interfaccia del dialog
+        Forma tipoForma = forme.getFormaSelezionata();
+        Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
         Label colorLabel = new Label("Colore di riempimento:");
         colorLabel.setStyle("-fx-font-size: 16px;");
-        ColorPicker colorPicker = new ColorPicker(Color.WHITE); // Imposta colore di default
+        Color coloreAttuale = Color.BLACK;
+        if ( forma instanceof Rettangolo ) {
+            coloreAttuale = ((Rettangolo)forma).getColoreInterno();
+        } else if ( forma instanceof Ellisse) {
+            coloreAttuale = ((Ellisse)forma).getColoreInterno();
+        }
+        ColorPicker colorPicker = new ColorPicker(coloreAttuale); // Imposta colore di attuale
 
         VBox dialogContent = new VBox(10, colorLabel, colorPicker);
         dialogContent.setAlignment(Pos.CENTER);
@@ -637,9 +645,11 @@ public class DrawSnapController {
         dialog.setHeaderText("Vuoi cambiare il colore di contorno?");
 
         // Impostazione dell'interfaccia del dialog
+        Forma tipoForma = forme.getFormaSelezionata();
+        Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
         Label colorLabel = new Label("Colore di contorno:");
         colorLabel.setStyle("-fx-font-size: 16px;");
-        ColorPicker colorPicker = new ColorPicker(Color.WHITE); // Imposta colore di default
+        ColorPicker colorPicker = new ColorPicker(forma.getColore()); // Imposta colore attuale
 
         VBox dialogContent = new VBox(10, colorLabel, colorPicker);
         dialogContent.setAlignment(Pos.CENTER);
@@ -690,8 +700,15 @@ public class DrawSnapController {
         contentBox.setPadding(new Insets(20));
 
         // Spinner per dimensioni
-        Spinner<Double> spinnerAltezza = new Spinner<>(10.0, 500.0, 100.0, 1.0);
-        Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, 100.0, 1.0);
+        Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
+        Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, forma.getLarghezza(), 1.0); //imposta dimensioni attuali
+        double altezzaDefault = 0;
+        if ( forma instanceof Rettangolo ) {
+            altezzaDefault = ((Rettangolo)forma).getAltezza();
+        } else if ( forma instanceof Ellisse) {
+            altezzaDefault = ((Ellisse)forma).getAltezza();
+        }
+        Spinner<Double>  spinnerAltezza = new Spinner<>(10.0, 500.0, altezzaDefault, 1.0); //imposta dimensioni attuali
 
         spinnerAltezza.setEditable(true);
         spinnerLarghezza.setEditable(true);
@@ -724,7 +741,7 @@ public class DrawSnapController {
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButton) {
                 Map<String, Double> map = new HashMap<>();
-                if (tipoForma instanceof Linea) {
+                if (( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea) {
                     double lunghezza = spinnerLarghezza.getValue();
                     map.put("Lunghezza", lunghezza);
                     System.out.println("Nuova Lunghezza: " + lunghezza);
@@ -744,7 +761,7 @@ public class DrawSnapController {
         // Mostra il dialog e gestisce il risultato
         Optional<Map<String, Double>> result = dialog.showAndWait();
         result.ifPresent(nuoveDimensioni -> {
-            if (tipoForma instanceof Linea) {
+            if (( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea) {
                 invoker.setCommand(new ResizeCommand(forme, nuoveDimensioni.get("Lunghezza"), 0));
                 invoker.executeCommand();
                 updateState(true);
