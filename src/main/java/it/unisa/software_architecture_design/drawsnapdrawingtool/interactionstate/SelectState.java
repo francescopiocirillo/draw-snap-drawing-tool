@@ -102,10 +102,12 @@ public class SelectState implements DrawingState{
      */
     @Override
     public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
+        boolean result = false;
         Iterator<Forma> it = forme.getIteratorForme();
         while (it.hasNext()) {
             Forma f = it.next();
             if (f instanceof FormaSelezionataDecorator) {
+                result = true;
                 double newX = coordinataX - offsetX;
                 double newY = coordinataY - offsetY;
 
@@ -114,7 +116,7 @@ public class SelectState implements DrawingState{
                 break; // Presupponendo una sola forma selezionata
             }
         }
-        return true;
+        return result;
     }
 
     /**
