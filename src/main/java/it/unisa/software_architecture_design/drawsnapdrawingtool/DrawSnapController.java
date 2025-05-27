@@ -541,6 +541,7 @@ public class DrawSnapController {
             currentZoomIndex++;
             invoker.setCommand(new ZoomCommand(canvas, scrollPane, baseCanvasWidth, baseCanvasHeight, zoomLevels[currentZoomIndex]));
             invoker.executeCommand();
+            zoom.getSelectionModel().select(currentZoomIndex);
             updateState(false);
         }
     }
@@ -555,6 +556,7 @@ public class DrawSnapController {
             currentZoomIndex--;
             invoker.setCommand(new ZoomCommand(canvas, scrollPane, baseCanvasWidth, baseCanvasHeight, zoomLevels[currentZoomIndex]));
             invoker.executeCommand();
+            zoom.getSelectionModel().select(currentZoomIndex);
             updateState(false);
         }
     }
