@@ -32,11 +32,13 @@ public class MoveCanvasState implements DrawingState {
      * Gestisce l'evento di pressione del mouse sul canvas per permettere lo spostamento
      * @param event l'evento di pressione del mouse
      * @param forme la lista di forme presenti sul canvas (non utilizzato in questo metodo)
+     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
      */
     @Override
-    public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme) {
-        lastX = event.getSceneX();
-        lastY = event.getSceneY();
+    public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
+        lastX = coordinataX;
+        lastY = coordinataY;
         canvas.setCursor(Cursor.CLOSED_HAND);
         return true;
     }
@@ -47,14 +49,13 @@ public class MoveCanvasState implements DrawingState {
      * traslando la vista in base allo spostamento del mouse.
      * @param event l'evento di trascinamento del mouse
      * @param forme la lista di forme presenti sul canvas (non utilizzato in questo metodo)
+     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
      */
     @Override
-    public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme) {
-        double currentSceneX = event.getSceneX();
-        double currentSceneY = event.getSceneY();
-
-        double deltaX = currentSceneX - lastX;
-        double deltaY = currentSceneY - lastY;
+    public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
+        double deltaX = coordinataX - lastX;
+        double deltaY = coordinataY - lastY;
 
         double contentWidth = scrollPane.getContent().getBoundsInLocal().getWidth();
         double contentHeight = scrollPane.getContent().getBoundsInLocal().getHeight();
@@ -69,17 +70,19 @@ public class MoveCanvasState implements DrawingState {
         scrollPane.setHvalue(clamp(scrollPane.getHvalue() - hDelta, 0, 1));
         scrollPane.setVvalue(clamp(scrollPane.getVvalue() - vDelta, 0, 1));
 
-        lastX = currentSceneX;
-        lastY = currentSceneY;
+        lastX = coordinataX;
+        lastY = coordinataY;
 
         return true;
     }
     /**
      * Gestisce l'evento di rilascio del mouse sul canvas e rende il cursore una manina aperta
      * @param event evento di rilascio del mouse
+     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
      */
     @Override
-    public boolean handleMouseReleased(MouseEvent event) {
+    public boolean handleMouseReleased(MouseEvent event, double coordinataX, double coordinataY) {
         canvas.setCursor(Cursor.OPEN_HAND);
         return true;
     }

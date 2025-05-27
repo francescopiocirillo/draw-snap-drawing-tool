@@ -58,9 +58,11 @@ public class DrawState implements DrawingState{
      * Gestisce l'evento di pressione del mouse sul canvas in modo da creare la forma giusta
      * @param event è l'evento di pressione del mouse
      * @param forme lista di tutte le forme presenti sul canvas
+     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
      */
     @Override
-    public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme) {
+    public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
         AttributiForma attributiForma = helpUIHandleMousePressed(formaCorrente);
 
         if (attributiForma == null) { // se l'utente ha premuto "Annulla" non fare nulla
@@ -69,8 +71,6 @@ public class DrawState implements DrawingState{
         }
 
         Forma formaCreata = null;
-        double coordinataX = event.getX();
-        double coordinataY = event.getY();
         switch (formaCorrente) {
             case ELLISSE:
                 formaCreata = new FactoryEllisse().creaForma(coordinataX, coordinataY,
@@ -218,9 +218,11 @@ public class DrawState implements DrawingState{
      * METODO MOMENTANEAMENTE NON NECESSARIO
      * @param event evento di trascinamento del mouse
      * @param forme lista di tutte le forme presenti sul canvas
+     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
      */
     @Override
-    public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme) {
+    public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
         //NA
         return false;
     }
@@ -228,9 +230,11 @@ public class DrawState implements DrawingState{
     /**
      * METODO MOMENTANEAMENTE NON NECESSARI0
      * @param event evento di rilascio del mouse
+     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
      */
     @Override
-    public boolean handleMouseReleased(MouseEvent event) {
+    public boolean handleMouseReleased(MouseEvent event, double coordinataX, double coordinataY) {
         //WIP
         return false;
     }
