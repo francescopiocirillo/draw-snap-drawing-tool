@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -81,40 +83,45 @@ class DrawSnapControllerTest {
     }
 
     /**
-     * Questo test verifica che, quando viene invocato {@code redrawAll()},
+     * Test che verifica che quando viene invocato {@code redrawAll()},
      * tutte le forme presenti nella lista privata {@code forme} vengano ridisegnate
      * correttamente sul canvas.
-     * @throws Exception in caso di errori durante il caricamento della vista o l'accesso riflessivo
+     * @throws Exception in caso di errori
      */
     @Test
-    void testRedrawAllDrawsAllForme() throws Exception {
+    void testRedrawAll_ShouldClearCanvas_DrawForme() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
-
         Platform.runLater(() -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("DrawSnapView.fxml"));
                 Parent root = loader.load();
                 DrawSnapController controller = loader.getController();
 
-                Field canvasField = DrawSnapController.class.getDeclaredField("canvas");
-                canvasField.setAccessible(true);
-                Canvas canvas = (Canvas) canvasField.get(controller);
+                GraphicsContext mockGc = mock(GraphicsContext.class);
 
                 Field gcField = DrawSnapController.class.getDeclaredField("gc");
                 gcField.setAccessible(true);
-                gcField.set(controller, canvas.getGraphicsContext2D()); // forza il set esplicito
+                gcField.set(controller, mockGc);
 
-                Forma mockForma1 = mock(Forma.class);
-                Forma mockForma2 = mock(Forma.class);
+                Field canvasField = DrawSnapController.class.getDeclaredField("canvas");
+                canvasField.setAccessible(true);
+                Canvas canvas = new Canvas(500, 500);
+                canvasField.set(controller, canvas);
 
                 Field formeField = DrawSnapController.class.getDeclaredField("forme");
                 formeField.setAccessible(true);
-                formeField.set(controller, java.util.Arrays.asList(mockForma1, mockForma2));
+                DrawSnapModel mockModel = mock(DrawSnapModel.class);
+                Forma f = mock(Forma.class);
+                when(mockModel.getIteratorForme()).thenReturn(List.of(f).iterator());
+                formeField.set(controller, mockModel);
 
-                controller.updateState(false);
 
-                verify(mockForma1).disegna(canvas.getGraphicsContext2D());
-                verify(mockForma2).disegna(canvas.getGraphicsContext2D());
+                controller.redrawAll();
+
+                // Verifica che venga pulito il canvas
+                verify(mockGc).clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+                verify(f).disegna(mockGc);
 
             } catch (Exception e) {
                 fail("Eccezione durante il test: " + e.getMessage());
@@ -129,11 +136,14 @@ class DrawSnapControllerTest {
     }
 
 
+
+
+
     /**
      * Questo test verifica che il controller, quando chiama {@code redrawAll()} se il parametro
      * {@code gridVisible} è messo a {@code true} allora viene disegnata più di una volta
      * una linea per il disegno della griglia.
-     * @throws Exception in caso di errori durante il caricamento della vista o l'accesso riflessivo
+     * @throws Exception in caso di errori
      */
     @Test
     void testDrawGrid_WhenGridVisible() throws Exception {
@@ -157,7 +167,9 @@ class DrawSnapControllerTest {
 
                Field formeField = DrawSnapController.class.getDeclaredField("forme");
                formeField.setAccessible(true);
-               formeField.set(controller, mock(DrawSnapModel.class));
+               DrawSnapModel mockModel = mock(DrawSnapModel.class);
+               when(mockModel.getIteratorForme()).thenReturn(Collections.emptyIterator());
+               formeField.set(controller, mockModel);
 
                Field gridVisibleField = DrawSnapController.class.getDeclaredField("gridVisible");
                gridVisibleField.setAccessible(true);
@@ -206,7 +218,9 @@ class DrawSnapControllerTest {
 
                 Field formeField = DrawSnapController.class.getDeclaredField("forme");
                 formeField.setAccessible(true);
-                formeField.set(controller, mock(DrawSnapModel.class));
+                DrawSnapModel mockModel = mock(DrawSnapModel.class);
+                when(mockModel.getIteratorForme()).thenReturn(Collections.emptyIterator());
+                formeField.set(controller, mockModel);
 
                 Field gridVisibleField = DrawSnapController.class.getDeclaredField("gridVisible");
                 gridVisibleField.setAccessible(true);

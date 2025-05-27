@@ -3,9 +3,7 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionsta
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiForma;
 import javafx.application.Platform;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,13 +12,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.ApplicationTest;
 
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+
 
 /**
  * Classe di test automatica per la classe {@link DrawState}, focalizzata
@@ -159,23 +155,4 @@ public class DrawStateTestUI extends ApplicationTest {
         assertNull(attributi, "Se si preme Annulla, il metodo deve restituire null");
     }
 
-//    @Test
-//    void getFormaCorrente() {
-//    }
-//
-//    @Test
-//    void setFormaCorrente() {
-//    }
-//
-//    @Test
-//    void handleMousePressed() {
-//    }
-//
-//    @Test
-//    void handleMouseDragged() {
-//    }
-//
-//    @Test
-//    void handleMouseReleased() {
-//    }
 }
