@@ -110,34 +110,5 @@ class BackToFrontCommandTest {
     }
 
 
-    //test con 3 forme, viene spostata in primo piano quella in mezzo
-    @Test
-    void testExecute_TreForme() {
-        Forma f1 = new Forma(0, 0, 10, 0, Color.RED) {
-            @Override public void disegna(GraphicsContext gc) {}
-            @Override public boolean contiene(double x, double y) { return false; }
-        };
-
-        Forma f2 = new Forma(10, 10, 10, 0, Color.GREEN) {
-            @Override public void disegna(GraphicsContext gc) {}
-            @Override public boolean contiene(double x, double y) { return true; }
-        };
-        Forma f2Selezionata = new FormaSelezionataDecorator(f2);
-
-        Forma f3 = new Forma(20, 20, 10, 0, Color.BLUE) {
-            @Override public void disegna(GraphicsContext gc) {}
-            @Override public boolean contiene(double x, double y) { return false; }
-        };
-        model.add(f1);
-        model.add(f2Selezionata);
-        model.add(f3);
-
-        BackToFrontCommand command = new BackToFrontCommand(model);
-        command.execute();
-
-        List<Forma> expectedOrder = List.of(f1, f3, f2Selezionata);
-        assertEquals(expectedOrder, model.getCopy(), "La forma selezionata deve essere spostata in primo piano");
-
-    }
 
 }

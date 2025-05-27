@@ -71,7 +71,7 @@
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>1.12.2</version> <!-- Usa una versione di ByteBuddy compatibile -->
+            <version>1.15.1</version> <!-- Usa una versione di ByteBuddy compatibile -->
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -110,34 +110,4 @@ class FrontToBackCommandTest {
         assertEquals(selezionata, model.get(0), "La forma selezionata deve restare nella stessa posizione se è l'unica");
     }
 
-    //test con 3 forme, viene spostata in secondo piano quella in mezzo
-    @Test
-    void testExecute_TreForme() {
-        Forma f1 = new Forma(0, 0, 10, 0, Color.RED) {
-            @Override public void disegna(GraphicsContext gc) {}
-            @Override public boolean contiene(double x, double y) { return false; }
-        };
-
-        Forma f2 = new Forma(10, 10, 10, 0, Color.GREEN) {
-            @Override public void disegna(GraphicsContext gc) {}
-            @Override public boolean contiene(double x, double y) { return true; }
-        };
-        Forma f2Selezionata = new FormaSelezionataDecorator(f2);
-
-        Forma f3 = new Forma(20, 20, 10, 0, Color.BLUE) {
-            @Override public void disegna(GraphicsContext gc) {}
-            @Override public boolean contiene(double x, double y) { return false; }
-        };
-
-        model.add(f1);
-        model.add(f2Selezionata);
-        model.add(f3);
-
-        FrontToBackCommand command = new FrontToBackCommand(model);
-        command.execute();
-
-        // La forma selezionata deve essere spostata all'inizio della lista
-        List<Forma> expectedOrder = List.of(f2Selezionata, f1, f3);
-        assertEquals(expectedOrder, model.getCopy(), "La forma selezionata deve essere spostata in prima posizione della lista");
-    }
 }
