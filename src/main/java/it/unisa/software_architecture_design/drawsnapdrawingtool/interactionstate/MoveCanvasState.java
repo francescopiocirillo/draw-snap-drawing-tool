@@ -37,8 +37,8 @@ public class MoveCanvasState implements DrawingState {
      */
     @Override
     public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
-        lastX = coordinataX;
-        lastY = coordinataY;
+        lastX = event.getSceneX();
+        lastY = event.getSceneY();
         canvas.setCursor(Cursor.CLOSED_HAND);
         return false;
     }
@@ -54,8 +54,11 @@ public class MoveCanvasState implements DrawingState {
      */
     @Override
     public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
-        double deltaX = coordinataX - lastX;
-        double deltaY = coordinataY - lastY;
+        double currentSceneX = event.getSceneX();
+        double currentSceneY = event.getSceneY();
+
+        double deltaX = currentSceneX - lastX;
+        double deltaY = currentSceneY - lastY;
 
         double contentWidth = scrollPane.getContent().getBoundsInLocal().getWidth();
         double contentHeight = scrollPane.getContent().getBoundsInLocal().getHeight();
@@ -70,10 +73,10 @@ public class MoveCanvasState implements DrawingState {
         scrollPane.setHvalue(clamp(scrollPane.getHvalue() - hDelta, 0, 1));
         scrollPane.setVvalue(clamp(scrollPane.getVvalue() - vDelta, 0, 1));
 
-        lastX = coordinataX;
-        lastY = coordinataY;
+        lastX = currentSceneX;
+        lastY = currentSceneY;
 
-        return false;
+        return true;
     }
     /**
      * Gestisce l'evento di rilascio del mouse sul canvas e rende il cursore una manina aperta
