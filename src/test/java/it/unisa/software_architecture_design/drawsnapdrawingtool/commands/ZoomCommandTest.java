@@ -83,8 +83,8 @@ class ZoomCommandTest {
      * normale 1.0
      */
     @Test
-    void testExecute_NormalZoomLevel_1_0x() {
-        double zoomLevel = 1.0;
+    void testExecute_NormalZoomLevel_1_25x() {
+        double zoomLevel = 1.25;
 
         double expectedWidth = baseCanvasWidth * zoomLevel;
         double expectedHeight = baseCanvasHeight * zoomLevel;
@@ -100,8 +100,8 @@ class ZoomCommandTest {
      * ridotto 0.5
      */
     @Test
-    void testExecute_ReducedZoomLevel_0_5x() {
-        double zoomLevel = 0.5;
+    void testExecute_ReducedZoomLevel_1_0x() {
+        double zoomLevel = 1.0;
 
         double expectedWidth = baseCanvasWidth * zoomLevel;
         double expectedHeight = baseCanvasHeight * zoomLevel;
@@ -135,7 +135,7 @@ class ZoomCommandTest {
      */
     @Test
     void testExecute_MultipleTimesSameZoomLevel() {
-        double zoomLevel = 1.0;
+        double zoomLevel = 1.25;
 
         double expectedWidth = baseCanvasWidth * zoomLevel;
         double expectedHeight = baseCanvasHeight * zoomLevel;

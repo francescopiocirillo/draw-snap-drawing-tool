@@ -168,33 +168,34 @@ public class MoveCanvasStateTest {
         double initialCoordY = 120.0;
         moveCanvasState.handleMousePressed(mockMouseEvent, mockDrawSnapModel, initialCoordX, initialCoordY);
 
-        // Simula il trascinamento del mouse a una nuova posizione
+        // Ora aggiorna il mock per simulare un nuovo evento di trascinamento
+        when(mockMouseEvent.getSceneX()).thenReturn(150.0);
+        when(mockMouseEvent.getSceneY()).thenReturn(150.0);
+
         double draggedCoordX = 150.0;
         double draggedCoordY = 150.0;
-
-        // Chiama il metodo da testare con i nuovi parametri coordinataX e coordinataY
         boolean result = moveCanvasState.handleMouseDragged(mockMouseEvent, mockDrawSnapModel, draggedCoordX, draggedCoordY);
 
         // Calcoli per determinare i valori attesi per hDelta e vDelta
-        double deltaX = draggedCoordX - initialCoordX;
-        double deltaY = draggedCoordY - initialCoordY;
-        double contentWidth = mockCanvas.getBoundsInLocal().getWidth();
-        double contentHeight = mockCanvas.getBoundsInLocal().getHeight();
-        double viewportWidth = mockScrollPane.getViewportBounds().getWidth();
-        double viewportHeight = mockScrollPane.getViewportBounds().getHeight();
+        double deltaX = 50.0;
+        double deltaY = 30.0;
+        double contentWidth = 2000.0;
+        double contentHeight = 1500.0;
+        double viewportWidth = 1000.0;
+        double viewportHeight = 800.0;
 
         double hDelta = deltaX / (contentWidth - viewportWidth);
         double vDelta = deltaY / (contentHeight - viewportHeight);
 
-        // Calcola i valori finali attesi tenendo conto della funzione clamp()
         double expectedFinalHValue = Math.max(0, Math.min(1, 0.5 - hDelta));
         double expectedFinalVValue = Math.max(0, Math.min(1, 0.5 - vDelta));
 
-        // Verifica che setHvalue e setVvalue siano stati chiamati con i valori calcolati
+        // Verifica che setHvalue e setVvalue siano stati chiamati con i valori giusti
         verify(mockScrollPane).setHvalue(eq(expectedFinalHValue));
         verify(mockScrollPane).setVvalue(eq(expectedFinalVValue));
         assertFalse(result, "handleMouseDragged dovrebbe restituire false.");
     }
+
 
     /**
      * Verifica che il cursore del canvas venga reimpostato su {@code Cursor.OPEN_HAND}

@@ -92,7 +92,7 @@ public class DrawSnapController {
     private Invoker invoker = null;
     private double lastClickX = -1;
     private double lastClickY = -1;
-    private final Double[] zoomLevels = {0.5, 1.0, 1.5, 2.0};
+    private final Double[] zoomLevels = {1.25, 1.5, 1.75, 2.0};
     private int currentZoomIndex = 1;
     private boolean dragged = false;
     private final double baseCanvasWidth = 2048;
@@ -188,8 +188,7 @@ public class DrawSnapController {
                     setText(null);
                     setGraphic(null);
                 }else{
-                    // Visualizza il livello di zoom come percentuale (es. 1.0 -> 100%, 0.5 -> 50%)
-                    setText(String.format("%.0f%%", item * 100));
+                    setText(String.format("%.0f%%", (item-0.5) * 100));
                     setGraphic(zoomImage);
                 }
             }
@@ -202,8 +201,7 @@ public class DrawSnapController {
                 if (empty || item == null) {
                     setText(null);
                 }else{
-                    // Visualizza il livello di zoom come percentuale (es. 1.0 -> 100%, 0.5 -> 50%)
-                    setText(String.format("%.0f%%", item * 100));
+                    setText(String.format("%.0f%%", (item-0.5) * 100));
                 }
             }
         });
