@@ -76,7 +76,7 @@ public class MoveCanvasState implements DrawingState {
         lastX = currentSceneX;
         lastY = currentSceneY;
 
-        return true;
+        return false;
     }
     /**
      * Gestisce l'evento di rilascio del mouse sul canvas e rende il cursore una manina aperta
