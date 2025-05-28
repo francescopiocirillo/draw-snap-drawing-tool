@@ -177,6 +177,9 @@ public class DrawSnapController {
         initializeGridSlider();
     }
 
+    /**
+     * Inizializza gli elementi grafici per lo {@code slider}
+     */
     private void initializeGridSlider(){
         gridSlider.setValue(currentGridSize);
         gridSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -186,6 +189,7 @@ public class DrawSnapController {
         gridSlider.setVisible(false);
         gridSlider.setManaged(false);
     }
+
     /**
      * Inizializza gli elementi grafici per lo {@code zoom}
      */
