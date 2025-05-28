@@ -32,13 +32,15 @@ public class MoveCanvasState implements DrawingState {
      * Gestisce l'evento di pressione del mouse sul canvas per permettere lo spostamento
      * @param event l'evento di pressione del mouse
      * @param forme la lista di forme presenti sul canvas (non utilizzato in questo metodo)
+     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
      */
     @Override
-    public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme) {
+    public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
         lastX = event.getSceneX();
         lastY = event.getSceneY();
         canvas.setCursor(Cursor.CLOSED_HAND);
-        return true;
+        return false;
     }
 
     /**
@@ -47,9 +49,11 @@ public class MoveCanvasState implements DrawingState {
      * traslando la vista in base allo spostamento del mouse.
      * @param event l'evento di trascinamento del mouse
      * @param forme la lista di forme presenti sul canvas (non utilizzato in questo metodo)
+     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
      */
     @Override
-    public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme) {
+    public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
         double currentSceneX = event.getSceneX();
         double currentSceneY = event.getSceneY();
 
@@ -72,16 +76,18 @@ public class MoveCanvasState implements DrawingState {
         lastX = currentSceneX;
         lastY = currentSceneY;
 
-        return true;
+        return false;
     }
     /**
      * Gestisce l'evento di rilascio del mouse sul canvas e rende il cursore una manina aperta
      * @param event evento di rilascio del mouse
+     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
      */
     @Override
-    public boolean handleMouseReleased(MouseEvent event) {
+    public boolean handleMouseReleased(MouseEvent event, double coordinataX, double coordinataY) {
         canvas.setCursor(Cursor.OPEN_HAND);
-        return true;
+        return false;
     }
 
     /**

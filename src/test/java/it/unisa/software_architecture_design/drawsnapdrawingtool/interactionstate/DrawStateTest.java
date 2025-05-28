@@ -63,7 +63,7 @@ class DrawStateTest {
         DrawSnapModel forme = new DrawSnapModel();
 
         // Chiamata al metodo
-        state.handleMousePressed(mouseEvent, forme);
+        state.handleMousePressed(mouseEvent, forme, 50.0, 75.0);
 
         // Assert
         assertEquals(1, forme.size());
@@ -91,7 +91,7 @@ class DrawStateTest {
 
         DrawSnapModel forme = new DrawSnapModel();
 
-        state.handleMousePressed(mouseEvent, forme);
+        state.handleMousePressed(mouseEvent, forme, 10.0, 20.0);
 
         assertEquals(1, forme.size());
         assertEquals("Rettangolo", forme.get(0).getClass().getSimpleName());
@@ -115,7 +115,7 @@ class DrawStateTest {
 
         DrawSnapModel forme = new DrawSnapModel();
 
-        state.handleMousePressed(mouseEvent, forme);
+        state.handleMousePressed(mouseEvent, forme, 0.0, 0.0);
 
         assertEquals(1, forme.size());
         assertEquals("Linea", forme.get(0).getClass().getSimpleName());
@@ -140,7 +140,7 @@ class DrawStateTest {
 
         DrawSnapModel forme = new DrawSnapModel();
 
-        state.handleMousePressed(mouseEvent, forme);
+        state.handleMousePressed(mouseEvent, forme, -10.0, -20.0);
 
         assertEquals(1, forme.size());
         Forma forma = forme.get(0);
@@ -161,7 +161,7 @@ class DrawStateTest {
 
         DrawSnapModel forme = new DrawSnapModel();
 
-        assertDoesNotThrow(() -> state.handleMousePressed(mouseEvent, forme));
+        assertDoesNotThrow(() -> state.handleMousePressed(mouseEvent, forme, 10.0, 20.0));
 
         assertEquals(1, forme.size());
         Forma forma = forme.get(0);

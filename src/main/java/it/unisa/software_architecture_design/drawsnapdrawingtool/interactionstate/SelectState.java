@@ -39,12 +39,11 @@ public class SelectState implements DrawingState{
      * Gestisce l'evento di pressione del mouse sul canvas per permettere la selezione di una figura
      * @param event l'evento di pressione del mouse
      * @param forme lista delle forme presenti sul foglio di disegno
+     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
      */
     @Override
-    public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme) {
-        double coordinataX = event.getX();
-        double coordinataY = event.getY();
-
+    public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme, double coordinataX , double coordinataY) {
         Forma formaSelezionata = null;
 
         Iterator<Forma> it = forme.getIteratorForme();
@@ -87,10 +86,16 @@ public class SelectState implements DrawingState{
         if(formaSelezionata != null) {
             Forma formaDecorata = ((FormaSelezionataDecorator)formaSelezionata).getForma();
             if (formaDecorata instanceof Linea) {
-                changeFillColorButton.setDisable(true);
+                changeFillColorButtonDisable(true);
             } else {
-                changeFillColorButton.setDisable(false);
+                changeFillColorButtonDisable(false);
             }
+        }
+    }
+
+    private void changeFillColorButtonDisable(boolean disable) {
+        if(changeFillColorButton != null) {
+            changeFillColorButton.setDisable(disable);
         }
     }
 
@@ -98,33 +103,36 @@ public class SelectState implements DrawingState{
      * Gestisce l'evento di trascinamento del mouse permettendo lo spostamento della forma selezionata.
      * @param event l'evento di trascinamento del mouse
      * @param forme la lista di forme presenti sul canvas
+     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
      */
     @Override
-    public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme) {
-        double mouseX = event.getX();
-        double mouseY = event.getY();
-
+    public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
+        boolean result = false;
         Iterator<Forma> it = forme.getIteratorForme();
         while (it.hasNext()) {
             Forma f = it.next();
             if (f instanceof FormaSelezionataDecorator) {
-                double newX = mouseX - offsetX;
-                double newY = mouseY - offsetY;
+                result = true;
+                double newX = coordinataX - offsetX;
+                double newY = coordinataY - offsetY;
 
                 f.setCoordinataX(newX);
                 f.setCoordinataY(newY);
                 break; // Presupponendo una sola forma selezionata
             }
         }
-        return true;
+        return result;
     }
 
     /**
      * METODO MOMENTANEAMENTE NON NECESSARI0
      * @param event evento di rilascio del mouse
+     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
      */
     @Override
-    public boolean handleMouseReleased(MouseEvent event) {
+    public boolean handleMouseReleased(MouseEvent event, double coordinataX, double coordinataY) {
         //NA
         return false;
     }

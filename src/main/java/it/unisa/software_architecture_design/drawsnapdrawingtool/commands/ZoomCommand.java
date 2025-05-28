@@ -1,25 +1,31 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.commands;
 
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.ScrollPane;
 
 /**
  * La classe {@code ZoomCommand} rappresenta un comando per zoommare il foglio di disegno.
  */
-public class ZoomCommand implements Command{
+public class ZoomCommand implements Command {
     /*
      * Attributi
      */
-    private final Canvas canvas;
-    private final Double[] zoomLevels;
-    private final int targetIndex;
+    private Canvas canvas;
+    private double baseCanvasWidth;
+    private double baseCanvasHeight;
+    private ScrollPane scrollPane;
+    private double zoomLevel;
 
     /*
-     * Costruttore, getter e setter
+     * Costruttore
      */
-    public ZoomCommand(Canvas canvas, Double[] zoomLevels, int targetIndex) {
+    // Il costruttore ora accetta direttamente le dimensioni finali da impostare
+    public ZoomCommand(Canvas canvas, ScrollPane scrollPane, double baseCanvasWidth, double baseCanvasHeight, double zoomLevel) {
         this.canvas = canvas;
-        this.zoomLevels = zoomLevels;
-        this.targetIndex = targetIndex;
+        this.baseCanvasWidth = baseCanvasWidth;
+        this.baseCanvasHeight = baseCanvasHeight;
+        this.scrollPane = scrollPane;
+        this.zoomLevel = zoomLevel;
     }
 
     /*
@@ -27,15 +33,21 @@ public class ZoomCommand implements Command{
      */
 
     /**
-     * Esegue il comando di zoom
+     * Esegue il comando di zoom.
+     *
      */
     @Override
     public void execute() {
-        if(targetIndex >= zoomLevels.length || targetIndex < 0) return;
-        double scale = zoomLevels[targetIndex];
-        canvas.setScaleX(scale);
-        canvas.setScaleY(scale);
-    }
+        double desiredCanvasWidth = baseCanvasWidth * zoomLevel;
+        double desiredCanvasHeight = baseCanvasHeight * zoomLevel;
 
+        double viewportWidth = scrollPane.getViewportBounds().getWidth();
+        double viewportHeight = scrollPane.getViewportBounds().getHeight();
+
+        double finalCanvasWidth = Math.max(desiredCanvasWidth, viewportWidth);
+        double finalCanvasHeight = Math.max(desiredCanvasHeight, viewportHeight);
+        canvas.setWidth(finalCanvasWidth);
+        canvas.setHeight(finalCanvasHeight);
+    }
 
 }

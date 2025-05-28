@@ -20,11 +20,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Classe di test per {@link MoveCanvasState}.
- *
  */
 public class MoveCanvasStateTest {
 
-    @Mock
     private Canvas mockCanvas;
     @Mock
     private ScrollPane mockScrollPane;
@@ -32,7 +30,6 @@ public class MoveCanvasStateTest {
     private MouseEvent mockMouseEvent;
     @Mock
     private DrawSnapModel mockDrawSnapModel;
-
 
     private MoveCanvasState moveCanvasState;
 
@@ -47,7 +44,7 @@ public class MoveCanvasStateTest {
         try {
             Platform.startup(() -> {});
         } catch (IllegalStateException e) {
-            // Il toolkit è già stato inizializzato (es. da un altro test o modulo), ignoriamo l'eccezione.
+
         }
     }
 
@@ -59,12 +56,15 @@ public class MoveCanvasStateTest {
         // Inizializza tutti i mock annotati con @Mock in questa classe
         MockitoAnnotations.openMocks(this);
 
+        // Crea un'istanza reale di Canvas e poi la spia con Mockito.
+        mockCanvas = spy(new Canvas());
+
         // Configura mockScrollPane per restituire mockCanvas quando getContent() viene chiamato.
         when(mockScrollPane.getContent()).thenReturn(mockCanvas);
 
         moveCanvasState = new MoveCanvasState(mockCanvas, mockScrollPane);
 
-        // Restituiscono i valori attuali memorizzati nelle variabili currentHValue e currentVValue.
+        // Simula il comportamento dei getter getHvalue() e getVvalue() dello ScrollPane.
         when(mockScrollPane.getHvalue()).thenAnswer((Answer<Double>) invocation -> currentHValue);
         when(mockScrollPane.getVvalue()).thenAnswer((Answer<Double>) invocation -> currentVValue);
 
@@ -79,62 +79,66 @@ public class MoveCanvasStateTest {
             return null;
         }).when(mockScrollPane).setVvalue(anyDouble());
 
-        // Configura il mock delle dimensioni del canvas e della viewport dello ScrollPane.
-        // Questi valori sono usati per i calcoli di spostamento in handleMouseDragged.
+        // Configura il mock delle dimensioni del contenuto canvas e della viewport dello ScrollPane.
         Bounds mockContentBounds = mock(Bounds.class);
-        when(mockContentBounds.getWidth()).thenReturn(2000.0); // Larghezza simulata del canvas
-        when(mockContentBounds.getHeight()).thenReturn(1500.0); // Altezza simulata del canvas
-        when(mockCanvas.getBoundsInLocal()).thenReturn(mockContentBounds); // Il canvas è il contenuto dello scrollPane
+        when(mockContentBounds.getWidth()).thenReturn(2000.0);
+        when(mockContentBounds.getHeight()).thenReturn(1500.0);
+        when(mockCanvas.getBoundsInLocal()).thenReturn(mockContentBounds);
 
         Bounds mockViewportBounds = mock(Bounds.class);
-        when(mockViewportBounds.getWidth()).thenReturn(1000.0); // Larghezza simulata della finestra visibile
-        when(mockViewportBounds.getHeight()).thenReturn(800.0); // Altezza simulata della finestra visibile
+        when(mockViewportBounds.getWidth()).thenReturn(1000.0);
+        when(mockViewportBounds.getHeight()).thenReturn(800.0);
         when(mockScrollPane.getViewportBounds()).thenReturn(mockViewportBounds);
     }
 
     /**
      * Verifica che il cursore del canvas venga cambiato in {@code Cursor.CLOSED_HAND}
-     * quando viene gestito un evento di pressione del mouse.
      */
     @Test
     void testHandleMousePressed() {
-        // Coordinate della scena al momento della pressione
+        // Simula le coordinate della scena al momento della pressione
         when(mockMouseEvent.getSceneX()).thenReturn(100.0);
         when(mockMouseEvent.getSceneY()).thenReturn(120.0);
 
-        boolean result = moveCanvasState.handleMousePressed(mockMouseEvent, mockDrawSnapModel);
+        double testCoordX = 100.0;
+        double testCoordY = 120.0;
+        boolean result = moveCanvasState.handleMousePressed(mockMouseEvent, mockDrawSnapModel, testCoordX, testCoordY);
 
         // Verifica che il metodo setCursor sia stato chiamato su mockCanvas con l'argomento corretto
         verify(mockCanvas).setCursor(Cursor.CLOSED_HAND);
-        assertTrue(result);
+        assertFalse(result, "handleMousePressed dovrebbe restituire false.");
     }
 
     /**
-     * Verifica che i valori di scorrimento (`Hvalue` e `Vvalue`) dello ScrollPane
-     * vengano aggiornati correttamente in base allo spostamento del mouse e alla logica di clamping.
+     * Verifica che i valori di scorrimento dello ScrollPane
+     * vengano aggiornati correttamente in base allo spostamento del mouse e alla logica di clamping,
      */
     @Test
     void testHandleMouseDragged() {
-        // Simula la posizione iniziale del mouse per l'evento di "pressed"
+        // Simula la posizione iniziale del mouse per l'evento di dragged
         when(mockMouseEvent.getSceneX()).thenReturn(100.0);
         when(mockMouseEvent.getSceneY()).thenReturn(120.0);
-        moveCanvasState.handleMousePressed(mockMouseEvent, mockDrawSnapModel);
+
+        double initialCoordX = 100.0;
+        double initialCoordY = 120.0;
+        moveCanvasState.handleMousePressed(mockMouseEvent, mockDrawSnapModel, initialCoordX, initialCoordY);
 
         // Simula il trascinamento del mouse a una nuova posizione
-        when(mockMouseEvent.getSceneX()).thenReturn(150.0);
-        when(mockMouseEvent.getSceneY()).thenReturn(150.0);
+        double draggedCoordX = 150.0;
+        double draggedCoordY = 150.0;
 
-        boolean result = moveCanvasState.handleMouseDragged(mockMouseEvent, mockDrawSnapModel);
+        boolean result = moveCanvasState.handleMouseDragged(mockMouseEvent, mockDrawSnapModel, draggedCoordX, draggedCoordY);
 
-        double deltaX = 150.0 - 100.0;
-        double deltaY = 150.0 - 120.0;
-        double contentWidth = 2000.0;
-        double viewportWidth = 1000.0;
-        double contentHeight = 1500.0;
-        double viewportHeight = 800.0;
+        double deltaX = draggedCoordX - initialCoordX;
+        double deltaY = draggedCoordY - initialCoordY;
+        double contentWidth = mockCanvas.getBoundsInLocal().getWidth();
+        double contentHeight = mockCanvas.getBoundsInLocal().getHeight();
+        double viewportWidth = mockScrollPane.getViewportBounds().getWidth();
+        double viewportHeight = mockScrollPane.getViewportBounds().getHeight();
 
         double hDelta = deltaX / (contentWidth - viewportWidth);
         double vDelta = deltaY / (contentHeight - viewportHeight);
+
         // Calcola i valori finali attesi tenendo conto della funzione clamp()
         double expectedClampedHValue = Math.max(0, Math.min(1, currentHValue - hDelta));
         double expectedClampedVValue = Math.max(0, Math.min(1, currentVValue - vDelta));
@@ -142,11 +146,13 @@ public class MoveCanvasStateTest {
         // Verifica che setHvalue e setVvalue siano stati chiamati con i valori giusti
         verify(mockScrollPane).setHvalue(eq(expectedClampedHValue));
         verify(mockScrollPane).setVvalue(eq(expectedClampedVValue));
-        assertTrue(result);
+
+        assertFalse(result, "handleMouseDragged dovrebbe restituire false.");
     }
 
     /**
-     * Simula un trascinamento partendo da valori di scorrimento preesistenti (non zero).
+     * Simula un trascinamento partendo da valori di scorrimento preesistenti (non zero)
+     * e con i nuovi parametri di coordinata.
      */
     @Test
     void testHandleMouseDraggedWithExistingScrollValue() {
@@ -154,44 +160,54 @@ public class MoveCanvasStateTest {
         currentHValue = 0.5;
         currentVValue = 0.5;
 
-        // Simula la posizione iniziale del mouse per l'evento di "pressed"
+        // Simula la posizione iniziale del mouse
         when(mockMouseEvent.getSceneX()).thenReturn(100.0);
         when(mockMouseEvent.getSceneY()).thenReturn(120.0);
-        moveCanvasState.handleMousePressed(mockMouseEvent, mockDrawSnapModel);
 
-        // Simula il trascinamento del mouse a una nuova posizione
+        double initialCoordX = 100.0;
+        double initialCoordY = 120.0;
+        moveCanvasState.handleMousePressed(mockMouseEvent, mockDrawSnapModel, initialCoordX, initialCoordY);
+
+        // Ora aggiorna il mock per simulare un nuovo evento di trascinamento
         when(mockMouseEvent.getSceneX()).thenReturn(150.0);
         when(mockMouseEvent.getSceneY()).thenReturn(150.0);
 
-        moveCanvasState.handleMouseDragged(mockMouseEvent, mockDrawSnapModel);
+        double draggedCoordX = 150.0;
+        double draggedCoordY = 150.0;
+        boolean result = moveCanvasState.handleMouseDragged(mockMouseEvent, mockDrawSnapModel, draggedCoordX, draggedCoordY);
 
-        double deltaX = 150.0 - 100.0;
-        double deltaY = 150.0 - 120.0;
+        // Calcoli per determinare i valori attesi per hDelta e vDelta
+        double deltaX = 50.0;
+        double deltaY = 30.0;
         double contentWidth = 2000.0;
-        double viewportWidth = 1000.0;
         double contentHeight = 1500.0;
+        double viewportWidth = 1000.0;
         double viewportHeight = 800.0;
 
         double hDelta = deltaX / (contentWidth - viewportWidth);
         double vDelta = deltaY / (contentHeight - viewportHeight);
 
-        // Calcola i valori finali attesi tenendo conto della funzione clamp()
         double expectedFinalHValue = Math.max(0, Math.min(1, 0.5 - hDelta));
         double expectedFinalVValue = Math.max(0, Math.min(1, 0.5 - vDelta));
 
-        // Verifica che setHvalue e setVvalue siano stati chiamati con i valori calcolati
+        // Verifica che setHvalue e setVvalue siano stati chiamati con i valori giusti
         verify(mockScrollPane).setHvalue(eq(expectedFinalHValue));
         verify(mockScrollPane).setVvalue(eq(expectedFinalVValue));
+        assertFalse(result, "handleMouseDragged dovrebbe restituire false.");
     }
+
 
     /**
      * Verifica che il cursore del canvas venga reimpostato su {@code Cursor.OPEN_HAND}
-     * quando viene gestito un evento di rilascio del mouse.
      */
     @Test
     void testHandleMouseReleased() {
-        boolean result = moveCanvasState.handleMouseReleased(mockMouseEvent);
+        double testCoordX = 0.0;
+        double testCoordY = 0.0;
+        boolean result = moveCanvasState.handleMouseReleased(mockMouseEvent, testCoordX, testCoordY);
+
+        // Verifica che il metodo setCursor sia stato chiamato su mockCanvas con l'argomento corretto
         verify(mockCanvas).setCursor(Cursor.OPEN_HAND);
-        assertTrue(result);
+        assertFalse(result, "handleMouseReleased dovrebbe restituire false.");
     }
 }

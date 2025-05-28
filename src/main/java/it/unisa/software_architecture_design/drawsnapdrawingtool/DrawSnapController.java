@@ -58,7 +58,9 @@ public class DrawSnapController {
     private ImageView imageCut;
     private ImageView imagePaste;
 
-    //Attributi barra secondaria
+    /*
+     * Attributi per lo zoom
+     */
     @FXML
     private ComboBox<Double> zoom;
 
@@ -90,11 +92,11 @@ public class DrawSnapController {
     private Invoker invoker = null;
     private double lastClickX = -1;
     private double lastClickY = -1;
-    private final Double[] zoomLevels = {1.0, 1.5, 2.0, 2.5};
+    private final Double[] zoomLevels = {1.25, 1.5, 1.75, 2.0};
     private int currentZoomIndex = 1;
     private boolean dragged = false;
-    private final double canvasWidth = 4096;
-    private final double canvasHeight = 4096;
+    private final double baseCanvasWidth = 2048;
+    private final double baseCanvasHeight = 2048;
     private boolean gridVisible = false;
 
 
@@ -103,15 +105,26 @@ public class DrawSnapController {
      */
     @FXML
     void initialize() {
+        canvas.setHeight(baseCanvasHeight);
+        canvas.setWidth(baseCanvasWidth);
         gc = canvas.getGraphicsContext2D();
-        drawingContext = new DrawingContext(new SelectState(toolBarFX, changeFillColorButton)); // stato di default, sarà cambiato quando avremo lo stato sposta o seleziona
+        drawingContext = new DrawingContext(new SelectState(toolBarFX, changeFillColorButton));
         invoker = new Invoker();
         history = new DrawSnapHistory();
 
+        scrollPane.setContent(canvas);
 
-        canvasContainer.setPrefSize(canvasWidth, canvasHeight);
-        // Ritarda l'applicazione ella posizione iniziale del canvas al momento successivo al caricamento della UI
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+
+        // Ritarda l'applicazione della posizione iniziale del canvas al momento successivo al caricamento della UI
         Platform.runLater(() -> {
+            invoker.setCommand(new ZoomCommand(canvas, scrollPane, baseCanvasWidth, baseCanvasHeight, zoomLevels[currentZoomIndex]));
+            invoker.executeCommand();
+
+            // Imposta la posizione di scorrimento iniziale al centro del canvas grande.
+            // Questo è utile per iniziare la visualizzazione al centro dell'area di disegno.
             scrollPane.setHvalue(0.5);
             scrollPane.setVvalue(0.5);
             // in questo modo si può scegliere manualmente quale bottone deve essere in focus al caricamento
@@ -177,7 +190,7 @@ public class DrawSnapController {
                     setText(null);
                     setGraphic(null);
                 }else{
-                    setText((int) ((item-0.5)*100) + "%");
+                    setText(String.format("%.0f%%", (item-0.5) * 100));
                     setGraphic(zoomImage);
                 }
             }
@@ -190,7 +203,7 @@ public class DrawSnapController {
                 if (empty || item == null) {
                     setText(null);
                 }else{
-                    setText(String.format("%.0f%%", (item-0.5)*100));
+                    setText(String.format("%.0f%%", (item-0.5) * 100));
                 }
             }
         });
@@ -232,7 +245,7 @@ public class DrawSnapController {
 
 
     /**
-     * Inizializza gli event handler per gli eventi di interesse relativi al {@link Canvas}
+     * Inizializza gli event handler per gli eventi di interesse relativi al {@link Canvas}.
      */
     private void initializeCanvasEventHandlers() {
         canvas.setOnMousePressed(this::handleMousePressed);
@@ -259,16 +272,17 @@ public class DrawSnapController {
             contextMenu.hide();
         }
         if (mouseEvent.getButton() == MouseButton.PRIMARY) { //Click Sinistro
-            lastClickX = mouseEvent.getX();
-            lastClickY = mouseEvent.getY();
-            boolean stateChanged = drawingContext.handleMousePressed(mouseEvent, forme);
+            lastClickX = mouseEvent.getX() / zoomLevels[currentZoomIndex];
+            lastClickY = mouseEvent.getY() / zoomLevels[currentZoomIndex];
+
+            boolean stateChanged = drawingContext.handleMousePressed(mouseEvent, forme, lastClickX, lastClickY);
             updateState(stateChanged);
         } else if(mouseEvent.getButton() == MouseButton.SECONDARY) {//Click destro
-            lastClickX = mouseEvent.getX();
-            lastClickY = mouseEvent.getY();
+            lastClickX = mouseEvent.getX() / zoomLevels[currentZoomIndex];
+            lastClickY = mouseEvent.getY() / zoomLevels[currentZoomIndex];
 
-            boolean hasSelection = forme.thereIsFormaSelezionata();//controlla se c'è una forma selezionata
-            boolean hasClipboard = !forme.isEmptyFormeCopiate();//controlla se ci sono forme copiate precedentemente
+            boolean hasSelection = forme.thereIsFormaSelezionata();
+            boolean hasClipboard = !forme.isEmptyFormeCopiate();
             boolean clickInterno = false;
             copyButton.setDisable(false);
             cutButton.setDisable(false);
@@ -319,10 +333,13 @@ public class DrawSnapController {
      * Chiamato dopo una modifica nel canvas per aggiornarne la visualizzazione.
      */
     void redrawAll() {
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight()); // l'area da ripulire è tutto il canvas
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        gc.save();
+        gc.scale(zoomLevels[currentZoomIndex], zoomLevels[currentZoomIndex]);
 
         if(gridVisible){
-            drawGrid();
+            drawGrid(zoomLevels[currentZoomIndex], canvas.getWidth(), canvas.getHeight());
         }
 
         Iterator<Forma> it = forme.getIteratorForme();
@@ -330,23 +347,30 @@ public class DrawSnapController {
             Forma f = it.next();
             f.disegna(gc);
         }
+        gc.restore();
     }
 
     /**
      * Metodo per disegnare la griglia all'interno del canvas
+     * Nota: La griglia viene disegnata usando coordinate logiche,
+     * la scala del GraphicsContext la renderà correttamente.
      */
-    void drawGrid(){
+    private void drawGrid(double currentZoomLevel, double canvasPhysicalWidth, double canvasPhysicalHeight) {
         gc.setStroke(Color.LIGHTGRAY);
-        gc.setLineWidth(1);
 
-        int spaziatura = 20;
+        gc.setLineWidth(1.0 / currentZoomLevel);
 
-        for(int i = 0; i < canvasWidth; i+=spaziatura){
-            gc.strokeLine(i, 0, i, canvasHeight);
+        double gridSize = 20.0;
+
+        double maxLogicalX = canvasPhysicalWidth / currentZoomLevel;
+        double maxLogicalY = canvasPhysicalHeight / currentZoomLevel;
+
+        for (double x = 0; x <= maxLogicalX; x += gridSize) {
+            gc.strokeLine(x, 0, x, maxLogicalY);
         }
 
-        for(int i = 0; i<canvasHeight; i+=spaziatura){
-            gc.strokeLine(0, i, canvasWidth, i);
+        for (double y = 0; y <= maxLogicalY; y += gridSize) {
+            gc.strokeLine(0, y, maxLogicalX, y);
         }
     }
 
@@ -356,7 +380,10 @@ public class DrawSnapController {
      * @param mouseEvent -> l'evento scatenante
      */
     private void handleMouseDragged(MouseEvent mouseEvent) {
-        dragged = drawingContext.handleMouseDragged(mouseEvent, forme); // passa la forma da creare al DrawStateù
+        double logicalCurrentX = mouseEvent.getX() / zoomLevels[currentZoomIndex];
+        double logicalCurrentY = mouseEvent.getY() / zoomLevels[currentZoomIndex];
+
+        dragged = drawingContext.handleMouseDragged(mouseEvent, forme, logicalCurrentX, logicalCurrentY);
         updateState(false);
     }
 
@@ -367,7 +394,10 @@ public class DrawSnapController {
      * @param mouseEvent
      */
     private void handleMouseReleased(MouseEvent mouseEvent) {
-        drawingContext.handleMouseReleased(mouseEvent);
+        double logicalCurrentX = mouseEvent.getX() / zoomLevels[currentZoomIndex];
+        double logicalCurrentY = mouseEvent.getY() / zoomLevels[currentZoomIndex];
+
+        drawingContext.handleMouseReleased(mouseEvent, logicalCurrentX, logicalCurrentY);
         if(dragged){
             updateState(dragged);
         }
@@ -431,7 +461,7 @@ public class DrawSnapController {
     void onDeletePressed(ActionEvent event) {
         invoker.setCommand(new DeleteCommand(forme));
         invoker.executeCommand();
-        toolBarFX.setDisable(true); // disattiva la toolBar visto che la figura non è più in focus essendo eliminata
+        toolBarFX.setDisable(true);
         updateState(true);
     }
 
@@ -490,6 +520,7 @@ public class DrawSnapController {
         updateState(true);
     }
 
+
     /**
      * Metodo per modificare lo zoom con il livello selezionato
      * @param event -> evento che causa il cambio di zoom
@@ -499,7 +530,7 @@ public class DrawSnapController {
         int selectedIndex = zoom.getSelectionModel().getSelectedIndex();
         if(selectedIndex >= 0){
             currentZoomIndex = selectedIndex;
-            invoker.setCommand(new ZoomCommand(canvas, zoomLevels, currentZoomIndex));
+            invoker.setCommand(new ZoomCommand(canvas, scrollPane, baseCanvasWidth, baseCanvasHeight, zoomLevels[currentZoomIndex]));
             invoker.executeCommand();
             updateState(false);
         }
@@ -513,7 +544,7 @@ public class DrawSnapController {
     void onZoomInPressed(ActionEvent event) {
         if(currentZoomIndex < zoomLevels.length - 1 ){
             currentZoomIndex++;
-            invoker.setCommand(new ZoomCommand(canvas, zoomLevels, currentZoomIndex));
+            invoker.setCommand(new ZoomCommand(canvas, scrollPane, baseCanvasWidth, baseCanvasHeight, zoomLevels[currentZoomIndex]));
             invoker.executeCommand();
             zoom.getSelectionModel().select(currentZoomIndex);
             updateState(false);
@@ -528,7 +559,7 @@ public class DrawSnapController {
     void onZoomOutPressed(ActionEvent event) {
         if(currentZoomIndex > 0){
             currentZoomIndex--;
-            invoker.setCommand(new ZoomCommand(canvas, zoomLevels, currentZoomIndex));
+            invoker.setCommand(new ZoomCommand(canvas, scrollPane, baseCanvasWidth, baseCanvasHeight, zoomLevels[currentZoomIndex]));
             invoker.executeCommand();
             zoom.getSelectionModel().select(currentZoomIndex);
             updateState(false);
@@ -563,9 +594,17 @@ public class DrawSnapController {
         dialog.setHeaderText("Vuoi cambiare il colore di riempimento?");
 
         // Impostazione dell'interfaccia del dialog
+        Forma tipoForma = forme.getFormaSelezionata();
+        Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
         Label colorLabel = new Label("Colore di riempimento:");
         colorLabel.setStyle("-fx-font-size: 16px;");
-        ColorPicker colorPicker = new ColorPicker(Color.WHITE); // Imposta colore di default
+        Color coloreAttuale = Color.BLACK;
+        if ( forma instanceof Rettangolo ) {
+            coloreAttuale = ((Rettangolo)forma).getColoreInterno();
+        } else if ( forma instanceof Ellisse) {
+            coloreAttuale = ((Ellisse)forma).getColoreInterno();
+        }
+        ColorPicker colorPicker = new ColorPicker(coloreAttuale); // Imposta colore di attuale
 
         VBox dialogContent = new VBox(10, colorLabel, colorPicker);
         dialogContent.setAlignment(Pos.CENTER);
@@ -613,9 +652,11 @@ public class DrawSnapController {
         dialog.setHeaderText("Vuoi cambiare il colore di contorno?");
 
         // Impostazione dell'interfaccia del dialog
+        Forma tipoForma = forme.getFormaSelezionata();
+        Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
         Label colorLabel = new Label("Colore di contorno:");
         colorLabel.setStyle("-fx-font-size: 16px;");
-        ColorPicker colorPicker = new ColorPicker(Color.BLACK); // Imposta colore di default
+        ColorPicker colorPicker = new ColorPicker(forma.getColore()); // Imposta colore attuale
 
         VBox dialogContent = new VBox(10, colorLabel, colorPicker);
         dialogContent.setAlignment(Pos.CENTER);
@@ -667,14 +708,15 @@ public class DrawSnapController {
 
         // Spinner per dimensioni
         Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
-        Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, forma.getLarghezza(), 1.0);
+        Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, forma.getLarghezza(), 1.0); //imposta dimensioni attuali
         double altezzaDefault = 0;
         if ( forma instanceof Rettangolo ) {
             altezzaDefault = ((Rettangolo)forma).getAltezza();
         } else if ( forma instanceof Ellisse) {
             altezzaDefault = ((Ellisse)forma).getAltezza();
         }
-        Spinner<Double>  spinnerAltezza = new Spinner<>(10.0, 500.0, altezzaDefault, 1.0);
+        Spinner<Double>  spinnerAltezza = new Spinner<>(10.0, 500.0, altezzaDefault, 1.0); //imposta dimensioni attuali
+
         spinnerAltezza.setEditable(true);
         spinnerLarghezza.setEditable(true);
 
