@@ -19,7 +19,6 @@ public class DrawSnapApplication extends Application {
         controller.setStage(stage);
         controller.setModel(model);
 
-        stage.setResizable(false);
         stage.setTitle("DrawSnap - Drawing Tool");
         stage.setResizable(true); // finestra ridimensionabile
         stage.setMinWidth(800); // Imposta altezza
