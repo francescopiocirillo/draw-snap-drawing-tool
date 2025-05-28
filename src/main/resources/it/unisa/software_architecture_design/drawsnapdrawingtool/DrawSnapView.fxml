@@ -8,6 +8,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.image.Image?>
@@ -217,9 +218,14 @@
                                     </ImageView>
                                  </graphic>
                                  <HBox.margin>
-                                    <Insets right="20.0" />
+                                    <Insets left="5.0" right="10.0" />
                                  </HBox.margin>
                               </ToggleButton>
+                              <Slider fx:id="gridSlider" blockIncrement="5.0" max="50.0" min="5.0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true">
+                                 <HBox.margin>
+                                    <Insets left="5.0" right="30.0" />
+                                 </HBox.margin>
+                              </Slider>
                            </children>
                         </HBox>
                      </children>

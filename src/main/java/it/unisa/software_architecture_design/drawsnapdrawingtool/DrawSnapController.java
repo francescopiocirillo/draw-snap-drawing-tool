@@ -64,6 +64,9 @@ public class DrawSnapController {
     @FXML
     private ComboBox<Double> zoom;
 
+    @FXML
+    private Slider gridSlider;
+
     /*
      * Attributi per i bottoni
      */
@@ -98,6 +101,8 @@ public class DrawSnapController {
     private final double baseCanvasWidth = 2048;
     private final double baseCanvasHeight = 2048;
     private boolean gridVisible = false;
+    private double currentGridSize = 20.0;
+
 
 
     /**
@@ -168,8 +173,19 @@ public class DrawSnapController {
         initializeZoom();
 
         initializeCanvasEventHandlers();
+
+        initializeGridSlider();
     }
 
+    private void initializeGridSlider(){
+        gridSlider.setValue(currentGridSize);
+        gridSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            currentGridSize = newValue.doubleValue();
+            redrawAll();
+        });
+        gridSlider.setVisible(false);
+        gridSlider.setManaged(false);
+    }
     /**
      * Inizializza gli elementi grafici per lo {@code zoom}
      */
@@ -787,6 +803,8 @@ public class DrawSnapController {
     @FXML
     public void onGridPressed(ActionEvent event) {
         gridVisible = !gridVisible;
+        gridSlider.setVisible(gridVisible);
+        gridSlider.setManaged(gridVisible);
         updateState(false);
     }
 }
