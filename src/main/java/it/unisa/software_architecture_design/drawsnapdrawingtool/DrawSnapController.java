@@ -376,16 +376,14 @@ public class DrawSnapController {
 
         gc.setLineWidth(1.0 / currentZoomLevel);
 
-        double gridSize = 20.0;
-
         double maxLogicalX = canvasPhysicalWidth / currentZoomLevel;
         double maxLogicalY = canvasPhysicalHeight / currentZoomLevel;
 
-        for (double x = 0; x <= maxLogicalX; x += gridSize) {
+        for (double x = 0; x <= maxLogicalX; x += currentGridSize) {
             gc.strokeLine(x, 0, x, maxLogicalY);
         }
 
-        for (double y = 0; y <= maxLogicalY; y += gridSize) {
+        for (double y = 0; y <= maxLogicalY; y += currentGridSize) {
             gc.strokeLine(0, y, maxLogicalX, y);
         }
     }
