@@ -10,7 +10,7 @@ import java.io.IOException;
 public class DrawSnapApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(DrawSnapApplication.class.getResource("DrawSnapView.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(DrawSnapApplication.class.getResource("/it/unisa/software_architecture_design/drawsnapdrawingtool/DrawSnapView.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1200, 600);
 
         DrawSnapModel model = new DrawSnapModel();
