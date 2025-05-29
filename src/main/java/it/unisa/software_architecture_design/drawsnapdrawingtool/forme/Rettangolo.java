@@ -14,7 +14,6 @@ public class Rettangolo extends Forma  {
      * Attributi
      */
     private double altezza;
-    private double larghezza;
     private transient Color coloreInterno;
     private double verticeAX;
     private double verticeAY;
@@ -29,9 +28,8 @@ public class Rettangolo extends Forma  {
      * Costruttore, Getter e Setter
      */
     public Rettangolo(double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore, double altezza, Color coloreInterno) {
-        super(coordinataX, coordinataY, angoloInclinazione, colore);
+        super(coordinataX, coordinataY, larghezza, angoloInclinazione, colore);
         this.altezza = altezza;
-        this.larghezza = larghezza;
         this.coloreInterno = coloreInterno;
         updateVertici();
     }
@@ -68,10 +66,8 @@ public class Rettangolo extends Forma  {
         updateVertici();
     }
 
-    public double getLarghezza() {return larghezza;}
-
     public void setLarghezza(double larghezza) {
-        this.larghezza = larghezza;
+        super.setLarghezza(larghezza);
         updateVertici();
     }
 

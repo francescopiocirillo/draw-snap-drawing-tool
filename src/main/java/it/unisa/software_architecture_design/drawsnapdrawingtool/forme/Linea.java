@@ -13,14 +13,12 @@ public class Linea extends Forma  {
     private double yInizio;
     private double xFine;
     private double yFine;
-    private double larghezza;
 
     /*
      * Costruttore, getter e setter
      */
     public Linea(double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore) {
-        super(coordinataX, coordinataY, angoloInclinazione, colore); // Chiamata al costruttore della classe estesa Forma
-        this.larghezza = larghezza;
+        super(coordinataX, coordinataY, larghezza, angoloInclinazione, colore); // Chiamata al costruttore della classe estesa Forma
         updateCoordinateYInizioFine();
         updateCoordinateXInizioFine();
     }
@@ -51,11 +49,9 @@ public class Linea extends Forma  {
         return yFine;
     }
 
-    public double getLarghezza() {return larghezza;}
-
-
+    @Override
     public void setLarghezza(double larghezza) {
-        this.larghezza = larghezza;
+        super.setLarghezza(larghezza);
         updateCoordinateYInizioFine();
         updateCoordinateXInizioFine();
     }
