@@ -57,20 +57,53 @@ public class SelectState implements DrawingState{
             }
         }
 
-        if (formaSelezionata != null) {
-            formaSelezionata = forme.selezionaForma(formaSelezionata);
-            if(toolBarFX != null) {
-                toolBarFX.setDisable(false); //abilita la barra in alto delle modifiche
+        int count = countFormeSelezionate(forme);
+
+        if(count == 0){
+            if (formaSelezionata != null) {
+                formaSelezionata = forme.selezionaForma(formaSelezionata);
+                attivaToolBar();
+            }else{
+                disattivaToolBar();
+            }
+            // Se una forma è stata selezionata, la decoriamo per indicare che è selezionata
+            forme.deselezionaEccetto(formaSelezionata);
+            disattivaChangeFillColorButton(formaSelezionata);
+        }else if(count == 1){
+            if (formaSelezionata != null) {
+                Forma formaSelezionataOld = forme.getFormaSelezionata();
+                formaSelezionata = forme.selezionaForma(formaSelezionata);
+                if(formaSelezionata != formaSelezionataOld){
+                    disattivaToolBar();
+                    // ATTIVA PULSANTE COMPONI
+                }
+            }else{
+                forme.deselezionaEccetto(null);
+                disattivaToolBar();
+                // DISATTIVA tasto componi
             }
         }else{
-            if(toolBarFX != null) {
-                toolBarFX.setDisable(true); //disabilita la barra in alto delle modifiche
+            if (formaSelezionata != null) {
+                formaSelezionata = forme.selezionaForma(formaSelezionata);
+            }else{
+                forme.deselezionaEccetto(null);
+                // DISATTIVA tasto componi
             }
         }
 
-        forme.deselezionaEccetto(formaSelezionata);
-        disattivaChangeFillColorButton(formaSelezionata);
         return false;
+    }
+
+    private int countFormeSelezionate(DrawSnapModel forme) {
+        int count = 0;
+        Iterator<Forma> it = forme.getIteratorForme();
+        while (it.hasNext()) {
+            Forma f = it.next();
+            if (f instanceof FormaSelezionataDecorator) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
@@ -79,6 +112,15 @@ public class SelectState implements DrawingState{
     public void disattivaToolBar() {
         if(toolBarFX != null) {
             toolBarFX.setDisable(true); //disabilita la barra in alto delle modifiche
+        }
+    }
+
+    /**
+     * Metodo di utilità per attivare la toolBar quando non necessaria
+     */
+    public void attivaToolBar() {
+        if(toolBarFX != null) {
+            toolBarFX.setDisable(false); //abilita la barra in alto delle modifiche
         }
     }
 
@@ -108,6 +150,10 @@ public class SelectState implements DrawingState{
      */
     @Override
     public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
+        if(countFormeSelezionate(forme) > 1){
+            return false; // Non gestiamo lo spostamento se ci sono più forme selezionate
+        }
+
         boolean result = false;
         Iterator<Forma> it = forme.getIteratorForme();
         while (it.hasNext()) {
