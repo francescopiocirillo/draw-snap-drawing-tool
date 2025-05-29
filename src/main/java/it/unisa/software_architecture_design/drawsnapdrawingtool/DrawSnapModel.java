@@ -332,7 +332,12 @@ public class DrawSnapModel implements Serializable {
                     Rettangolo rettangolo = (Rettangolo) formaCorrente.getForma();
                     rettangolo.setColoreInterno(colore);
                     System.out.println("cambio colore del rettangolo in " + colore);
+                } else if (formaCorrente.getForma() instanceof Poligono) {
+                    Poligono poligono = (Poligono) formaCorrente.getForma();
+                    poligono.setColoreInterno(colore);
+                    System.out.println("cambio colore del rettangolo in " + colore);
                 }
+
             }
         }
     }
@@ -369,6 +374,10 @@ public class DrawSnapModel implements Serializable {
                     rettangolo.setAltezza(altezza);
                     rettangolo.setLarghezza(larghezza);
                     System.out.println("cambio altezza del rettangolo in " + altezza);
+                } else if (formaCorrente.getForma() instanceof Poligono) {
+                    Poligono poligono = (Poligono) formaCorrente.getForma();
+                    poligono.scala(altezza, larghezza);
+                    System.out.println("cambio altezza del poligono in " + altezza);
                 } else {
                     System.out.println("la linea non ha altezza");
                 }

@@ -74,6 +74,10 @@ public class FormaSelezionataDecorator extends FormaDecorator{
         }else if(getForma()instanceof Linea){
             Linea linea = (Linea) getForma();
             larghezza = linea.getLarghezza();
+        }else if(getForma()instanceof Poligono){
+            Poligono poligono = (Poligono) getForma();
+            altezza = poligono.getAltezza();
+            larghezza = poligono.getLarghezza();
         }
 
         // Aggiungi margine

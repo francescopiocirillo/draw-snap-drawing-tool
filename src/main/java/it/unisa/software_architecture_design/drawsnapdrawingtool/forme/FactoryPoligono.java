@@ -9,6 +9,7 @@ public class FactoryPoligono implements FactoryForma{
 
     private List<Double> puntiY;
     private List<Double> puntiX;
+    private boolean creazione=false;
 
     public FactoryPoligono() {
         puntiY = new ArrayList<Double>();
@@ -29,7 +30,8 @@ public class FactoryPoligono implements FactoryForma{
     @Override
     public Forma creaForma(double coordinataX, double coordinataY, double altezza, double larghezza,
                            double angoloInclinazione, Color colore, Color coloreInterno) {
-        return new Poligono(coordinataX, coordinataY, larghezza, angoloInclinazione, colore, puntiX, puntiY, coloreInterno);
+        System.out.println("dimensione liste" + puntiX.size() + puntiY.size());
+        return new Poligono(coordinataX, coordinataY, altezza, larghezza, angoloInclinazione, colore, puntiX, puntiY, coloreInterno);
     }
 
     /**
@@ -78,7 +80,7 @@ public class FactoryPoligono implements FactoryForma{
      * Metodo per ottenere la  larghezza del poligono che si vuole creare in base ai punti inseriti
      * @return  La larghezza
      */
-    public double getLargezza(){
+    public double getLarghezza(){
         if(puntiX.size() < 2){
             return 0.0;
         }
@@ -118,6 +120,22 @@ public class FactoryPoligono implements FactoryForma{
         }
         return maxY - minY;
     }
+
+    public double getSize(){
+        return puntiX.size();
+    }
+
+//    public boolean creation(){
+//        return creazione;
+//    }
+//
+//    public void onCreation(){
+//        creazione=true;
+//    }
+//
+//    public void endCreation(){
+//        creazione=false;
+//    }
 
 
 }

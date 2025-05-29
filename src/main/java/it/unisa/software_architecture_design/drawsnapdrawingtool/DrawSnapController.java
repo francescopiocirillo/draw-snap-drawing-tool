@@ -81,6 +81,8 @@ public class DrawSnapController {
     @FXML
     private Button lineButton;
     @FXML
+    private Button polygonButton;
+    @FXML
     private Button selectButton;
     @FXML
     private ToolBar toolBarFX; // barra in alto delle modifiche
@@ -140,7 +142,7 @@ public class DrawSnapController {
         });
 
         // inizializzazione bottoni per la selezione forma
-        bottoniBarraPrincipale = List.of(handButton, ellipseButton, rectangleButton, lineButton, selectButton);
+        bottoniBarraPrincipale = List.of(handButton, ellipseButton, rectangleButton, lineButton, polygonButton, selectButton);
         handButton.setOnAction(e -> {
             bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
             setMoveCanvasMode();
@@ -160,6 +162,11 @@ public class DrawSnapController {
             bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
             setDrawMode(event, Forme.LINEA);
             lineButton.getStyleClass().add("selected");
+        });
+        polygonButton.setOnAction(event -> {
+            bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
+            setDrawMode(event, Forme.POLIGONO);
+            polygonButton.getStyleClass().add("selected");
         });
         selectButton.setOnAction(event -> {
             bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
@@ -744,15 +751,12 @@ public class DrawSnapController {
         Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
         Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, forma.getLarghezza(), 1.0); //imposta dimensioni attuali
         double altezzaDefault = 0;
-        double larghezzaDefault = 0;
         if ( forma instanceof Rettangolo ) {
             altezzaDefault = ((Rettangolo)forma).getAltezza();
-            larghezzaDefault = ((Rettangolo)forma).getLarghezza();
         } else if ( forma instanceof Ellisse) {
             altezzaDefault = ((Ellisse)forma).getAltezza();
-            larghezzaDefault = ((Ellisse)forma).getLarghezza();
-        } else if (forma instanceof Linea){
-            larghezzaDefault = ((Linea)forma).getLarghezza();
+        } else if (forma instanceof Poligono){
+            altezzaDefault = ((Poligono)forma).getAltezza();
         }
         Spinner<Double>  spinnerAltezza = new Spinner<>(10.0, 500.0, altezzaDefault, 1.0); //imposta dimensioni attuali
 
