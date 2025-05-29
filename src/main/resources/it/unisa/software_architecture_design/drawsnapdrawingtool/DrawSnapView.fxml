@@ -88,6 +88,15 @@
                         </ImageView>
                      </graphic>
                   </Button>
+                  <Button id="button" alignment="TOP_CENTER" layoutX="582.0" layoutY="6.0" minWidth="107.0" mnemonicParsing="false" onAction="#onRotationPressed" prefHeight="35.0" prefWidth="110.0">
+                     <graphic>
+                        <ImageView fitHeight="36.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/ruota.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                </items>
             </ToolBar>
             <StackPane id="canvaContainer" VBox.vgrow="ALWAYS">

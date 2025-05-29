@@ -675,8 +675,8 @@ public class DrawSnapController {
     }
 
     /**
-     * Metodo per invocare il comando di ripristino dello stato precedente dell'applicazione
-     * @param event -> evento di pressione del mouse sul tasto undo
+     * Metodo per invocare il comando di modifica del colore di contorno della figura
+     * @param event -> evento di pressione del mouse sul tasto changeOutlineColor
      */
     @FXML
     void onChangeOutlineColorPressed(ActionEvent event) {
@@ -727,8 +727,8 @@ public class DrawSnapController {
     }
 
     /**
-     *
-     * @param event
+     * Metodo per invocare il comando di cambio delle dimensioni della figura
+     * @param event -> evento di pressione del mouse sul tasto resize
      */
     @FXML
     public void onResizePressed(ActionEvent event) {
@@ -744,6 +744,7 @@ public class DrawSnapController {
         Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
         Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, forma.getLarghezza(), 1.0); //imposta dimensioni attuali
         double altezzaDefault = 0;
+        double larghezzaDefault = forma.getLarghezza();;
         if ( forma instanceof Rettangolo ) {
             altezzaDefault = ((Rettangolo)forma).getAltezza();
         } else if ( forma instanceof Ellisse) {
@@ -843,4 +844,65 @@ public class DrawSnapController {
             alert.showAndWait();
         }*/
     }
+
+    /**
+     * Metodo per invocare il comando di cambio dell'angolo di inclinazione della figura
+     * @param event -> evento di pressione del mouse sul tasto Rotation
+     */
+    @FXML
+    void onRotationPressed(ActionEvent event){
+        // Creazione del Dialog
+        Dialog<Double> dialog = new Dialog<>();
+        dialog.setTitle("Modifica Angolo di Inclinazione");
+        dialog.setHeaderText("Vuoi cambiare l'angolo di inclinazione?");
+
+        // Impostazione dell'interfaccia del dialog
+        Forma tipoForma = forme.getFormaSelezionata();
+        Forma forma = ((FormaSelezionataDecorator) tipoForma).getForma();
+        Label angleLabel = new Label("Angolo di inclinazione:");
+        angleLabel.setStyle("-fx-font-size: 16px;");
+
+        // Recupera l'angolo attuale
+        double angoloAttuale = forma.getAngoloInclinazione();
+
+        // Creazione dello Spinner
+        Spinner<Double> angleSpinner = new Spinner<>();
+        SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 360, angoloAttuale, 1);
+        angleSpinner.setValueFactory(valueFactory);
+        angleSpinner.setEditable(true); // Permette l'input da tastiera
+
+        VBox dialogContent = new VBox(10, angleLabel, angleSpinner);
+        dialogContent.setAlignment(Pos.CENTER);
+        dialogContent.setPadding(new Insets(20));
+
+        dialog.getDialogPane().setContent(dialogContent);
+        dialog.getDialogPane().setMinWidth(300);
+        dialog.getDialogPane().setMinHeight(200);
+
+        // Aggiunta dei pulsanti OK e Annulla
+        ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
+
+        // Impostazione del comportamento alla conferma
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == confirmButton) {
+                double angoloAggiornato = angleSpinner.getValue();
+                System.out.println("Angolo scelto: " + angoloAggiornato);
+                return angoloAggiornato; // Restituisce l'angolo scelto
+            }
+            System.out.println("Angolo non scelto");
+            return null; // Nessun angolo scelto
+        });
+
+        // Gestione del risultato del dialog
+        Optional<Double> result = dialog.showAndWait();
+        result.ifPresent(angoloAggiornato -> {
+            invoker.setCommand(new RotationCommand(forme, angoloAggiornato));
+            invoker.executeCommand();
+            updateState(true);
+        });
+    }
+
+
 }

@@ -386,4 +386,16 @@ public class DrawSnapModel implements Serializable {
         }
         return count;
     }
+
+    public void rotation(double angoloSelezionato){
+        System.out.println("model: " + angoloSelezionato);
+
+        for(Forma f:forme){
+            if(f instanceof FormaSelezionataDecorator){
+
+                System.out.println("colore aggiornato");
+                ((FormaSelezionataDecorator) f).getForma().setAngoloInclinazione(angoloSelezionato);
+            }
+        }
+    }
 }

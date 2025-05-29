@@ -57,6 +57,13 @@ public class Linea extends Forma  {
     }
 
     @Override
+    public void setAngoloInclinazione(double angoloInclinazione) {
+        super.setAngoloInclinazione(angoloInclinazione);
+        updateCoordinateYInizioFine();
+        updateCoordinateXInizioFine();
+    }
+
+    @Override
     public void setCoordinataY(double coordinataY) {
         super.setCoordinataY(coordinataY);
         updateCoordinateYInizioFine();
