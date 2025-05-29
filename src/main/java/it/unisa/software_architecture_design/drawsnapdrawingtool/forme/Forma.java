@@ -86,6 +86,11 @@ public abstract class Forma implements Serializable, Cloneable{
      */
     public abstract boolean contiene(double puntoDaValutareX, double puntoDaValutareY);
 
+    /**
+     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
+     * cetro della figura stessa
+     */
+    public abstract void specchia();
     /*
      * Metodi per la serializzazione/deserializzazione
      */
