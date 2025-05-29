@@ -14,13 +14,15 @@ public class Ellisse extends Forma {
      * Attributi
      */
     private double altezza;
+    private double larghezza;
     private transient Color coloreInterno;
 
     /**
      * Costruttore, Getter e Setter
      */
     public Ellisse(double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore, double altezza, Color coloreInterno) {
-        super(coordinataX, coordinataY, larghezza, angoloInclinazione, colore);
+        super(coordinataX, coordinataY, angoloInclinazione, colore);
+        this.larghezza = larghezza;
         this.altezza = altezza;
         this.coloreInterno = coloreInterno;
     }
@@ -40,6 +42,10 @@ public class Ellisse extends Forma {
     public void setColoreInterno(Color coloreInterno) {
         this.coloreInterno = coloreInterno;
     }
+
+    public double getLarghezza() {return larghezza;}
+
+    public void setLarghezza(double larghezza) {this.larghezza = larghezza;}
 
     /*
       Logica della classe

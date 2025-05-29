@@ -10,6 +10,7 @@ public class FormaSelezionataDecorator extends FormaDecorator{
     private static final double MARGINE_SELEZIONE = 5.0;
     private static final double SPESSORE_BORDO = 2.0;
     private static final double ALTEZZA_DEFAULT = 10.0;
+    private static final double LARGHEZZA_DEFAULT = 10.0;
 
     /*
      * Costruttore
@@ -60,14 +61,19 @@ public class FormaSelezionataDecorator extends FormaDecorator{
         // Disegna un rettangolo più grande attorno alla forma
         double x = getForma().getCoordinataX();
         double y = getForma().getCoordinataY();
-        double larghezza = getForma().getLarghezza();
+        double larghezza = LARGHEZZA_DEFAULT;
         double altezza = ALTEZZA_DEFAULT;
         if (getForma() instanceof Rettangolo) {
             Rettangolo rettangolo = (Rettangolo) getForma();
+            larghezza = rettangolo.getLarghezza();
             altezza = rettangolo.getAltezza();
         } else if (getForma() instanceof Ellisse) {
             Ellisse ellisse = (Ellisse) getForma();
             altezza = ellisse.getAltezza();
+            larghezza = ellisse.getLarghezza();
+        }else if(getForma()instanceof Linea){
+            Linea linea = (Linea) getForma();
+            larghezza = linea.getLarghezza();
         }
 
         // Aggiungi margine

@@ -5,6 +5,7 @@ import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Linea;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseEvent;
 
@@ -23,12 +24,14 @@ public class SelectState implements DrawingState{
     private double offsetY;
     private ToolBar toolBarFX; // barra in alto delle modifiche
     private Button changeFillColorButton;
+    private MenuItem composeButton; // pulsante per comporre le forme
     /*
      * Costruttore
      */
-    public SelectState(ToolBar toolBarFX, Button changeFillColorButton) {
+    public SelectState(ToolBar toolBarFX, Button changeFillColorButton, MenuItem composeButton) {
         this.toolBarFX = toolBarFX;
         this.changeFillColorButton = changeFillColorButton;
+        this.composeButton = composeButton;
     }
 
     /*
@@ -57,7 +60,7 @@ public class SelectState implements DrawingState{
             }
         }
 
-        int count = countFormeSelezionate(forme);
+        int count = forme.countFormeSelezionate();
 
         if(count == 0){
             if (formaSelezionata != null) {
@@ -75,35 +78,24 @@ public class SelectState implements DrawingState{
                 formaSelezionata = forme.selezionaForma(formaSelezionata);
                 if(formaSelezionata != formaSelezionataOld){
                     disattivaToolBar();
-                    // ATTIVA PULSANTE COMPONI
+                    attivaComposeButton();
+                    System.out.println("più di una Forma selezionata, attivo il compose button");
                 }
             }else{
                 forme.deselezionaEccetto(null);
                 disattivaToolBar();
-                // DISATTIVA tasto componi
+                disattivaComposeButton();
             }
         }else{
             if (formaSelezionata != null) {
                 formaSelezionata = forme.selezionaForma(formaSelezionata);
             }else{
                 forme.deselezionaEccetto(null);
-                // DISATTIVA tasto componi
+                disattivaComposeButton();
             }
         }
 
         return false;
-    }
-
-    private int countFormeSelezionate(DrawSnapModel forme) {
-        int count = 0;
-        Iterator<Forma> it = forme.getIteratorForme();
-        while (it.hasNext()) {
-            Forma f = it.next();
-            if (f instanceof FormaSelezionataDecorator) {
-                count++;
-            }
-        }
-        return count;
     }
 
     /**
@@ -121,6 +113,24 @@ public class SelectState implements DrawingState{
     public void attivaToolBar() {
         if(toolBarFX != null) {
             toolBarFX.setDisable(false); //abilita la barra in alto delle modifiche
+        }
+    }
+
+    /**
+     * Metodo di utilità per disattivare la toolBar quando non necessaria
+     */
+    public void disattivaComposeButton() {
+        if(composeButton != null) {
+            composeButton.setDisable(true); //disabilita la barra in alto delle modifiche
+        }
+    }
+
+    /**
+     * Metodo di utilità per attivare la toolBar quando non necessaria
+     */
+    public void attivaComposeButton() {
+        if(composeButton != null) {
+            composeButton.setDisable(false); //abilita la barra in alto delle modifiche
         }
     }
 
@@ -150,7 +160,7 @@ public class SelectState implements DrawingState{
      */
     @Override
     public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
-        if(countFormeSelezionate(forme) > 1){
+        if(forme.countFormeSelezionate() > 1){
             return false; // Non gestiamo lo spostamento se ci sono più forme selezionate
         }
 
