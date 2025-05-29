@@ -1,9 +1,6 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool;
 
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Ellisse;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Rettangolo;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.*;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.memento.DrawSnapMemento;
 import javafx.scene.paint.Color;
 
@@ -362,16 +359,18 @@ public class DrawSnapModel implements Serializable {
             if(f instanceof FormaSelezionataDecorator){
                 System.out.println("cambio larghezza della figura in"+ larghezza);
                 FormaSelezionataDecorator formaCorrente = (FormaSelezionataDecorator)f;
-                formaCorrente.getForma().setLarghezza(larghezza);
                 if(formaCorrente.getForma() instanceof Ellisse){
                     Ellisse ellisse = (Ellisse) formaCorrente.getForma();
                     ellisse.setAltezza(altezza);
+                    ellisse.setLarghezza(larghezza);
                     System.out.println("cambio altezza dell'ellissi in " + altezza);
                 } else if (formaCorrente.getForma() instanceof Rettangolo) {
                     Rettangolo rettangolo = (Rettangolo) formaCorrente.getForma();
                     rettangolo.setAltezza(altezza);
                     System.out.println("cambio altezza del rettangolo in " + altezza);
                 } else {
+                    Linea linea = (Linea) formaCorrente.getForma();
+                    linea.setLarghezza(larghezza);
                     System.out.println("la linea non ha altezza");
                 }
             }

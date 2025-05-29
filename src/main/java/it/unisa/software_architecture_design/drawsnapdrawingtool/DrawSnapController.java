@@ -726,13 +726,18 @@ public class DrawSnapController {
 
         // Spinner per dimensioni
         Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
-        Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, forma.getLarghezza(), 1.0); //imposta dimensioni attuali
         double altezzaDefault = 0;
+        double larghezzaDefault = 0;
         if ( forma instanceof Rettangolo ) {
+            larghezzaDefault = ((Rettangolo) forma).getLarghezza();
             altezzaDefault = ((Rettangolo)forma).getAltezza();
         } else if ( forma instanceof Ellisse) {
+            larghezzaDefault = ((Ellisse) forma).getLarghezza();
             altezzaDefault = ((Ellisse)forma).getAltezza();
+        }else if(forma instanceof Linea){
+            larghezzaDefault = ((Linea) forma).getLarghezza();
         }
+        Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, larghezzaDefault, 1.0); //imposta dimensioni attuali
         Spinner<Double>  spinnerAltezza = new Spinner<>(10.0, 500.0, altezzaDefault, 1.0); //imposta dimensioni attuali
 
         spinnerAltezza.setEditable(true);

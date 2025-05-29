@@ -16,7 +16,6 @@ public abstract class Forma implements Serializable, Cloneable{
     private static final long serialVersionUID = 1L;
     private double coordinataY;
     private double coordinataX;
-    private double larghezza;
     private double angoloInclinazione;
     private transient Color colore;
 
@@ -25,10 +24,9 @@ public abstract class Forma implements Serializable, Cloneable{
      */
     public Forma(){} //usato da FormaDecorator
 
-    public Forma(double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore) {
+    public Forma(double coordinataX, double coordinataY, double angoloInclinazione, Color colore) {
         this.coordinataX = coordinataX;
         this.coordinataY = coordinataY;
-        this.larghezza = larghezza;
         this.angoloInclinazione = angoloInclinazione;
         this.colore = colore;
     }
@@ -39,10 +37,6 @@ public abstract class Forma implements Serializable, Cloneable{
 
     public double getCoordinataX() {
         return coordinataX;
-    }
-
-    public double getLarghezza() {
-        return larghezza;
     }
 
     public double getAngoloInclinazione() {
@@ -59,10 +53,6 @@ public abstract class Forma implements Serializable, Cloneable{
 
     public void setCoordinataX(double coordinataX) {
         this.coordinataX = coordinataX;
-    }
-
-    public void setLarghezza(double larghezza) {
-        this.larghezza = larghezza;
     }
 
     public void setColore(Color colore) {
@@ -156,7 +146,6 @@ public abstract class Forma implements Serializable, Cloneable{
         return this.angoloInclinazione == forma.getAngoloInclinazione() &&
                 this.colore == forma.getColore() &&
                 this.coordinataX == forma.getCoordinataX() &&
-                this.coordinataY == forma.getCoordinataY() &&
-                this.larghezza == forma.getLarghezza();
+                this.coordinataY == forma.getCoordinataY();
     }
 }
