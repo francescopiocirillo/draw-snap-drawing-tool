@@ -829,6 +829,9 @@ public class DrawSnapController {
     @FXML
     public void onComposePressed(ActionEvent event) {
         System.out.println("Composizione di forme selezionate");
+        invoker.setCommand(new ComposeCommand(forme));
+        invoker.executeCommand();
+        updateState(true);
         return ;
         /*
         if (forme.thereIsFormaSelezionata()) {

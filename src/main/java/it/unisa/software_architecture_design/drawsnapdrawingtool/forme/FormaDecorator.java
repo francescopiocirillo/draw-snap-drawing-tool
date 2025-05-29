@@ -17,6 +17,8 @@ public abstract class FormaDecorator extends Forma{
         return formaDecorata;
     }
 
+    public void setForma(Forma forma) { this.formaDecorata = forma; }
+
     public double getCoordinataY() {
         return formaDecorata.getCoordinataY();
     }

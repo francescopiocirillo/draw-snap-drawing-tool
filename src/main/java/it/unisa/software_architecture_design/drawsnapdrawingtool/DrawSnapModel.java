@@ -1,9 +1,6 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool;
 
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Ellisse;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Rettangolo;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.*;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.memento.DrawSnapMemento;
 import javafx.scene.paint.Color;
 
@@ -199,6 +196,9 @@ public class DrawSnapModel implements Serializable {
             int index = forme.indexOf(formaSelezionata);
             if (index != -1) {
                 forme.remove(index);
+                if(formaSelezionata instanceof FormaComposta){
+                    ((FormaComposta) formaSelezionata).decorate();
+                }
                 formaSelezionata = new FormaSelezionataDecorator(formaSelezionata);
                 forme.add(index, formaSelezionata);
             }
@@ -233,7 +233,8 @@ public class DrawSnapModel implements Serializable {
         for(Forma f : formeDaDeselezionare){
             forme.remove(f);
             if(f instanceof  FormaSelezionataDecorator){
-                forme.add(((FormaSelezionataDecorator) f).getForma());
+                f = ((FormaSelezionataDecorator) f).undecorate();
+                forme.add(f);
             }else{
                 forme.add(f);
             }
@@ -388,5 +389,19 @@ public class DrawSnapModel implements Serializable {
             }
         }
         return count;
+    }
+
+    public void creaFormaComposta(){
+        FormaComposta fc = new FormaComposta();
+        Iterator<Forma> it = forme.iterator();
+        while (it.hasNext()) {
+            Forma f = it.next();
+            if (f instanceof FormaSelezionataDecorator) {
+                f = ((FormaSelezionataDecorator) f).undecorate();
+                fc.add(f);
+                it.remove();
+            }
+        }
+        forme.add(fc);
     }
 }

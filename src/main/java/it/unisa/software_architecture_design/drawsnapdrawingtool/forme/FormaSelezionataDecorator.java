@@ -28,7 +28,9 @@ public class FormaSelezionataDecorator extends FormaDecorator{
     @Override
     public void disegna(GraphicsContext gc) {
         getForma().disegna(gc);
-        disegnaIndicatoreDiSelezione(gc);
+        if(!(getForma() instanceof FormaComposta)){
+            disegnaIndicatoreDiSelezione(gc);
+        }
     }
 
     /**
@@ -42,6 +44,13 @@ public class FormaSelezionataDecorator extends FormaDecorator{
     @Override
     public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
         return getForma().contiene(puntoDaValutareX, puntoDaValutareY);
+    }
+
+    public Forma undecorate(){
+        if(getForma() instanceof FormaComposta){
+            ((FormaComposta) getForma()).undecorate();
+        }
+        return getForma();
     }
 
     /**
