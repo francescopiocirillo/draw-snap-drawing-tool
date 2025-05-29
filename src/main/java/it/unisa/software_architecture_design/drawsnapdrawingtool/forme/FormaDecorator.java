@@ -44,5 +44,4 @@ public abstract class FormaDecorator extends Forma{
     public Forma clone(){
         return (Forma) formaDecorata.clone();
     }
-
 }

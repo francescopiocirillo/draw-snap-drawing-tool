@@ -408,4 +408,19 @@ public class DrawSnapModel implements Serializable {
             }
         }
     }
+
+    public void reflect(){
+        Forma formaSelezionata = null;
+        for(Forma f:forme){
+            if(f instanceof FormaSelezionataDecorator){
+                formaSelezionata = f;
+                break;
+            }
+        }
+        if (formaSelezionata != null) {
+            Forma forma = ((FormaSelezionataDecorator) formaSelezionata).getForma();
+
+            forma.specchia();
+        }
+    }
 }

@@ -912,5 +912,14 @@ public class DrawSnapController {
         });
     }
 
-
+    /**
+     * Metodo permette di specchiare la figura selezionata
+     * @param event -> evento di pressione su Reflection
+     */
+    @FXML
+    public void onReflectionPressed(ActionEvent event) {
+        invoker.setCommand(new ReflectCommand(forme));
+        invoker.executeCommand();
+        updateState(true);
+    }
 }
