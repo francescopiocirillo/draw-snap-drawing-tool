@@ -54,9 +54,11 @@ public class DrawSnapController {
     private MenuItem pasteButton;
     private MenuItem copyButton;
     private MenuItem cutButton;
+    private MenuItem composeButton;
     private ImageView imageCopy;
     private ImageView imageCut;
     private ImageView imagePaste;
+    private ImageView imageCompose;
 
     /*
      * Attributi per lo zoom
@@ -113,7 +115,7 @@ public class DrawSnapController {
         canvas.setHeight(baseCanvasHeight);
         canvas.setWidth(baseCanvasWidth);
         gc = canvas.getGraphicsContext2D();
-        drawingContext = new DrawingContext(new SelectState(toolBarFX, changeFillColorButton));
+        drawingContext = new DrawingContext(new SelectState(toolBarFX, changeFillColorButton, composeButton));
         invoker = new Invoker();
         history = new DrawSnapHistory();
 
@@ -237,22 +239,28 @@ public class DrawSnapController {
         copyButton = new MenuItem("Copia");
         cutButton = new MenuItem("Taglia");
         pasteButton = new MenuItem("Incolla");
+        composeButton = new MenuItem("Componi");
         pasteButton.setOnAction(this::onPastePressed);
         copyButton.setOnAction(this::onCopyPressed);
         cutButton.setOnAction(this::onCutPressed);
+        composeButton.setOnAction(this::onComposePressed);
         imageCopy = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/copia.png")));
         imageCut = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/taglia.png")));
         imagePaste = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/incolla.png")));
+        imageCompose = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/incolla.png")));
         imageCopy.setFitWidth(16);
         imageCut.setFitWidth(16);
         imagePaste.setFitWidth(16);
+        imageCompose.setFitWidth(16);
         imageCopy.setFitHeight(16);
         imageCut.setFitHeight(16);
         imagePaste.setFitHeight(16);
+        imageCompose.setFitHeight(16);
         copyButton.setGraphic(imageCopy);
         cutButton.setGraphic(imageCut);
         pasteButton.setGraphic(imagePaste);
-        contextMenu.getItems().addAll(copyButton, cutButton, pasteButton);
+        composeButton.setGraphic(imageCompose);
+        contextMenu.getItems().addAll(copyButton, cutButton, pasteButton, composeButton);
     }
 
     public void setStage(Stage stage) {
@@ -262,7 +270,6 @@ public class DrawSnapController {
     public void setModel(DrawSnapModel model) {
         this.forme = model;
     }
-
 
     /**
      * Inizializza gli event handler per gli eventi di interesse relativi al {@link Canvas}.
@@ -326,6 +333,15 @@ public class DrawSnapController {
                 copyButton.setDisable(true);
                 cutButton.setDisable(true);
                 pasteButton.setDisable(!hasClipboard);
+            }
+
+            if(forme.countFormeSelezionate() > 1) {
+                pasteButton.setDisable(true);
+                copyButton.setDisable(true);
+                cutButton.setDisable(true);
+                composeButton.setDisable(false);
+            }else{
+                composeButton.setDisable(true);
             }
 
             if(!contextMenu.getItems().isEmpty()){
@@ -436,7 +452,7 @@ public class DrawSnapController {
      * Metodo per passare alla modalità di selezione
      */
     void setSelectMode() {
-        drawingContext.setCurrentState(new SelectState(toolBarFX, changeFillColorButton), forme);
+        drawingContext.setCurrentState(new SelectState(toolBarFX, changeFillColorButton, composeButton), forme);
         canvas.setCursor(Cursor.DEFAULT);
         updateState(false);
     }
@@ -813,5 +829,23 @@ public class DrawSnapController {
         gridSlider.setVisible(gridVisible);
         gridSlider.setManaged(gridVisible);
         updateState(false);
+    }
+
+    @FXML
+    public void onComposePressed(ActionEvent event) {
+        System.out.println("Composizione di forme selezionate");
+        return ;
+        /*
+        if (forme.thereIsFormaSelezionata()) {
+            invoker.setCommand(new ComposeCommand(forme));
+            invoker.executeCommand();
+            updateState(true);
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Attenzione");
+            alert.setHeaderText("Nessuna forma selezionata");
+            alert.setContentText("Per comporre una forma, seleziona almeno due forme.");
+            alert.showAndWait();
+        }*/
     }
 }

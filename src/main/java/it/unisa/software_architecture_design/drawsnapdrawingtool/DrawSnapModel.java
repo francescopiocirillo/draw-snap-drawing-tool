@@ -376,4 +376,16 @@ public class DrawSnapModel implements Serializable {
             }
         }
     }
+
+    public int countFormeSelezionate() {
+        int count = 0;
+        Iterator<Forma> it = forme.iterator();
+        while (it.hasNext()) {
+            Forma f = it.next();
+            if (f instanceof FormaSelezionataDecorator) {
+                count++;
+            }
+        }
+        return count;
+    }
 }
