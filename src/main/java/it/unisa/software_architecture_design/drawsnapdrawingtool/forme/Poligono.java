@@ -120,6 +120,11 @@ public class Poligono extends Forma {
         return dentro;
     }
 
+    @Override
+    public void specchia() {
+
+    }
+
     /**
      * Calcola la bounding box del poligono (min/max X/Y) e il suo centro.
      * Aggiorna anche le proprietà `coordinataX`, `coordinataY`, `larghezza` e `altezza`
