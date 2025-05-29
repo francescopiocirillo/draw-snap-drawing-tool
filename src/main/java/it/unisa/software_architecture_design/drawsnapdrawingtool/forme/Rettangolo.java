@@ -71,6 +71,12 @@ public class Rettangolo extends Forma  {
         updateVertici();
     }
 
+    @Override
+    public void setAngoloInclinazione( double angoloInclinazione ) {
+        super.setAngoloInclinazione( angoloInclinazione );
+        updateVertici();
+    }
+
     public Color getColoreInterno() {
         return coloreInterno;
     }
