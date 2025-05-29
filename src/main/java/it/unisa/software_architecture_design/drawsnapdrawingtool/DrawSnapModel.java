@@ -367,6 +367,7 @@ public class DrawSnapModel implements Serializable {
                 } else if (formaCorrente.getForma() instanceof Rettangolo) {
                     Rettangolo rettangolo = (Rettangolo) formaCorrente.getForma();
                     rettangolo.setAltezza(altezza);
+                    rettangolo.setLarghezza(larghezza);
                     System.out.println("cambio altezza del rettangolo in " + altezza);
                 } else {
                     Linea linea = (Linea) formaCorrente.getForma();
