@@ -118,30 +118,92 @@ public class Poligono extends Forma {
         gc.restore();
     }
 
+    // Metodo helper per calcolare la distanza al quadrato tra due punti
+    private double distanzaQuadrata(double x1, double y1, double x2, double y2) {
+        double dx = x1 - x2;
+        double dy = y1 - y2;
+        return dx * dx + dy * dy;
+    }
+
+    // Metodo per verificare se un punto è vicino al contorno
+    private boolean puntoVicinoAlContorno(double px, double py, double tolleranza) {
+        int n = puntiX.size();
+        if (n < 2) return false; // Non c'è contorno con meno di 2 punti
+
+        double tolleranzaQuadrata = tolleranza * tolleranza;
+
+        for (int i = 0, j = n - 1; i < n; j = i++) {
+            double ax = puntiX.get(j); // Vertice precedente (o ultimo vertice per il primo lato)
+            double ay = puntiY.get(j);
+            double bx = puntiX.get(i); // Vertice corrente
+            double by = puntiY.get(i);
+
+            // Calcola la distanza dal punto (px, py) al segmento (ax, ay) - (bx, by)
+            double lunghezzaSegmentoQuadrata = distanzaQuadrata(ax, ay, bx, by);
+
+            if (lunghezzaSegmentoQuadrata == 0.0) {
+                if (distanzaQuadrata(px, py, ax, ay) <= tolleranzaQuadrata) {
+                    return true;
+                }
+                continue;
+            }
+
+            // Proiezione del punto P sul segmento AB. t = dot((P-A), (B-A)) / |B-A|^2
+            double t = ((px - ax) * (bx - ax) + (py - ay) * (by - ay)) / lunghezzaSegmentoQuadrata;
+
+            double distanzaPuntoSegmentoQuadrata;
+            if (t < 0.0) { // Proiezione fuori dal segmento, il punto più vicino è A
+                distanzaPuntoSegmentoQuadrata = distanzaQuadrata(px, py, ax, ay);
+            } else if (t > 1.0) { // Proiezione fuori dal segmento, il punto più vicino è B
+                distanzaPuntoSegmentoQuadrata = distanzaQuadrata(px, py, bx, by);
+            } else { // Proiezione cade sul segmento
+                // Calcola il punto di proiezione (qx, qy)
+                double qx = ax + t * (bx - ax);
+                double qy = ay + t * (by - ay);
+                distanzaPuntoSegmentoQuadrata = distanzaQuadrata(px, py, qx, qy);
+            }
+
+            if (distanzaPuntoSegmentoQuadrata <= tolleranzaQuadrata) {
+                return true; // Il punto è abbastanza vicino a questo segmento
+            }
+        }
+        return false;
+    }
+
+
     @Override
     public boolean contiene(double x, double y) {
-
-        //Trasla il punto (x,y) in modo che il centro del poligono sia l'origine
         double translatedX = x - super.getCoordinataX();
         double translatedY = y - super.getCoordinataY();
 
-        //Applica la rotazione inversa al punto
         double angleRad = Math.toRadians(-super.getAngoloInclinazione());
         double rotatedX = translatedX * Math.cos(angleRad) - translatedY * Math.sin(angleRad);
         double rotatedY = translatedX * Math.sin(angleRad) + translatedY * Math.cos(angleRad);
 
-        int n = puntiX.size();
-        boolean dentro = false;
+        double tolleranzaClick = 3.0;
+        if (puntoVicinoAlContorno(rotatedX, rotatedY, tolleranzaClick)) {
+            return true;
+        }
 
+        int n = puntiX.size();
+        if (n < 3) return false;
+
+        boolean dentro = false;
         for (int i = 0, j = n - 1; i < n; j = i++) {
             double xi = puntiX.get(i), yi = puntiY.get(i);
             double xj = puntiX.get(j), yj = puntiY.get(j);
+
+            double yDiff = yj - yi;
+            if (Math.abs(yDiff) < 1e-9) continue;
+
             boolean interseca = ((yi > rotatedY) != (yj > rotatedY)) &&
-                    (rotatedX < (xj - xi) * (rotatedY - yi) / (yj - yi + 1e-10) + xi);
+                    (rotatedX < (xj - xi) * (rotatedY - yi) / yDiff + xi);
             if (interseca) dentro = !dentro;
         }
         return dentro;
     }
+
+
 
     @Override
     public void specchia() {
@@ -271,5 +333,13 @@ public class Poligono extends Forma {
         this.setColore(Color.web(colore));
         String coloreInterno = in.readUTF();
         this.setColoreInterno(ColorUtils.fromHexString(coloreInterno));
+    }
+
+    @Override
+    public void proportionalResize(double proporzione) {
+        double fattoreScala = proporzione / 100.0;
+        // Applica il fattore di scala sia sull'asse X che sull'asse Y
+        scala(fattoreScala, fattoreScala);
+
     }
 }
