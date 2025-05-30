@@ -34,6 +34,7 @@ class CopyCommandTest {
         Forma forma = new Forma(10, 20, 30, 0, Color.RED) {
             @Override public void disegna(GraphicsContext gc) {}
             @Override public boolean contiene(double x, double y) { return false; }
+            @Override public void specchia(){}
         };
         model.add(forma);
 
@@ -52,10 +53,12 @@ class CopyCommandTest {
         Forma forma1 = new Forma(10, 20, 30, 0, Color.RED) {
             @Override public void disegna(GraphicsContext gc) {}
             @Override public boolean contiene(double x, double y) { return false; }
+            @Override public void specchia(){}
         };
         Forma formaSelezionata = new FormaSelezionataDecorator(new Forma(70, 80, 30, 0, Color.GREEN) {
             @Override public void disegna(GraphicsContext gc) {}
             @Override public boolean contiene(double x, double y) { return true; }
+            @Override public void specchia(){}
         });
 
         model.add(forma1);
@@ -78,6 +81,7 @@ class CopyCommandTest {
         Forma formaNullColor = new FormaSelezionataDecorator(new Forma(10, 20, 30, 0, null) {
             @Override public void disegna(GraphicsContext gc) {}
             @Override public boolean contiene(double x, double y) { return true; }
+            @Override public void specchia(){}
         });
         model.add(formaNullColor);
 
@@ -95,6 +99,7 @@ class CopyCommandTest {
         Forma formaAnomala = new FormaSelezionataDecorator(new Forma(0, 0, 0, 0, null) {
             @Override public void disegna(GraphicsContext gc) {}
             @Override public boolean contiene(double x, double y) { return true; }
+            @Override public void specchia(){}
         });
         model.add(formaAnomala);
 

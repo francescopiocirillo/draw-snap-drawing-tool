@@ -50,6 +50,9 @@ class CutCommandTest {
                 return false; //Mock: nessun punto è contenuto
             }
 
+            @Override
+            public void specchia(){}
+
         };
 
         //Aggiungo la forma a lista
@@ -79,6 +82,9 @@ class CutCommandTest {
             public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
                 return true; // Mock: Il punto è contenuto
             }
+
+            @Override
+            public void specchia(){}
         });
 
         //Aggiungo la forma a lista
@@ -119,6 +125,9 @@ class CutCommandTest {
                 return false; //Mock: nessun punto è contenuto
             }
 
+            @Override
+            public void specchia(){}
+
         };
 
         //Ne creo una seconda selezionata
@@ -132,6 +141,9 @@ class CutCommandTest {
             public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
                 return true; // Mock: Il punto è contenuto
             }
+            @Override
+            public void specchia(){}
+
         });
 
         //Aggiungo le forma a lista
@@ -168,6 +180,9 @@ class CutCommandTest {
                 public void disegna(GraphicsContext gc) {}
                 @Override
                 public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) { return false; }
+
+                @Override
+                public void specchia(){}
             });
         }
 
@@ -177,6 +192,9 @@ class CutCommandTest {
             public void disegna(GraphicsContext gc) {}
             @Override
             public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) { return true; }
+
+            @Override
+            public void specchia(){}
         });
 
         //Aggiungo la forma selezionata a lista

@@ -942,7 +942,9 @@ public class DrawSnapController {
 
         // Spinner per dimensioni
         Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
-        Spinner<Double> spinnerProporzione = new Spinner<>(1.0, 1000.0, 100, 1.0); //imposta dimensioni attuali
+        Spinner<Double> spinnerProporzione = new Spinner<>(1.0, 500.0, 100, 1.0); //imposta dimensioni attuali
+        spinnerProporzione.setEditable(true);
+
         double proporzioneDefault = 100;
 
         VBox dimensioniBox = new VBox(10);
