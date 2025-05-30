@@ -80,16 +80,16 @@ public abstract class Forma implements Serializable, Cloneable{
         setLarghezza(getLarghezza()*proporzione/100);
     }
 
-    public void setOffsetX(double offsetX) {
-        this.offsetX = offsetX - getCoordinataX();
+    public void setOffsetX(double coordinataXPressed) {
+        this.offsetX = coordinataXPressed - getCoordinataX();
     }
 
     public double getOffsetX() {
         return offsetX;
     }
 
-    public void setOffsetY(double offsetY) {
-        this.offsetY = offsetY - getCoordinataY();
+    public void setOffsetY(double coordinataYPressed) {
+        this.offsetY = coordinataYPressed - getCoordinataY();
     }
 
     public double getOffsetY() {

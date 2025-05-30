@@ -21,8 +21,6 @@ public class SelectState implements DrawingState{
     /*
      * Attributi
      */
-    private double offsetX;
-    private double offsetY;
     private ToolBar toolBarFX; // barra in alto delle modifiche
     private Button changeFillColorButton;
     private MenuItem composeButton; // pulsante per comporre le forme
@@ -58,8 +56,6 @@ public class SelectState implements DrawingState{
                 // offset utili per lo spostamento della figura in caso di MouseDragged
                 f.setOffsetX(coordinataX);
                 f.setOffsetY(coordinataY);
-                offsetX = coordinataX - f.getCoordinataX();
-                offsetY = coordinataY - f.getCoordinataY();
             }
         }
 
@@ -172,15 +168,8 @@ public class SelectState implements DrawingState{
         while (it.hasNext()) {
             Forma f = it.next();
             if (f instanceof FormaSelezionataDecorator) {
-                if(((FormaSelezionataDecorator)f).getForma() instanceof FormaComposta){
-                    f.setCoordinataXForDrag(coordinataX);
-                    f.setCoordinataYForDrag(coordinataY);
-                }else{
-                    double newX = coordinataX - offsetX;
-                    double newY = coordinataY - offsetY;
-                    f.setCoordinataX(newX);
-                    f.setCoordinataY(newY);
-                }
+                f.setCoordinataXForDrag(coordinataX);
+                f.setCoordinataYForDrag(coordinataY);
                 result = true;
                 break; // Presupponendo una sola forma selezionata
             }

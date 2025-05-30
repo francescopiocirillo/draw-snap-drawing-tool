@@ -135,15 +135,15 @@ public class FormaComposta extends Forma{
         }
     }
 
-    public void setOffsetX(double offsetX){
+    public void setOffsetX(double coordinataXPressed){
         for(Forma f:forme){
-            f.setOffsetX(offsetX);
+            f.setOffsetX(coordinataXPressed);
         }
     }
 
-    public void setOffsetY(double offsetY){
+    public void setOffsetY(double coordinataYPressed){
         for(Forma f:forme){
-            f.setOffsetY(offsetY);
+            f.setOffsetY(coordinataYPressed);
         }
     }
 }
