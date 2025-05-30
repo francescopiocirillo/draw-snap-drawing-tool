@@ -300,10 +300,6 @@ public class Poligono extends Forma {
         super.setAngoloInclinazione(nuovoAngolo);
     }
 
-//    public void trasla(double deltaX, double deltaY) {
-//        super.setCoordinataX(super.getCoordinataX() + deltaX);
-//        super.setCoordinataY(super.getCoordinataY() + deltaY);
-//    }
 
     /**
      * Serializza l'oggetto nel complesso con il metodo della superclasse e poi salva
