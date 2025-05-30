@@ -116,4 +116,10 @@ public class FormaComposta extends Forma{
             f.specchia();
         }
     }
+
+    public void setAngoloInclinazione(double angoloDiInclinazione){
+        for(Forma f:forme){
+            f.setAngoloInclinazione(angoloDiInclinazione);
+        }
+    }
 }

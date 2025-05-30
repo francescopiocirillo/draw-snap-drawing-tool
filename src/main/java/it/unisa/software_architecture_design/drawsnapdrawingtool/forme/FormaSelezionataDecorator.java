@@ -80,6 +80,10 @@ public class FormaSelezionataDecorator extends FormaDecorator{
         getForma().proportionalResize(proporzione);
     }
 
+    public void setAngoloInclinazione(double angoloDiInclinazione){
+        getForma().setAngoloInclinazione(angoloDiInclinazione);
+    }
+
 
     /**
      * Disegna intorno alla figura un bordo evidenziato per indicare che la
