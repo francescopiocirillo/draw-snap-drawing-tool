@@ -105,16 +105,24 @@ public class DrawState implements DrawingState{
                     return false;
                 }else {
 
-                if(event.getClickCount() == 1){
-                    factoryPoligono.addPunto(coordinataX, coordinataY);
-                    return false;
+                    if(event.getClickCount() == 1){
+                        factoryPoligono.addPunto(coordinataX, coordinataY);
+                        return false;
+                    }
+                    if(event.getClickCount() == 2 && factoryPoligono.getSize()>2){
+                        formaCreata = factoryPoligono.creaForma(factoryPoligono.getCentroX(), factoryPoligono.getCentroY(), factoryPoligono.getAltezza(), factoryPoligono.getLarghezza(),
+                                attributiForma.getAngoloInclinazione(), attributiForma.getColore(), attributiForma.getColoreInterno());
+                        creazionePoligono=true;
+                    } else return false;
                 }
-                if(event.getClickCount() == 2&&factoryPoligono.getSize()>2){
-                    formaCreata = factoryPoligono.creaForma(factoryPoligono.getCentroX(), factoryPoligono.getCentroY(), factoryPoligono.getAltezza(), factoryPoligono.getLarghezza(),
-                            attributiForma.getAngoloInclinazione(), attributiForma.getColore(), attributiForma.getColoreInterno());
-                    creazionePoligono=true;
-                } else return false;
-                }
+                break;
+            case TEXT:
+                FactoryTesto factoryTesto = new FactoryTesto();
+                factoryTesto.setTesto(attributiForma.getTesto());
+                formaCreata = factoryTesto.creaForma(coordinataX, coordinataY,
+                        attributiForma.getAltezza(), attributiForma.getLarghezza(),
+                        attributiForma.getAngoloInclinazione(), attributiForma.getColore(), attributiForma.getColoreInterno());
+                break;
         }
         forme.add(formaCreata);
         return true;
@@ -180,7 +188,24 @@ public class DrawState implements DrawingState{
         spinnerLunghezza.setTooltip(new Tooltip("Imposta la lunghezza della linea in pixel"));
         spinnerAngolo.setTooltip(new Tooltip("Angolo di rotazione in gradi (0-360)"));
 
-        if(tipoForma ==Forme.POLIGONO){
+        TextField testo = null;
+        VBox textBox = null;
+
+        if(tipoForma == Forme.TEXT){
+            Label testoLabel = new Label("Testo:");
+            testoLabel.setStyle("-fx-font-size: 18px;");
+            testo = new TextField();
+            testo.setPromptText("Inserisci testo qui");
+            testo.setPrefWidth(200);
+            textBox = new VBox(5, testoLabel, testo);
+            textBox.setAlignment(Pos.CENTER);
+
+            dimensioniBox.getChildren().addAll(
+                    new Label("Altezza:"), spinnerAltezza,
+                    new Label("Larghezza:"), spinnerLarghezza,
+                    new Label("Angolo inclinazione (°):"), spinnerAngolo
+            );
+        }else if(tipoForma ==Forme.POLIGONO){
             dimensioniBox.getChildren().addAll(
                     new Label("Angolo inclinazione (°):"), spinnerAngolo
             );
@@ -202,6 +227,7 @@ public class DrawState implements DrawingState{
         contentBox.setPadding(new Insets(20));
         contentBox.getChildren().addAll(bordoBox);
         if (internoBox != null) contentBox.getChildren().add(internoBox);
+        if(textBox != null) contentBox.getChildren().add(textBox);
         contentBox.getChildren().add(dimensioniBox);
 
         dialog.getDialogPane().setContent(contentBox);
@@ -214,6 +240,7 @@ public class DrawState implements DrawingState{
         dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
 
         ColorPicker finalInternoPicker = internoPicker; //necessario per la lambda
+        TextField finalTesto = testo;
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButton) { //se viene premuto conferma crea un nuovo AttributiForma con i parametri scelti
@@ -231,6 +258,13 @@ public class DrawState implements DrawingState{
                     attributi.setAltezza(0);
                     attributi.setLarghezza(0);
                     attributi.setAngoloInclinazione(spinnerAngolo.getValue());
+                } else if (tipoForma == Forme.TEXT) {
+                    attributi.setAltezza(spinnerAltezza.getValue());
+                    attributi.setLarghezza(spinnerLarghezza.getValue());
+                    attributi.setAngoloInclinazione(spinnerAngolo.getValue());
+                    attributi.setTesto(finalTesto != null
+                            ? finalTesto.getText()
+                            : "");
                 } else {
                     attributi.setAltezza(spinnerAltezza.getValue());
                     attributi.setLarghezza(spinnerLarghezza.getValue());

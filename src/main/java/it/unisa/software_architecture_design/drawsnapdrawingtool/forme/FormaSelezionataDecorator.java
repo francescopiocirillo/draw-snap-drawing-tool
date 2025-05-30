@@ -89,18 +89,22 @@ public class FormaSelezionataDecorator extends FormaDecorator{
      */
     private void disegnaIndicatoreDiSelezione(GraphicsContext gc) {
         gc.save();
-        // Colore e stile dell'evidenziazione
-        gc.setStroke(Color.BLACK); // Colore dell'indicatore
-        gc.setLineWidth(SPESSORE_BORDO);    // Spessore del bordo
-        gc.setLineDashes(10.0, 5.0); // Imposta la linea tratteggiata: 10 pixel linea, 5 pixel spazio
 
-        // Disegna un rettangolo più grande attorno alla forma
+        // Colore e stile dell'evidenziazione
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(SPESSORE_BORDO);
+        gc.setLineDashes(10.0, 5.0);
+
         double x = getForma().getCoordinataX();
         double y = getForma().getCoordinataY();
+        double angoloInclinazione = getForma().getAngoloInclinazione();
+
         double larghezza = LARGHEZZA_DEFAULT;
         double altezza = ALTEZZA_DEFAULT;
 
-        boolean isPoligono = false;
+
+        double offsetX_bbox = 0;
+        double offsetY_bbox = 0;
 
         if (getForma() instanceof Rettangolo) {
             Rettangolo rettangolo = (Rettangolo) getForma();
@@ -108,33 +112,36 @@ public class FormaSelezionataDecorator extends FormaDecorator{
             altezza = rettangolo.getAltezza();
         } else if (getForma() instanceof Ellisse) {
             Ellisse ellisse = (Ellisse) getForma();
-            altezza = ellisse.getAltezza();
             larghezza = ellisse.getLarghezza();
+            altezza = ellisse.getAltezza();
         } else if (getForma() instanceof Linea) {
             Linea linea = (Linea) getForma();
             larghezza = linea.getLarghezza();
         } else if (getForma() instanceof Poligono) {
             Poligono poligono = (Poligono) getForma();
-            altezza = poligono.getAltezza();
             larghezza = poligono.getLarghezza();
-            isPoligono = true;
+            altezza = poligono.getAltezza();
+
+            offsetX_bbox = poligono.getIntrinsicCenterX();
+            offsetY_bbox = poligono.getIntrinsicCenterY();
+        }else if (getForma() instanceof Testo){
+            Testo testo = (Testo) getForma();
+            larghezza = testo.getRenderedWidth();
+            altezza = testo.getRenderedHeight();
         }
 
-        // Aggiungi margine
         double rectWidth = larghezza + 2 * MARGINE_SELEZIONE;
         double rectHeight = altezza + 2 * MARGINE_SELEZIONE;
 
-        if (!isPoligono) {
-            // Per le forme che non sono poligoni, applichiamo traslazione e rotazione
-            gc.translate(x, y);
-            gc.rotate(getForma().getAngoloInclinazione()); // Rotazione in senso orario
-            // Disegna il rettangolo centrato sull'origine (che ora è il centro della forma)
-            gc.strokeRect(-rectWidth / 2, -rectHeight / 2, rectWidth, rectHeight);
-        } else {
-            // Per i Poligoni, disegna direttamente il bounding box allineato agli assi.
-            gc.strokeRect(x - rectWidth / 2, y - rectHeight / 2, rectWidth, rectHeight);
-        }
-        gc.restore(); // Ripristina il contesto grafico originale
+
+        gc.translate(x, y);
+
+        gc.rotate(angoloInclinazione);
+
+        gc.strokeRect(offsetX_bbox - rectWidth / 2, offsetY_bbox - rectHeight / 2, rectWidth, rectHeight);
+
+        gc.restore();
     }
+
 
 }
