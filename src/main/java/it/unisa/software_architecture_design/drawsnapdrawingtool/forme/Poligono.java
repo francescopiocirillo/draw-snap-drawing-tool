@@ -1,8 +1,13 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.forme;
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.utils.ColorUtils;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,20 +27,9 @@ public class Poligono extends Forma {
     /**
      * Costruttore, Getter e Setter
      *
-     * @param initialRefX La coordinata X del punto di riferimento iniziale (es. primo click del mouse).
-     * Questa sarà la coordinata X globale del poligono.
-     * @param initialRefY La coordinata Y del punto di riferimento iniziale (es. primo click del mouse).
-     * Questa sarà la coordinata Y globale del poligono.
-     * @param larghezza   (Non usato direttamente per il calcolo della larghezza intrinseca, ma mantenuto per compatibilità con Forma)
-     * @param altezza     (Non usato direttamente per il calcolo dell'altezza intrinseca, ma mantenuto per compatibilità con Forma)
-     * @param angoloInclinazione L'angolo di inclinazione iniziale del poligono.
-     * @param colore      Il colore del bordo del poligono.
-     * @param rawPuntiX   La lista delle coordinate X grezze dei vertici del poligono (come disegnate/cliccate sul canvas).
-     * @param rawPuntiY   La lista delle coordinate Y grezze dei vertici del poligono (come disegnate/cliccate sul canvas).
-     * @param coloreInterno Il colore di riempimento del poligono.
+     *
      */
     public Poligono(double initialRefX, double initialRefY, double larghezza, double altezza, double angoloInclinazione, Color colore, List<Double> rawPuntiX, List<Double> rawPuntiY, Color coloreInterno) {
-        // 1. CHIAMA super() COME PRIMA ISTRUZIONE.
         // Imposta la posizione globale del poligono direttamente al punto di riferimento iniziale.
         super(initialRefX, initialRefY, 0, angoloInclinazione, colore);
 
@@ -43,18 +37,12 @@ public class Poligono extends Forma {
         this.puntiY = new ArrayList<>();
         this.coloreInterno = coloreInterno;
 
-        // 2. Trasla i punti grezzi (rawPuntiX, rawPuntiY) in modo che siano relativi al punto di riferimento iniziale.
-        // Questi diventano i punti "intrinseci" del poligono.
-        // Quando il poligono verrà disegnato, gc.translate(super.getCoordinataX(), super.getCoordinataY())
-        // sposterà l'origine del contesto grafico a (initialRefX, initialRefY),
-        // e disegnare questi punti relativi farà sì che il poligono appaia esattamente dove i punti sono stati cliccati.
+
         for (int i = 0; i < rawPuntiX.size(); i++) {
             this.puntiX.add(rawPuntiX.get(i) - initialRefX);
             this.puntiY.add(rawPuntiY.get(i) - initialRefY);
         }
 
-        // 3. Calcola le dimensioni intrinseche (non ruotate) basate su questi punti centrati.
-        // NOTA: calcolaBoundingBox() NON deve più modificare super.coordinataX/Y
         calcolaBoundingBox();
     }
 
@@ -101,17 +89,14 @@ public class Poligono extends Forma {
     public void disegna(GraphicsContext gc) {
         gc.save();
 
-        // Trasla il contesto grafico al centro del poligono (che è il suo punto di riferimento iniziale)
         gc.translate(super.getCoordinataX(), super.getCoordinataY());
 
-        // Applica la rotazione al contesto grafico
         gc.rotate(super.getAngoloInclinazione());
 
         // I punti sono già relativi all'origine (0,0) a causa della traslazione iniziale nel costruttore.
         double[] xArray = puntiX.stream().mapToDouble(Double::doubleValue).toArray();
         double[] yArray = puntiY.stream().mapToDouble(Double::doubleValue).toArray();
 
-        // Imposta il colore del contorno e dell'interno
         gc.setFill(getColoreInterno());
         gc.setStroke(getColore());
         gc.setLineWidth(2);
@@ -133,8 +118,6 @@ public class Poligono extends Forma {
         gc.restore();
     }
 
-    // Trasforma il punto di input nel sistema di coordinate del poligono non ruotato
-    // prima di eseguire il test di appartenenza.
     @Override
     public boolean contiene(double x, double y) {
 
@@ -143,11 +126,10 @@ public class Poligono extends Forma {
         double translatedY = y - super.getCoordinataY();
 
         //Applica la rotazione inversa al punto
-        double angleRad = Math.toRadians(-super.getAngoloInclinazione()); // Angolo inverso
+        double angleRad = Math.toRadians(-super.getAngoloInclinazione());
         double rotatedX = translatedX * Math.cos(angleRad) - translatedY * Math.sin(angleRad);
         double rotatedY = translatedX * Math.sin(angleRad) + translatedY * Math.cos(angleRad);
 
-        // Ora il punto (rotatedX, rotatedY) è nel sistema di coordinate del poligono non ruotato.
         int n = puntiX.size();
         boolean dentro = false;
 
@@ -172,13 +154,8 @@ public class Poligono extends Forma {
 
         // Le coordinate Y rimangono invariate per lo specchiamento lungo l'asse Y
 
-        // Dopo aver modificato i punti, ricalcola la bounding box.
-        // Questo aggiorna le dimensioni intrinseche del poligono se sono cambiate.
         calcolaBoundingBox();
 
-        // NUOVA MODIFICA: Specchia anche l'angolo di inclinazione
-        // Questo è cruciale per far sì che lo specchiamento visivo sia coerente
-        // anche quando la figura è ruotata.
         super.setAngoloInclinazione(-super.getAngoloInclinazione());
     }
 
@@ -192,8 +169,8 @@ public class Poligono extends Forma {
         if (puntiX == null || puntiX.isEmpty()) {
             this.intrinsicLarghezza = 0;
             this.intrinsicAltezza = 0;
-            this.intrinsicCenterX = 0; // Inizializza anche il centro
-            this.intrinsicCenterY = 0; // Inizializza anche il centro
+            this.intrinsicCenterX = 0;
+            this.intrinsicCenterY = 0;
             super.setLarghezza(0);
             return;
         }
@@ -243,7 +220,6 @@ public class Poligono extends Forma {
         List<Double> nuoviPuntiY = new ArrayList<>();
 
         for (int i = 0; i < puntiX.size(); i++) {
-            // I punti sono già relativi al centro (0,0)
             double oldX = puntiX.get(i);
             double oldY = puntiY.get(i);
 
@@ -256,16 +232,44 @@ public class Poligono extends Forma {
         calcolaBoundingBox(); // Ricalcola le dimensioni intrinseche dopo la scala
     }
 
-    // Aggiorna solo l'angolo nella superclasse.
-    // La rotazione effettiva è gestita dal metodo disegna() tramite il contesto grafico.
+
     @Override
     public void setAngoloInclinazione(double nuovoAngolo) {
         super.setAngoloInclinazione(nuovoAngolo);
     }
 
-    // Il metodo trasla() è già corretto, aggiorna solo la posizione globale.
-    public void trasla(double deltaX, double deltaY) {
-        super.setCoordinataX(super.getCoordinataX() + deltaX);
-        super.setCoordinataY(super.getCoordinataY() + deltaY);
+//    public void trasla(double deltaX, double deltaY) {
+//        super.setCoordinataX(super.getCoordinataX() + deltaX);
+//        super.setCoordinataY(super.getCoordinataY() + deltaY);
+//    }
+
+    /**
+     * Serializza l'oggetto nel complesso con il metodo della superclasse e poi salva
+     * anche il colore di riempimento che non è serializzabile.
+     * @param out è lo stream sul quale salvare le informazioni, sarà il File scelto dall'utente
+     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
+     */
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeUTF(ColorUtils.toHexString(getColore()));
+        // Serializza il colore interno specifico della sottoclasse
+        out.writeUTF(ColorUtils.toHexString(coloreInterno));
+    }
+
+    /**
+     * Deserializza l'oggetto nel complesso con il metodo della superclasse e poi ricava
+     * anche il colore di riempimento che non è serializzabile.
+     * @param in è lo stream dal quale caricare le informazioni, sarà il File scelto dall'utente
+     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
+     * @throws ClassNotFoundException se si verifica un errore nel caricare una classe
+     */
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        String colore = in.readUTF();
+        this.setColore(Color.web(colore));
+        String coloreInterno = in.readUTF();
+        this.setColoreInterno(ColorUtils.fromHexString(coloreInterno));
     }
 }

@@ -373,6 +373,15 @@ public class DrawSnapModel implements Serializable {
         }
     }
 
+    /**
+     * Ridimensiona la forma attualmente selezionata.
+     * @param larghezza La larghezza desiderata per la forma. Per i poligoni,
+     * questo valore viene utilizzato come riferimento per il calcolo
+     * del fattore di scala sull'asse X della bounding box.
+     * @param altezza L'altezza desiderata per la forma. Per i poligoni, questo valore
+     * viene utilizzato come riferimento per il calcolo del fattore di scala
+     * sull'asse Y della bounding box.
+     */
     public void resize(double larghezza, double altezza) {
         // Itera attraverso le forme per trovare quella selezionata
         System.out.println("model");
@@ -380,7 +389,7 @@ public class DrawSnapModel implements Serializable {
         for (Forma f : forme) {
             if (f instanceof FormaSelezionataDecorator) {
                 formaDaRidimensionare = ((FormaSelezionataDecorator) f).getForma();
-                break; // Una volta trovata la forma selezionata, esci dal ciclo
+                break;
             }
         }
 
@@ -389,18 +398,14 @@ public class DrawSnapModel implements Serializable {
             return;
         }
 
-        // Ora gestisci il ridimensionamento in base al tipo specifico della forma
         if (formaDaRidimensionare instanceof Poligono) {
             Poligono poligono = (Poligono) formaDaRidimensionare;
             double larghezzaCorrente = poligono.getLarghezza(); // Larghezza attuale della bounding box
             double altezzaCorrente = poligono.getAltezza();     // Altezza attuale della bounding box
 
             // Calcola i fattori di scala (nuova dimensione / dimensione corrente)
-            // Gestisci il caso in cui la dimensione corrente sia zero per evitare eccezioni
             double fattoreScalaX = (larghezzaCorrente > 0) ? larghezza / larghezzaCorrente : 1.0;
             double fattoreScalaY = (altezzaCorrente > 0) ? altezza / altezzaCorrente : 1.0;
-
-            // CHIAMA IL METODO SCALA DEL POLIGONO CON I FATTORI CALCOLATI
             poligono.scala(fattoreScalaX, fattoreScalaY);
 
             System.out.println("  Poligono ridimensionato. Nuove dimensioni bounding box: W=" + poligono.getLarghezza() + ", H=" + poligono.getAltezza());
@@ -426,7 +431,6 @@ public class DrawSnapModel implements Serializable {
             Linea linea = (Linea) formaDaRidimensionare;
             linea.setLarghezza(larghezza);
             System.out.println("  Tipo: Linea. Impostata nuova dimensione: W=" + larghezza + ", H=" + larghezza);
-
         }
     }
 
