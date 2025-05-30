@@ -92,6 +92,8 @@ public class DrawSnapController {
     private Button changeFillColorButton;
     @FXML
     private Button undoButton;
+    @FXML
+    private Button proportionalResizePressed;
     private List<Button> bottoniBarraPrincipale = null;
 
     /*
@@ -755,89 +757,104 @@ public class DrawSnapController {
     @FXML
     public void onResizePressed(ActionEvent event) {
         Forma tipoForma = forme.getFormaSelezionata();
-        Dialog<Map<String, Double>> dialog = new Dialog<>();
-        dialog.setTitle("Ridimensiona Figura");
-        dialog.setHeaderText("Vuoi cambiare le dimensioni della figura?");
-
-        VBox contentBox = new VBox(15);
-        contentBox.setPadding(new Insets(20));
-
-        // Spinner per dimensioni
         Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
-        Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, forma.getLarghezza(), 1.0); //imposta dimensioni attuali
-        double altezzaDefault = 0;
-        if ( forma instanceof Rettangolo ) {
-            altezzaDefault = ((Rettangolo)forma).getAltezza();
-        } else if ( forma instanceof Ellisse) {
-            altezzaDefault = ((Ellisse)forma).getAltezza();
-        } else if (forma instanceof Poligono){
-            altezzaDefault = ((Poligono)forma).getAltezza();
-        }else if(forma instanceof Testo){
-            altezzaDefault = ((Testo) forma).getAltezza();
-        }
-        Spinner<Double>  spinnerAltezza = new Spinner<>(10.0, 500.0, altezzaDefault, 1.0); //imposta dimensioni attuali
 
-        spinnerAltezza.setEditable(true);
-        spinnerLarghezza.setEditable(true);
+        if (forma instanceof FormaComposta) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Avviso");
+            alert.setHeaderText(null);
+            alert.setContentText("Per le forme composte usa la funzione di resize proporzionale.");
+            // Mostra l'alert e aspetta una risposta dell'utente
+            Optional<ButtonType> risultato = alert.showAndWait();
 
-        VBox dimensioniBox = new VBox(10);
-        dimensioniBox.setAlignment(Pos.CENTER);
-
-        if ( ( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea ) {
-            System.out.println("tipoForma: " + tipoForma);
-            dimensioniBox.getChildren().addAll(
-                    new Label("Lunghezza:"), spinnerLarghezza
-            );
-        } else {
-            dimensioniBox.getChildren().addAll(
-                    new Label("Altezza:"), spinnerAltezza,
-                    new Label("Larghezza:"), spinnerLarghezza
-            );
-        }
-
-        contentBox.getChildren().add(dimensioniBox);
-        dialog.getDialogPane().setContent(contentBox);
-        dialog.getDialogPane().setMinWidth(400);
-
-        // Pulsanti di conferma e annullamento
-        ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
-
-        // Impostazione del comportamento alla conferma
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == confirmButton) {
-                Map<String, Double> map = new HashMap<>();
-                if (( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea) {
-                    double lunghezza = spinnerLarghezza.getValue();
-                    map.put("Lunghezza", lunghezza);
-                    System.out.println("Nuova Lunghezza: " + lunghezza);
-                } else {
-                    double altezza = spinnerAltezza.getValue();
-                    double larghezza = spinnerLarghezza.getValue();
-                    map.put("Larghezza", larghezza);
-                    map.put("Altezza", altezza);
-                    System.out.println("Nuova Altezza: " + altezza);
-                    System.out.println("Nuova Larghezza: " + larghezza);
-                }
-                return map;
+            // Controlla se l'utente ha premuto OK
+            if (risultato.isPresent() && risultato.get() == ButtonType.OK) {
+                proportionalResizePressed.fire();
             }
-            return null;
-        });
+        }else{
+            Dialog<Map<String, Double>> dialog = new Dialog<>();
+            dialog.setTitle("Ridimensiona Figura");
+            dialog.setHeaderText("Vuoi cambiare le dimensioni della figura?");
 
-        // Mostra il dialog e gestisce il risultato
-        Optional<Map<String, Double>> result = dialog.showAndWait();
-        result.ifPresent(nuoveDimensioni -> {
-            if (( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea) {
-                invoker.setCommand(new ResizeCommand(forme, nuoveDimensioni.get("Lunghezza"), 0));
-                invoker.executeCommand();
-                updateState(true);
+            VBox contentBox = new VBox(15);
+            contentBox.setPadding(new Insets(20));
+
+            // Spinner per dimensioni
+            Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, forma.getLarghezza(), 1.0); //imposta dimensioni attuali
+            double altezzaDefault = 0;
+            if ( forma instanceof Rettangolo ) {
+                altezzaDefault = ((Rettangolo)forma).getAltezza();
+            } else if ( forma instanceof Ellisse) {
+                altezzaDefault = ((Ellisse)forma).getAltezza();
+            } else if (forma instanceof Poligono){
+                altezzaDefault = ((Poligono)forma).getAltezza();
+            }else if(forma instanceof Testo){
+                altezzaDefault = ((Testo) forma).getAltezza();
+            }
+            Spinner<Double>  spinnerAltezza = new Spinner<>(10.0, 500.0, altezzaDefault, 1.0); //imposta dimensioni attuali
+
+            spinnerAltezza.setEditable(true);
+            spinnerLarghezza.setEditable(true);
+
+            VBox dimensioniBox = new VBox(10);
+            dimensioniBox.setAlignment(Pos.CENTER);
+
+            if ( ( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea ) {
+                System.out.println("tipoForma: " + tipoForma);
+                dimensioniBox.getChildren().addAll(
+                        new Label("Lunghezza:"), spinnerLarghezza
+                );
             } else {
-                invoker.setCommand(new ResizeCommand(forme, nuoveDimensioni.get("Larghezza"), nuoveDimensioni.get("Altezza")));
-                invoker.executeCommand();
-                updateState(true);
+                dimensioniBox.getChildren().addAll(
+                        new Label("Altezza:"), spinnerAltezza,
+                        new Label("Larghezza:"), spinnerLarghezza
+                );
             }
-        });
+
+            contentBox.getChildren().add(dimensioniBox);
+            dialog.getDialogPane().setContent(contentBox);
+            dialog.getDialogPane().setMinWidth(400);
+
+            // Pulsanti di conferma e annullamento
+            ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
+            ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
+            dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
+
+            // Impostazione del comportamento alla conferma
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == confirmButton) {
+                    Map<String, Double> map = new HashMap<>();
+                    if (( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea) {
+                        double lunghezza = spinnerLarghezza.getValue();
+                        map.put("Lunghezza", lunghezza);
+                        System.out.println("Nuova Lunghezza: " + lunghezza);
+                    } else {
+                        double altezza = spinnerAltezza.getValue();
+                        double larghezza = spinnerLarghezza.getValue();
+                        map.put("Larghezza", larghezza);
+                        map.put("Altezza", altezza);
+                        System.out.println("Nuova Altezza: " + altezza);
+                        System.out.println("Nuova Larghezza: " + larghezza);
+                    }
+                    return map;
+                }
+                return null;
+            });
+
+            // Mostra il dialog e gestisce il risultato
+            Optional<Map<String, Double>> result = dialog.showAndWait();
+            result.ifPresent(nuoveDimensioni -> {
+                if (( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea) {
+                    invoker.setCommand(new ResizeCommand(forme, nuoveDimensioni.get("Lunghezza"), 0));
+                    invoker.executeCommand();
+                    updateState(true);
+                } else {
+                    invoker.setCommand(new ResizeCommand(forme, nuoveDimensioni.get("Larghezza"), nuoveDimensioni.get("Altezza")));
+                    invoker.executeCommand();
+                    updateState(true);
+                }
+            });
+        }
     }
 
     /**
