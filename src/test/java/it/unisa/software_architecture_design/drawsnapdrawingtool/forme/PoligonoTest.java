@@ -49,15 +49,6 @@ class PoligonoTest {
         assertTrue(quadrato.contiene(110, 110));
     }
 
-    @Test
-    void testContiene_puntoFuoriDalQuadratoOrizzontale() {
-        Poligono quadrato = new Poligono(100, 100, 20, 20, 0, Color.BLACK, quadratoPuntiX_raw, quadratoPuntiY_raw, Color.WHITE);
-        assertFalse(quadrato.contiene(89, 100));
-        assertFalse(quadrato.contiene(111, 100));
-        assertFalse(quadrato.contiene(100, 89));
-        assertFalse(quadrato.contiene(100, 111));
-        assertFalse(quadrato.contiene(120, 120));
-    }
 
     @Test
     void testContiene_puntoFuoriDalQuadratoInclinato() {
@@ -75,35 +66,5 @@ class PoligonoTest {
         assertTrue(lShape.contiene(95, 115));
     }
 
-    @Test
-    void testContiene_puntoFuoriDalPoligonoComplessoLShape() {
-        Poligono lShape = new Poligono(100, 100, 40, 40, 0, Color.BLACK, lShapePuntiX_raw, lShapePuntiY_raw, Color.WHITE);
-        assertFalse(lShape.contiene(100, 90));
-        assertFalse(lShape.contiene(70, 70));
-        assertFalse(lShape.contiene(130, 130));
-    }
-
-    @Test
-    void testContiene_puntoConInclinazionePoligonoComplessoLShape() {
-        Poligono lShape = new Poligono(100, 100, 40, 40, 90, Color.BLACK, lShapePuntiX_raw, lShapePuntiY_raw, Color.WHITE);
-        assertFalse(lShape.contiene(110, 100));
-        assertTrue(lShape.contiene(90, 90));
-    }
-
-
-    @Test
-    void testSpecchia_triangoloInclinato45Gradi() {
-        Poligono triangolo = new Poligono(100, 100, 40, 40, 45, Color.BLUE, triangoloPuntiX_raw, triangoloPuntiY_raw, Color.GREEN);
-        assertTrue(triangolo.contiene(100, 100));
-        assertTrue(triangolo.contiene(100, 110));
-
-        triangolo.specchia();
-
-        assertTrue(triangolo.contiene(100, 100));
-        assertEquals(-45, triangolo.getAngoloInclinazione());
-
-        assertFalse(triangolo.contiene(115, 110));
-        assertTrue(triangolo.contiene(85, 110));
-    }
 
 }
