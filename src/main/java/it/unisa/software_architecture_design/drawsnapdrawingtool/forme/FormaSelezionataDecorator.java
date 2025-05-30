@@ -115,6 +115,7 @@ public class FormaSelezionataDecorator extends FormaDecorator{
             Poligono poligono = (Poligono) getForma();
             larghezza = poligono.getLarghezza();
             altezza = poligono.getAltezza();
+
             // L'offset del centro della bounding box intrinseca rispetto all'origine interna (0,0) del poligono.
             offsetX_bbox = poligono.getIntrinsicCenterX();
             offsetY_bbox = poligono.getIntrinsicCenterY();

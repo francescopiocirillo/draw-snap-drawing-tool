@@ -423,7 +423,6 @@ public class DrawSnapModel implements Serializable {
             Linea linea = (Linea) formaDaRidimensionare;
             linea.setLarghezza(larghezza);
             System.out.println("  Tipo: Linea. Impostata nuova dimensione: W=" + larghezza + ", H=" + larghezza);
-
         }
     }
 
