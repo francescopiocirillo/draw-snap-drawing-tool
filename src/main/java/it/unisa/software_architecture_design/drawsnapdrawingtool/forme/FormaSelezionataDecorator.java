@@ -96,7 +96,7 @@ public class FormaSelezionataDecorator extends FormaDecorator{
         double larghezza = LARGHEZZA_DEFAULT;
         double altezza = ALTEZZA_DEFAULT;
 
-        // Variabili per l'offset del centro della bounding box rispetto al punto di riferimento (x,y)
+
         double offsetX_bbox = 0;
         double offsetY_bbox = 0;
 
@@ -116,7 +116,6 @@ public class FormaSelezionataDecorator extends FormaDecorator{
             larghezza = poligono.getLarghezza();
             altezza = poligono.getAltezza();
 
-            // L'offset del centro della bounding box intrinseca rispetto all'origine interna (0,0) del poligono.
             offsetX_bbox = poligono.getIntrinsicCenterX();
             offsetY_bbox = poligono.getIntrinsicCenterY();
         }else if (getForma() instanceof Testo){
@@ -128,13 +127,11 @@ public class FormaSelezionataDecorator extends FormaDecorator{
         double rectWidth = larghezza + 2 * MARGINE_SELEZIONE;
         double rectHeight = altezza + 2 * MARGINE_SELEZIONE;
 
-        // Trasla l'origine del contesto al punto di riferimento globale della forma (x,y).
+
         gc.translate(x, y);
-        // Ruota il contesto grafico dell'angolo di inclinazione della forma (attorno a x,y).
+
         gc.rotate(angoloInclinazione);
 
-        // Disegna il rettangolo di selezione.
-        // L'origine del rettangolo è calcolata per essere centrata rispetto a (0,0) del contesto attuale + (offsetX_bbox, offsetY_bbox)
         gc.strokeRect(offsetX_bbox - rectWidth / 2, offsetY_bbox - rectHeight / 2, rectWidth, rectHeight);
 
         gc.restore();

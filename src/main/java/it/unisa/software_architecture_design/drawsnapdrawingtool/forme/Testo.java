@@ -41,7 +41,7 @@ public class Testo extends Forma {
      * È simile a updateVertici() del Rettangolo.
      */
     private void updateVertici() {
-        // getCoordinataX() e getCoordinataY() sono il centro della forma (come per Rettangolo)
+
         double centroX = getCoordinataX();
         double centroY = getCoordinataY();
         double mezzaLarghezza = getLarghezza() / 2;
@@ -51,20 +51,18 @@ public class Testo extends Forma {
         double cosAngolo = Math.cos(angoloRadianti);
         double sinAngolo = Math.sin(angoloRadianti);
 
-        // Calcolo dei vertici del rettangolo ruotato attorno al centro
-        // Vertice A (Top-Left)
         this.verticeAX = centroX - mezzaLarghezza * cosAngolo + mezzaAltezza * sinAngolo;
         this.verticeAY = centroY - mezzaLarghezza * sinAngolo - mezzaAltezza * cosAngolo;
 
-        // Vertice B (Top-Right)
+
         this.verticeBX = centroX + mezzaLarghezza * cosAngolo + mezzaAltezza * sinAngolo;
         this.verticeBY = centroY + mezzaLarghezza * sinAngolo - mezzaAltezza * cosAngolo;
 
-        // Vertice C (Bottom-Right)
+
         this.verticeCX = centroX + mezzaLarghezza * cosAngolo - mezzaAltezza * sinAngolo;
         this.verticeCY = centroY + mezzaLarghezza * sinAngolo + mezzaAltezza * cosAngolo;
 
-        // Vertice D (Bottom-Left)
+
         this.verticeDX = centroX - mezzaLarghezza * cosAngolo - mezzaAltezza * sinAngolo;
         this.verticeDY = centroY - mezzaLarghezza * sinAngolo + mezzaAltezza * cosAngolo;
     }
@@ -213,63 +211,52 @@ public class Testo extends Forma {
         gc.translate(centroX, centroY);
         gc.rotate(getAngoloInclinazione());
 
-        // Imposta il font, i colori e lo spessore del bordo
+
         gc.setFont(Font.font(FONT_NAME, currentFontSize));
         gc.setFill(getColoreInterno());
         gc.setStroke(getColore());
 
-        // Se il testo è nullo o vuoto, non disegnare nulla e esci
+
         if (testo == null || testo.isEmpty()) {
             gc.restore();
             return;
         }
 
-        // --- CALCOLO PER POSIZIONARE I CARATTERI ---
-        // Misura la larghezza totale della stringa per centrarla
-        // (usando un temporaneo Text object con il font calcolato)
         Text tempMeasureText = new Text(testo);
         tempMeasureText.setFont(Font.font(FONT_NAME, currentFontSize));
         double totalTextWidth = tempMeasureText.getLayoutBounds().getWidth();
         double textHeight = tempMeasureText.getLayoutBounds().getHeight();
         double baselineOffset = -tempMeasureText.getLayoutBounds().getMinY(); // Offset per allineamento baseline
 
-        // Calcola la posizione X di partenza per il primo carattere, in modo che l'intera stringa sia centrata
+
         double currentX = -totalTextWidth / 2;
-        // Calcola l'offset Y per centrare verticalmente il testo nel suo bounding box, allineando alla baseline
+
         double charOffsetY = -textHeight / 2 + baselineOffset;
 
-        // --- CICLO PER DISEGNARE OGNI CARATTERE INDIVIDUALMENTE ---
+
         for (int i = 0; i < testo.length(); i++) {
             String currentChar = String.valueOf(testo.charAt(i));
 
-            // Misura il singolo carattere per ottenere la sua larghezza esatta
             Text charMeasure = new Text(currentChar);
             charMeasure.setFont(Font.font(FONT_NAME, currentFontSize));
             double charWidth = charMeasure.getLayoutBounds().getWidth();
 
-            gc.save(); // Salva lo stato del GC per applicare trasformazioni al singolo carattere
+            gc.save();
 
-            // 1. Trasla l'origine del GC al centro del carattere corrente.
-            // currentX è l'inizio del carattere, aggiungiamo charWidth / 2 per arrivare al centro.
             gc.translate(currentX + charWidth / 2, charOffsetY);
 
             if(specchiata) {
                 gc.scale(-1, 1);
             }
-            // 3. Disegna il carattere.
-            // Dato che l'origine è stata traslata al centro del carattere e poi scalata,
-            // disegniamo il carattere con un offset negativo della sua metà larghezza per farlo apparire centrato.
-            // La coordinata Y è 0 perché charOffsetY è già stata inclusa nella traslazione.
             gc.fillText(currentChar, -charWidth / 2, 0);
             gc.strokeText(currentChar, -charWidth / 2, 0);
 
-            gc.restore(); // Ripristina lo stato del GC per il carattere successivo
+            gc.restore();
 
-            // Avanza la posizione X per il carattere successivo
             currentX += charWidth;
         }
 
-        gc.restore(); // Ripristina lo stato iniziale del GC dopo aver disegnato tutti i caratteri
+        gc.restore();
     }
 
         /**
