@@ -347,6 +347,9 @@ public class DrawSnapModel implements Serializable {
                     Poligono poligono = (Poligono) formaCorrente.getForma();
                     poligono.setColoreInterno(colore);
                     System.out.println("cambio colore del rettangolo in " + colore);
+                }else if (formaCorrente.getForma() instanceof Testo) {
+                    Testo testo = (Testo) formaCorrente.getForma();
+                    testo.setColoreInterno(colore);
                 }
                 ((FormaSelezionataDecorator) f).decorate();
 
@@ -372,7 +375,7 @@ public class DrawSnapModel implements Serializable {
 
     public void resize(double larghezza, double altezza) {
         // Itera attraverso le forme per trovare quella selezionata
-        System.out.println("model" );
+        System.out.println("model");
         Forma formaDaRidimensionare = null;
         for (Forma f : forme) {
             if (f instanceof FormaSelezionataDecorator) {
@@ -408,7 +411,12 @@ public class DrawSnapModel implements Serializable {
             rettangolo.setAltezza(altezza);
             System.out.println("  Tipo: Rettangolo. Impostate nuove dimensioni: W=" + larghezza + ", H=" + larghezza);
 
-        } else if (formaDaRidimensionare instanceof Ellisse) {
+        } else if (formaDaRidimensionare instanceof Testo){
+            Testo testo = (Testo) formaDaRidimensionare;
+            testo.setLarghezza(larghezza);
+            testo.setAltezza(altezza);
+            System.out.println("  Tipo: Testo. Impostate nuove dimensioni: W=" + larghezza + ", H=" + larghezza);
+        }else if (formaDaRidimensionare instanceof Ellisse) {
             Ellisse ellisse = (Ellisse) formaDaRidimensionare;
             ellisse.setLarghezza(larghezza);
             ellisse.setAltezza(altezza);

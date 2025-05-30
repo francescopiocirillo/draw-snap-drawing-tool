@@ -654,6 +654,8 @@ public class DrawSnapController {
             coloreAttuale = ((Ellisse)forma).getColoreInterno();
         } else if (forma instanceof Poligono) {
             coloreAttuale = ((Poligono)forma).getColoreInterno();
+        }else if(forma instanceof Testo){
+            coloreAttuale = ((Testo) forma).getColoreInterno();
         }
         ColorPicker colorPicker = new ColorPicker(coloreAttuale); // Imposta colore di attuale
 
@@ -770,6 +772,8 @@ public class DrawSnapController {
             altezzaDefault = ((Ellisse)forma).getAltezza();
         } else if (forma instanceof Poligono){
             altezzaDefault = ((Poligono)forma).getAltezza();
+        }else if(forma instanceof Testo){
+            altezzaDefault = ((Testo) forma).getAltezza();
         }
         Spinner<Double>  spinnerAltezza = new Spinner<>(10.0, 500.0, altezzaDefault, 1.0); //imposta dimensioni attuali
 

@@ -130,6 +130,10 @@ public class FormaSelezionataDecorator extends FormaDecorator{
             // dobbiamo aggiungere questo offset per raggiungere il vero centro della bounding box.
             offsetX_bbox = poligono.getIntrinsicCenterX();
             offsetY_bbox = poligono.getIntrinsicCenterY();
+        }else if (getForma() instanceof Testo){
+            Testo testo = (Testo) getForma();
+            larghezza = testo.getRenderedWidth();
+            altezza = testo.getRenderedHeight();
         }
 
         // Calcola le dimensioni del rettangolo di selezione, aggiungendo il margine

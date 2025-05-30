@@ -10,6 +10,7 @@ public class AttributiForma {
     private double angoloInclinazione;
     private Color colore;
     private Color coloreInterno;
+    private String testo;
 
     // Costruttore con valori di default
     public AttributiForma() {
@@ -20,11 +21,12 @@ public class AttributiForma {
         this.angoloInclinazione = 0.0;
         this.colore = Color.BLUE;
         this.coloreInterno = Color.LIGHTBLUE;
+        this.testo = "default";
     }
 
     // Costruttore con valori scelti
     public AttributiForma(double coordinataX, double coordinataY, double altezza, double larghezza,
-                           double angoloInclinazione, Color colore, Color coloreInterno) {
+                           double angoloInclinazione, Color colore, Color coloreInterno, String testo) {
         this.coordinataX = coordinataX;
         this.coordinataY = coordinataY;
         this.altezza = altezza;
@@ -32,6 +34,7 @@ public class AttributiForma {
         this.angoloInclinazione = angoloInclinazione;
         this.colore = colore;
         this.coloreInterno = coloreInterno;
+        this.testo = testo;
     }
 
     public double getCoordinataY() {
@@ -88,5 +91,13 @@ public class AttributiForma {
 
     public void setCoordinataX(double coordinataX) {
         this.coordinataX = coordinataX;
+    }
+
+    public String getTesto() {
+        return testo;
+    }
+
+    public void setTesto(String testo) {
+        this.testo = testo;
     }
 }
