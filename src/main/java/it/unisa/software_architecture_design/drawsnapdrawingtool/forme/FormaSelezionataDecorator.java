@@ -62,52 +62,72 @@ public class FormaSelezionataDecorator extends FormaDecorator{
      */
     private void disegnaIndicatoreDiSelezione(GraphicsContext gc) {
         gc.save();
-        // Colore e stile dell'evidenziazione
-        gc.setStroke(Color.BLACK); // Colore dell'indicatore
-        gc.setLineWidth(SPESSORE_BORDO);    // Spessore del bordo
-        gc.setLineDashes(10.0, 5.0); // Imposta la linea tratteggiata: 10 pixel linea, 5 pixel spazio
 
-        // Disegna un rettangolo più grande attorno alla forma
-        double x = getForma().getCoordinataX();
-        double y = getForma().getCoordinataY();
+        // Colore e stile dell'evidenziazione
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(SPESSORE_BORDO);
+        gc.setLineDashes(10.0, 5.0);
+
+        double x = getForma().getCoordinataX(); // Coordinata X globale della forma (il suo punto di riferimento)
+        double y = getForma().getCoordinataY(); // Coordinata Y globale della forma (il suo punto di riferimento)
+        double angoloInclinazione = getForma().getAngoloInclinazione();
+
         double larghezza = LARGHEZZA_DEFAULT;
         double altezza = ALTEZZA_DEFAULT;
 
-        boolean isPoligono = false;
+        // Variabili per l'offset del centro della bounding box rispetto al punto di riferimento (x,y)
+        double offsetX_bbox = 0;
+        double offsetY_bbox = 0;
 
         if (getForma() instanceof Rettangolo) {
             Rettangolo rettangolo = (Rettangolo) getForma();
             larghezza = rettangolo.getLarghezza();
             altezza = rettangolo.getAltezza();
+            // Assumendo che per Rettangolo (x,y) siano già il centro della bounding box, l'offset è 0.
+            // Se (x,y) fosse top-left, allora offsetX_bbox = larghezza / 2, offsetY_bbox = altezza / 2.
         } else if (getForma() instanceof Ellisse) {
             Ellisse ellisse = (Ellisse) getForma();
-            altezza = ellisse.getAltezza();
             larghezza = ellisse.getLarghezza();
+            altezza = ellisse.getAltezza();
+            // Assumendo che per Ellisse (x,y) siano già il centro, l'offset è 0.
         } else if (getForma() instanceof Linea) {
             Linea linea = (Linea) getForma();
             larghezza = linea.getLarghezza();
+            // Per la Linea, l'altezza della bounding box potrebbe essere la sua larghezza o un valore fisso minimo.
+            // L'offset dipende da come la Linea calcola il suo getCoordinataX/Y (se è il punto iniziale o il centro).
+            // Se la Linea è gestita come un segmento con (x,y) = centro, allora offsetX/Y_bbox = 0.
+            // Se la Linea è (x1,y1) e (x2,y2) e x,y è x1,y1, allora l'offset sarà (x2-x1)/2, (y2-y1)/2.
+            // Per ora manteniamo 0 e verifichiamo il Poligono.
         } else if (getForma() instanceof Poligono) {
             Poligono poligono = (Poligono) getForma();
-            altezza = poligono.getAltezza();
-            larghezza = poligono.getLarghezza();
-            isPoligono = true;
+            larghezza = poligono.getLarghezza(); // Ottiene la larghezza intrinseca del poligono
+            altezza = poligono.getAltezza();     // Ottiene l'altezza intrinseca del poligono
+
+            // Questo è il punto chiave per il Poligono:
+            // L'offset del centro della bounding box intrinseca rispetto all'origine interna (0,0) del poligono.
+            // Poiché il contesto grafico verrà traslato a (x,y) (il punto di riferimento del poligono),
+            // dobbiamo aggiungere questo offset per raggiungere il vero centro della bounding box.
+            offsetX_bbox = poligono.getIntrinsicCenterX();
+            offsetY_bbox = poligono.getIntrinsicCenterY();
         }
 
-        // Aggiungi margine
+        // Calcola le dimensioni del rettangolo di selezione, aggiungendo il margine
         double rectWidth = larghezza + 2 * MARGINE_SELEZIONE;
         double rectHeight = altezza + 2 * MARGINE_SELEZIONE;
 
-        if (!isPoligono) {
-            // Per le forme che non sono poligoni, applichiamo traslazione e rotazione
-            gc.translate(x, y);
-            gc.rotate(getForma().getAngoloInclinazione()); // Rotazione in senso orario
-            // Disegna il rettangolo centrato sull'origine (che ora è il centro della forma)
-            gc.strokeRect(-rectWidth / 2, -rectHeight / 2, rectWidth, rectHeight);
-        } else {
-            // Per i Poligoni, disegna direttamente il bounding box allineato agli assi.
-            gc.strokeRect(x - rectWidth / 2, y - rectHeight / 2, rectWidth, rectHeight);
-        }
-        gc.restore(); // Ripristina il contesto grafico originale
+        // Applica le trasformazioni al contesto grafico:
+        // 1. Trasla l'origine del contesto al punto di riferimento globale della forma (x,y).
+        gc.translate(x, y);
+        // 2. Ruota il contesto grafico dell'angolo di inclinazione della forma (attorno a x,y).
+        gc.rotate(angoloInclinazione);
+
+        // 3. Disegna il rettangolo di selezione.
+        // L'origine del rettangolo è calcolata per essere centrata rispetto a:
+        // (0,0) del contesto attuale + (offsetX_bbox, offsetY_bbox)
+        gc.strokeRect(offsetX_bbox - rectWidth / 2, offsetY_bbox - rectHeight / 2, rectWidth, rectHeight);
+
+        gc.restore();
     }
+
 
 }
