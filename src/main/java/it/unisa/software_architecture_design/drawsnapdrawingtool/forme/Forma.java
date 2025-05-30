@@ -73,6 +73,9 @@ public abstract class Forma implements Serializable, Cloneable{
         this.angoloInclinazione = angoloInclinazione;
     }
 
+    public void proportionalResize(double proporzione) {
+        setLarghezza(getLarghezza()*proporzione/100);
+    }
 
     /*
      * Logica della classe

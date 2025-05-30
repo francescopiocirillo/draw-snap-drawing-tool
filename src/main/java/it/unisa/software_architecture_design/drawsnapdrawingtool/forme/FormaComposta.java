@@ -104,7 +104,16 @@ public class FormaComposta extends Forma{
     }
 
     @Override
-    public void specchia(){
+    public void proportionalResize(double proporzione){
+        for(Forma f:forme){
+            f.proportionalResize(proporzione);
+        }
+    }
 
+    @Override
+    public void specchia(){
+        for(Forma f:forme){
+            f.specchia();
+        }
     }
 }

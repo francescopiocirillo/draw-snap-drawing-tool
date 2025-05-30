@@ -77,6 +77,13 @@ public class Rettangolo extends Forma  {
         updateVertici();
     }
 
+    @Override
+    public void proportionalResize(double proporzione){
+        setLarghezza(getLarghezza()*proporzione/100);
+        setAltezza(getAltezza()*proporzione/100);
+    }
+
+
     public Color getColoreInterno() {
         return coloreInterno;
     }

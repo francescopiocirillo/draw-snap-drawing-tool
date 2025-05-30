@@ -41,6 +41,12 @@ public class Ellisse extends Forma {
         this.coloreInterno = coloreInterno;
     }
 
+    @Override
+    public void proportionalResize(double proporzione){
+        setLarghezza(getLarghezza()*proporzione/100);
+        setAltezza(getAltezza()*proporzione/100);
+    }
+
     /*
       Logica della classe
      */

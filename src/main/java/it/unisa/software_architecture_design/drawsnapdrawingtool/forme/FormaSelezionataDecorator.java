@@ -75,6 +75,12 @@ public class FormaSelezionataDecorator extends FormaDecorator{
         return getForma().clone();
     }
 
+    @Override
+    public void proportionalResize(double proporzione){
+        getForma().proportionalResize(proporzione);
+    }
+
+
     /**
      * Disegna intorno alla figura un bordo evidenziato per indicare che la
      * figura è stata cliccata

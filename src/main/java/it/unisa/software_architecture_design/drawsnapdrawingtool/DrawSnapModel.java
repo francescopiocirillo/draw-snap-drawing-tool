@@ -422,6 +422,25 @@ public class DrawSnapModel implements Serializable {
         }
     }
 
+    public void proportionalResize(double proporzione) {
+        // Itera attraverso le forme per trovare quella selezionata
+        System.out.println("model" );
+        Forma formaDaRidimensionare = null;
+        for (Forma f : forme) {
+            if (f instanceof FormaSelezionataDecorator) {
+                formaDaRidimensionare = ((FormaSelezionataDecorator) f).getForma();
+                break; // Una volta trovata la forma selezionata, esci dal ciclo
+            }
+        }
+
+        if (formaDaRidimensionare == null) {
+            System.err.println("Nessuna forma selezionata trovata per il ridimensionamento.");
+            return;
+        }
+
+        formaDaRidimensionare.proportionalResize(proporzione);
+    }
+
     public int countFormeSelezionate() {
         int count = 0;
         Iterator<Forma> it = forme.iterator();

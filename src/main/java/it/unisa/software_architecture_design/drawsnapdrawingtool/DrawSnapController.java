@@ -925,4 +925,51 @@ public class DrawSnapController {
         invoker.executeCommand();
         updateState(true);
     }
+
+    @FXML
+    public void onProportionalResizePressed(ActionEvent event) {
+        Forma tipoForma = forme.getFormaSelezionata();
+        Dialog<Double> dialog = new Dialog<>();
+        dialog.setTitle("Ridimensiona Figura");
+        dialog.setHeaderText("La figura sarà ridimensionata sulla base del fattore proporzionale inserito, 100 significa lasciare la figura con le sue dimensioni attuali");
+
+        VBox contentBox = new VBox(15);
+        contentBox.setPadding(new Insets(20));
+
+        // Spinner per dimensioni
+        Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
+        Spinner<Double> spinnerProporzione = new Spinner<>(1.0, 1000.0, 100, 1.0); //imposta dimensioni attuali
+        double proporzioneDefault = 100;
+
+        VBox dimensioniBox = new VBox(10);
+        dimensioniBox.setAlignment(Pos.CENTER);
+        dimensioniBox.getChildren().addAll(
+                new Label("Proporzione:"), spinnerProporzione
+        );
+
+        contentBox.getChildren().add(dimensioniBox);
+        dialog.getDialogPane().setContent(contentBox);
+        dialog.getDialogPane().setMinWidth(400);
+
+        // Pulsanti di conferma e annullamento
+        ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
+
+        // Impostazione del comportamento alla conferma
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == confirmButton) {
+                return spinnerProporzione.getValue();
+            }
+            return null;
+        });
+
+        // Mostra il dialog e gestisce il risultato
+        Optional<Double> result = dialog.showAndWait();
+        result.ifPresent(proporzioneUpdate -> {
+            invoker.setCommand(new ProportionalResizeCommand(forme, proporzioneUpdate));
+            invoker.executeCommand();
+            updateState(true);
+        });
+    }
 }

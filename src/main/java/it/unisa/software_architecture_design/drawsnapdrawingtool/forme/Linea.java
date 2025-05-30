@@ -57,6 +57,11 @@ public class Linea extends Forma  {
     }
 
     @Override
+    public void proportionalResize(double proporzione){
+        setLarghezza(getLarghezza()*proporzione/100);
+    }
+
+    @Override
     public void setAngoloInclinazione(double angoloInclinazione) {
         super.setAngoloInclinazione(angoloInclinazione);
         updateCoordinateYInizioFine();
