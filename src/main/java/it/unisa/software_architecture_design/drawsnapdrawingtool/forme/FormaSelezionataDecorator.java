@@ -70,6 +70,11 @@ public class FormaSelezionataDecorator extends FormaDecorator{
         getForma().specchia();
     }
 
+    @Override
+    public Forma clone(){
+        return getForma().clone();
+    }
+
     /**
      * Disegna intorno alla figura un bordo evidenziato per indicare che la
      * figura è stata cliccata

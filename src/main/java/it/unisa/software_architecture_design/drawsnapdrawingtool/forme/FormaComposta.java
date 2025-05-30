@@ -102,4 +102,9 @@ public class FormaComposta extends Forma{
         Forma newForma = new FormaComposta(newListaForme);
         return newForma;
     }
+
+    @Override
+    public void specchia(){
+
+    }
 }

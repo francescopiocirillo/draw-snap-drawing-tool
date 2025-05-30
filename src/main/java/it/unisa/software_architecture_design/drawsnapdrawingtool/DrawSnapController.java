@@ -447,7 +447,8 @@ public class DrawSnapController {
 
         drawingContext.handleMouseReleased(mouseEvent, logicalCurrentX, logicalCurrentY);
         if(dragged){
-            updateState(dragged);
+            updateState(true);
+            dragged = false;
         }
     }
 

@@ -2,6 +2,7 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionsta
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaComposta;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Linea;
 import javafx.scene.control.Button;
@@ -169,6 +170,9 @@ public class SelectState implements DrawingState{
         while (it.hasNext()) {
             Forma f = it.next();
             if (f instanceof FormaSelezionataDecorator) {
+                if(((FormaSelezionataDecorator)f).getForma() instanceof FormaComposta){
+                    return false;
+                }
                 result = true;
                 double newX = coordinataX - offsetX;
                 double newY = coordinataY - offsetY;
