@@ -217,4 +217,54 @@ public class Poligono extends Forma {
         calcolaBoundingBox(); // Ricalcola il centro e la bounding box dopo la scala
     }
 
+    public void ruotaPunti(double angoloRotazioneGradi) {
+        if (puntiX == null || puntiX.isEmpty()) return;
+
+        double centerX = super.getCoordinataX(); // Centro attuale della bounding box
+        double centerY = super.getCoordinataY();
+        double angleRad = Math.toRadians(angoloRotazioneGradi); // Converti l'angolo in radianti
+
+        List<Double> nuoviPuntiX = new ArrayList<>();
+        List<Double> nuoviPuntiY = new ArrayList<>();
+
+        for (int i = 0; i < puntiX.size(); i++) {
+            double oldX = puntiX.get(i);
+            double oldY = puntiY.get(i);
+
+            // 1. Trasla il punto all'origine (rispetto al centro del poligono)
+            double translatedX = oldX - centerX;
+            double translatedY = oldY - centerY;
+
+            // 2. Applica la rotazione
+            double rotatedX = translatedX * Math.cos(angleRad) - translatedY * Math.sin(angleRad);
+            double rotatedY = translatedX * Math.sin(angleRad) + translatedY * Math.cos(angleRad);
+
+            // 3. Ritrasla il punto alla sua posizione originale (rispetto al centro)
+            nuoviPuntiX.add(rotatedX + centerX);
+            nuoviPuntiY.add(rotatedY + centerY);
+        }
+
+        this.puntiX = nuoviPuntiX;
+        this.puntiY = nuoviPuntiY;
+
+        // Dopo aver ruotato i punti, ricalcola la bounding box
+        calcolaBoundingBox();
+    }
+
+    @Override
+    public void setAngoloInclinazione(double nuovoAngolo) {
+        // Calcola la differenza tra il nuovo angolo e l'angolo corrente
+        double angoloCorrente = super.getAngoloInclinazione();
+        double deltaAngolo = nuovoAngolo - angoloCorrente;
+
+        // Chiama il metodo per ruotare i punti solo se c'è un cambiamento significativo
+        if (Math.abs(deltaAngolo) > 0.001) { // Usa una piccola tolleranza per i float
+            ruotaPunti(deltaAngolo); // ruota i punti della differenza angolare
+
+            super.setAngoloInclinazione(nuovoAngolo);
+        } else {
+            super.setAngoloInclinazione(nuovoAngolo);
+        }
+    }
+
 }
