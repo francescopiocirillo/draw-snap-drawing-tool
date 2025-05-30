@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -196,9 +197,6 @@ public class DrawSnapModel implements Serializable {
             int index = forme.indexOf(formaSelezionata);
             if (index != -1) {
                 forme.remove(index);
-                if(formaSelezionata instanceof FormaComposta){
-                    ((FormaComposta) formaSelezionata).decorate();
-                }
                 formaSelezionata = new FormaSelezionataDecorator(formaSelezionata);
                 forme.add(index, formaSelezionata);
             }
@@ -327,7 +325,12 @@ public class DrawSnapModel implements Serializable {
         for(Forma f:forme){
             if(f instanceof FormaSelezionataDecorator){
                 System.out.println("forma selezionata nel command" );
+                // se la forma è composta la decorazione delle forme interne blocca il propagarsi verso il basso
+                // della nuova colorazione, togliere e rimettere la decorazione risolve il problema
+                // per il colore di bordo visto che è una qualità che hanno tutte le figure è bastato aggiungere il
+                // metodo setColor a FormaSelezionataDecorator
                 FormaSelezionataDecorator formaCorrente = (FormaSelezionataDecorator)f;
+                ((FormaSelezionataDecorator) f).undecorate();
                 if(formaCorrente.getForma() instanceof Ellisse){
                     Ellisse ellisse = (Ellisse) formaCorrente.getForma();
                     ellisse.setColoreInterno(colore);
@@ -336,7 +339,12 @@ public class DrawSnapModel implements Serializable {
                     Rettangolo rettangolo = (Rettangolo) formaCorrente.getForma();
                     rettangolo.setColoreInterno(colore);
                     System.out.println("cambio colore del rettangolo in " + colore);
+                } else if (formaCorrente.getForma() instanceof FormaComposta){
+                    FormaComposta fc = (FormaComposta) formaCorrente.getForma();
+                    fc.setColoreInterno(colore);
+                    System.out.println("cambio colore della forma composta in " + colore);
                 }
+                ((FormaSelezionataDecorator) f).decorate();
             }
         }
     }
@@ -352,7 +360,7 @@ public class DrawSnapModel implements Serializable {
             if(f instanceof FormaSelezionataDecorator){
 
                 System.out.println("colore aggiornato");
-                ((FormaSelezionataDecorator) f).getForma().setColore(colore);
+                f.setColore(colore);
             }
         }
     }

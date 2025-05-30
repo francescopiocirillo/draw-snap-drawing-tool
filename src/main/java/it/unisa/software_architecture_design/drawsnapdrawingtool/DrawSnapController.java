@@ -832,18 +832,5 @@ public class DrawSnapController {
         invoker.setCommand(new ComposeCommand(forme));
         invoker.executeCommand();
         updateState(true);
-        return ;
-        /*
-        if (forme.thereIsFormaSelezionata()) {
-            invoker.setCommand(new ComposeCommand(forme));
-            invoker.executeCommand();
-            updateState(true);
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Attenzione");
-            alert.setHeaderText("Nessuna forma selezionata");
-            alert.setContentText("Per comporre una forma, seleziona almeno due forme.");
-            alert.showAndWait();
-        }*/
     }
 }

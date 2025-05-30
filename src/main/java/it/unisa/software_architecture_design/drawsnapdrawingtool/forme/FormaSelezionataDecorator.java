@@ -16,6 +16,7 @@ public class FormaSelezionataDecorator extends FormaDecorator{
      */
     public FormaSelezionataDecorator(Forma forma) {
         super(forma); //riceve la forma da decorare
+        decorate();
     }
 
     /*
@@ -44,6 +45,12 @@ public class FormaSelezionataDecorator extends FormaDecorator{
     @Override
     public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
         return getForma().contiene(puntoDaValutareX, puntoDaValutareY);
+    }
+
+    public void decorate(){
+        if(getForma() instanceof FormaComposta) {
+            ((FormaComposta) getForma()).decorate();
+        }
     }
 
     public Forma undecorate(){

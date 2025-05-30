@@ -32,9 +32,6 @@ public class FormaComposta extends Forma{
         Forma current;
         while(i<limit){
             current = forme.get(i);
-            if(current instanceof FormaComposta){
-                ((FormaComposta) current).decorate();
-            }
             forme.set(i, new FormaSelezionataDecorator(current));
             i++;
         }
@@ -69,5 +66,40 @@ public class FormaComposta extends Forma{
             }
         }
         return false;
+    }
+
+    @Override
+    public void setColore(Color color) {
+        for(Forma f:forme){
+            f.setColore(color);
+        }
+    }
+
+    public void setColoreInterno(Color color) {
+        for(Forma formaCorrente:forme){
+            if(formaCorrente instanceof Ellisse){
+                Ellisse ellisse = (Ellisse) formaCorrente;
+                ellisse.setColoreInterno(color);
+                System.out.println("cambio colore dell'ellissi in " + color);
+            } else if (formaCorrente instanceof Rettangolo) {
+                Rettangolo rettangolo = (Rettangolo) formaCorrente;
+                rettangolo.setColoreInterno(color);
+                System.out.println("cambio colore del rettangolo in " + color);
+            } else if (formaCorrente instanceof FormaComposta){
+                FormaComposta fc = (FormaComposta) formaCorrente;
+                fc.setColoreInterno(color);
+                System.out.println("cambio colore della forma composta in " + color);
+            }
+        }
+    }
+
+    @Override
+    public Forma clone() {
+        List<Forma> newListaForme = new ArrayList<>();
+        for(Forma f:forme){
+            newListaForme.add(f.clone());
+        }
+        Forma newForma = new FormaComposta(newListaForme);
+        return newForma;
     }
 }
