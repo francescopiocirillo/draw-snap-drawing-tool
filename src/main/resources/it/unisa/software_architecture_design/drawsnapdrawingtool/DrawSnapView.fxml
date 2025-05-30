@@ -211,6 +211,18 @@
                                     </ImageView>
                                  </graphic>
                               </Button>
+                              <Button id="button" fx:id="textButton" alignment="CENTER" mnemonicParsing="false" prefHeight="36.0" prefWidth="50.0" textAlignment="CENTER">
+                                 <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@images/inserisciTesto.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <HBox.margin>
+                                    <Insets right="20.0" />
+                                 </HBox.margin>
+                              </Button>
                            </children>
                            <HBox.margin>
                               <Insets left="80.0" right="80.0" />
@@ -257,6 +269,9 @@
                                  </HBox.margin>
                               </Slider>
                            </children>
+                           <HBox.margin>
+                              <Insets right="20.0" />
+                           </HBox.margin>
                         </HBox>
                      </children>
                      <StackPane.margin>
