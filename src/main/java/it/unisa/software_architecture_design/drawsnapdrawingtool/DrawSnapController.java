@@ -144,7 +144,7 @@ public class DrawSnapController {
         });
 
         // inizializzazione bottoni per la selezione forma
-        bottoniBarraPrincipale = List.of(handButton, ellipseButton, rectangleButton, lineButton, polygonButton, selectButton);
+        bottoniBarraPrincipale = List.of(handButton, ellipseButton, rectangleButton, lineButton, polygonButton, textButton, selectButton);
         handButton.setOnAction(e -> {
             bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
             setMoveCanvasMode();
