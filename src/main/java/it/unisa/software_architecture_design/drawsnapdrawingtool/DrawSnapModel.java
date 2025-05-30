@@ -343,8 +343,13 @@ public class DrawSnapModel implements Serializable {
                     FormaComposta fc = (FormaComposta) formaCorrente.getForma();
                     fc.setColoreInterno(colore);
                     System.out.println("cambio colore della forma composta in " + colore);
+                } else if (formaCorrente.getForma() instanceof Poligono) {
+                    Poligono poligono = (Poligono) formaCorrente.getForma();
+                    poligono.setColoreInterno(colore);
+                    System.out.println("cambio colore del rettangolo in " + colore);
                 }
                 ((FormaSelezionataDecorator) f).decorate();
+
             }
         }
     }
@@ -366,24 +371,54 @@ public class DrawSnapModel implements Serializable {
     }
 
     public void resize(double larghezza, double altezza) {
+        // Itera attraverso le forme per trovare quella selezionata
         System.out.println("model" );
-        for(Forma f:forme){
-            if(f instanceof FormaSelezionataDecorator){
-                System.out.println("cambio larghezza della figura in"+ larghezza);
-                FormaSelezionataDecorator formaCorrente = (FormaSelezionataDecorator)f;
-                formaCorrente.getForma().setLarghezza(larghezza);
-                if(formaCorrente.getForma() instanceof Ellisse){
-                    Ellisse ellisse = (Ellisse) formaCorrente.getForma();
-                    ellisse.setAltezza(altezza);
-                    System.out.println("cambio altezza dell'ellissi in " + altezza);
-                } else if (formaCorrente.getForma() instanceof Rettangolo) {
-                    Rettangolo rettangolo = (Rettangolo) formaCorrente.getForma();
-                    rettangolo.setAltezza(altezza);
-                    System.out.println("cambio altezza del rettangolo in " + altezza);
-                } else {
-                    System.out.println("la linea non ha altezza");
-                }
+        Forma formaDaRidimensionare = null;
+        for (Forma f : forme) {
+            if (f instanceof FormaSelezionataDecorator) {
+                formaDaRidimensionare = ((FormaSelezionataDecorator) f).getForma();
+                break; // Una volta trovata la forma selezionata, esci dal ciclo
             }
+        }
+
+        if (formaDaRidimensionare == null) {
+            System.err.println("Nessuna forma selezionata trovata per il ridimensionamento.");
+            return;
+        }
+
+        // Ora gestisci il ridimensionamento in base al tipo specifico della forma
+        if (formaDaRidimensionare instanceof Poligono) {
+            Poligono poligono = (Poligono) formaDaRidimensionare;
+            double larghezzaCorrente = poligono.getLarghezza(); // Larghezza attuale della bounding box
+            double altezzaCorrente = poligono.getAltezza();     // Altezza attuale della bounding box
+
+            // Calcola i fattori di scala (nuova dimensione / dimensione corrente)
+            // Gestisci il caso in cui la dimensione corrente sia zero per evitare eccezioni
+            double fattoreScalaX = (larghezzaCorrente > 0) ? larghezza / larghezzaCorrente : 1.0;
+            double fattoreScalaY = (altezzaCorrente > 0) ? altezza / altezzaCorrente : 1.0;
+
+            // CHIAMA IL METODO SCALA DEL POLIGONO CON I FATTORI CALCOLATI
+            poligono.scala(fattoreScalaX, fattoreScalaY);
+
+            System.out.println("  Poligono ridimensionato. Nuove dimensioni bounding box: W=" + poligono.getLarghezza() + ", H=" + poligono.getAltezza());
+
+        } else if (formaDaRidimensionare instanceof Rettangolo) {
+            Rettangolo rettangolo = (Rettangolo) formaDaRidimensionare;
+            rettangolo.setLarghezza(larghezza);
+            rettangolo.setAltezza(altezza);
+            System.out.println("  Tipo: Rettangolo. Impostate nuove dimensioni: W=" + larghezza + ", H=" + larghezza);
+
+        } else if (formaDaRidimensionare instanceof Ellisse) {
+            Ellisse ellisse = (Ellisse) formaDaRidimensionare;
+            ellisse.setLarghezza(larghezza);
+            ellisse.setAltezza(altezza);
+            System.out.println("  Tipo: Ellisse. Impostate nuove dimensioni: W=" + larghezza + ", H=" + larghezza);
+
+        } else {
+            Linea linea = (Linea) formaDaRidimensionare;
+            linea.setLarghezza(larghezza);
+            System.out.println("  Tipo: Linea. Impostata nuova dimensione: W=" + larghezza + ", H=" + larghezza);
+
         }
     }
 
@@ -411,5 +446,32 @@ public class DrawSnapModel implements Serializable {
             }
         }
         forme.add(fc);
+    }
+
+    public void rotation(double angoloSelezionato){
+        System.out.println("model: " + angoloSelezionato);
+
+        for(Forma f:forme){
+            if(f instanceof FormaSelezionataDecorator){
+
+                System.out.println("angolo aggiornato");
+                ((FormaSelezionataDecorator) f).getForma().setAngoloInclinazione(angoloSelezionato);
+            }
+        }
+    }
+
+    public void reflect(){
+        Forma formaSelezionata = null;
+        for(Forma f:forme){
+            if(f instanceof FormaSelezionataDecorator){
+                formaSelezionata = f;
+                break;
+            }
+        }
+        if (formaSelezionata != null) {
+            Forma forma = ((FormaSelezionataDecorator) formaSelezionata).getForma();
+
+            forma.specchia();
+        }
     }
 }

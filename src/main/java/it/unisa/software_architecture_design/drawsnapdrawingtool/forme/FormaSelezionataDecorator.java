@@ -10,6 +10,7 @@ public class FormaSelezionataDecorator extends FormaDecorator{
     private static final double MARGINE_SELEZIONE = 5.0;
     private static final double SPESSORE_BORDO = 2.0;
     private static final double ALTEZZA_DEFAULT = 10.0;
+    private static final double LARGHEZZA_DEFAULT = 10.0;
 
     /*
      * Costruttore
@@ -61,6 +62,15 @@ public class FormaSelezionataDecorator extends FormaDecorator{
     }
 
     /**
+     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
+     * cetro della figura stessa
+     */
+    @Override
+    public void specchia() {
+        getForma().specchia();
+    }
+
+    /**
      * Disegna intorno alla figura un bordo evidenziato per indicare che la
      * figura è stata cliccata
      *
@@ -76,27 +86,44 @@ public class FormaSelezionataDecorator extends FormaDecorator{
         // Disegna un rettangolo più grande attorno alla forma
         double x = getForma().getCoordinataX();
         double y = getForma().getCoordinataY();
-        double larghezza = getForma().getLarghezza();
+        double larghezza = LARGHEZZA_DEFAULT;
         double altezza = ALTEZZA_DEFAULT;
+
+        boolean isPoligono = false;
+
         if (getForma() instanceof Rettangolo) {
             Rettangolo rettangolo = (Rettangolo) getForma();
+            larghezza = rettangolo.getLarghezza();
             altezza = rettangolo.getAltezza();
         } else if (getForma() instanceof Ellisse) {
             Ellisse ellisse = (Ellisse) getForma();
             altezza = ellisse.getAltezza();
+            larghezza = ellisse.getLarghezza();
+        } else if (getForma() instanceof Linea) {
+            Linea linea = (Linea) getForma();
+            larghezza = linea.getLarghezza();
+        } else if (getForma() instanceof Poligono) {
+            Poligono poligono = (Poligono) getForma();
+            altezza = poligono.getAltezza();
+            larghezza = poligono.getLarghezza();
+            isPoligono = true;
         }
 
         // Aggiungi margine
         double rectWidth = larghezza + 2 * MARGINE_SELEZIONE;
         double rectHeight = altezza + 2 * MARGINE_SELEZIONE;
 
-        // Traslazione al centro della forma e rotazione di 45 gradi
-        gc.translate(x, y);
-        gc.rotate(getForma().getAngoloInclinazione()); // Rotazione in senso orario di 45 gradi
-
-        // Disegna il rettangolo centrato sull'origine (che ora è il centro della forma)
-        gc.strokeRect(-rectWidth / 2, -rectHeight / 2, rectWidth, rectHeight);
-
-        gc.restore(); // Ripristina il contesto grafico originales
+        if (!isPoligono) {
+            // Per le forme che non sono poligoni, applichiamo traslazione e rotazione
+            gc.translate(x, y);
+            gc.rotate(getForma().getAngoloInclinazione()); // Rotazione in senso orario
+            // Disegna il rettangolo centrato sull'origine (che ora è il centro della forma)
+            gc.strokeRect(-rectWidth / 2, -rectHeight / 2, rectWidth, rectHeight);
+        } else {
+            // Per i Poligoni, disegna direttamente il bounding box allineato agli assi.
+            gc.strokeRect(x - rectWidth / 2, y - rectHeight / 2, rectWidth, rectHeight);
+        }
+        gc.restore(); // Ripristina il contesto grafico originale
     }
+
 }

@@ -147,4 +147,17 @@ public class Ellisse extends Forma {
                 this.altezza == ellisse.getAltezza() &&
                 this.coloreInterno == ellisse.getColoreInterno();
     }
+
+    /**
+     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
+     * cetro della figura stessa
+     */
+    @Override
+    public void specchia(){
+        // Inverti l'angolo rispetto all'asse verticale
+        double nuovoAngolo = 180 - getAngoloInclinazione();
+
+        // Imposta il nuovo angolo
+        setAngoloInclinazione(nuovoAngolo);
+    }
 }

@@ -71,6 +71,12 @@ public class Rettangolo extends Forma  {
         updateVertici();
     }
 
+    @Override
+    public void setAngoloInclinazione( double angoloInclinazione ) {
+        super.setAngoloInclinazione( angoloInclinazione );
+        updateVertici();
+    }
+
     public Color getColoreInterno() {
         return coloreInterno;
     }
@@ -265,5 +271,26 @@ public class Rettangolo extends Forma  {
                 this.verticeCY == rettangolo.getVerticeCY() &&
                 this.verticeDX == rettangolo.getVerticeDX() &&
                 this.verticeDY == rettangolo.getVerticeDY();
+    }
+
+    /**
+     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
+     * cetro della figura stessa
+     */
+    @Override
+    public void specchia() {
+        double centroX = getCoordinataX();
+
+        // Inverti le coordinate X dei vertici rispetto al centro
+        this.verticeAX = 2 * centroX - this.verticeAX;
+        this.verticeBX = 2 * centroX - this.verticeBX;
+        this.verticeCX = 2 * centroX - this.verticeCX;
+        this.verticeDX = 2 * centroX - this.verticeDX;
+
+        // Aggiorna l'angolo di inclinazione per mantenere la figura correttamente orientata
+        setAngoloInclinazione((360 - getAngoloInclinazione()) % 360);
+
+        // Aggiorna i vertici per riflettere i cambiamenti
+        updateVertici();
     }
 }

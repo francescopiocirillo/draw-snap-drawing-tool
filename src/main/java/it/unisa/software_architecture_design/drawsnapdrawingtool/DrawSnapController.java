@@ -81,6 +81,10 @@ public class DrawSnapController {
     @FXML
     private Button lineButton;
     @FXML
+    private Button polygonButton;
+    @FXML
+    private Button textButton;
+    @FXML
     private Button selectButton;
     @FXML
     private ToolBar toolBarFX; // barra in alto delle modifiche
@@ -140,7 +144,7 @@ public class DrawSnapController {
         });
 
         // inizializzazione bottoni per la selezione forma
-        bottoniBarraPrincipale = List.of(handButton, ellipseButton, rectangleButton, lineButton, selectButton);
+        bottoniBarraPrincipale = List.of(handButton, ellipseButton, rectangleButton, lineButton, polygonButton, textButton, selectButton);
         handButton.setOnAction(e -> {
             bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
             setMoveCanvasMode();
@@ -160,6 +164,16 @@ public class DrawSnapController {
             bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
             setDrawMode(event, Forme.LINEA);
             lineButton.getStyleClass().add("selected");
+        });
+        polygonButton.setOnAction(event -> {
+            bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
+            setDrawMode(event, Forme.POLIGONO);
+            polygonButton.getStyleClass().add("selected");
+        });
+        textButton.setOnAction(event -> {
+            bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
+            setDrawMode(event, Forme.TEXT);
+            textButton.getStyleClass().add("selected");
         });
         selectButton.setOnAction(event -> {
             bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
@@ -637,6 +651,8 @@ public class DrawSnapController {
             coloreAttuale = ((Rettangolo)forma).getColoreInterno();
         } else if ( forma instanceof Ellisse) {
             coloreAttuale = ((Ellisse)forma).getColoreInterno();
+        } else if (forma instanceof Poligono) {
+            coloreAttuale = ((Poligono)forma).getColoreInterno();
         }
         ColorPicker colorPicker = new ColorPicker(coloreAttuale); // Imposta colore di attuale
 
@@ -675,8 +691,8 @@ public class DrawSnapController {
     }
 
     /**
-     * Metodo per invocare il comando di ripristino dello stato precedente dell'applicazione
-     * @param event -> evento di pressione del mouse sul tasto undo
+     * Metodo per invocare il comando di modifica del colore di contorno della figura
+     * @param event -> evento di pressione del mouse sul tasto changeOutlineColor
      */
     @FXML
     void onChangeOutlineColorPressed(ActionEvent event) {
@@ -727,8 +743,8 @@ public class DrawSnapController {
     }
 
     /**
-     *
-     * @param event
+     * Metodo per invocare il comando di cambio delle dimensioni della figura
+     * @param event -> evento di pressione del mouse sul tasto resize
      */
     @FXML
     public void onResizePressed(ActionEvent event) {
@@ -748,6 +764,8 @@ public class DrawSnapController {
             altezzaDefault = ((Rettangolo)forma).getAltezza();
         } else if ( forma instanceof Ellisse) {
             altezzaDefault = ((Ellisse)forma).getAltezza();
+        } else if (forma instanceof Poligono){
+            altezzaDefault = ((Poligono)forma).getAltezza();
         }
         Spinner<Double>  spinnerAltezza = new Spinner<>(10.0, 500.0, altezzaDefault, 1.0); //imposta dimensioni attuali
 
@@ -830,6 +848,76 @@ public class DrawSnapController {
     public void onComposePressed(ActionEvent event) {
         System.out.println("Composizione di forme selezionate");
         invoker.setCommand(new ComposeCommand(forme));
+        invoker.executeCommand();
+        updateState(true);
+    }
+
+    /**
+     * Metodo per invocare il comando di cambio dell'angolo di inclinazione della figura
+     * @param event -> evento di pressione del mouse sul tasto Rotation
+     */
+    @FXML
+    void onRotationPressed(ActionEvent event){
+        // Creazione del Dialog
+        Dialog<Double> dialog = new Dialog<>();
+        dialog.setTitle("Modifica Angolo di Inclinazione");
+        dialog.setHeaderText("Vuoi cambiare l'angolo di inclinazione?");
+
+        // Impostazione dell'interfaccia del dialog
+        Forma tipoForma = forme.getFormaSelezionata();
+        Forma forma = ((FormaSelezionataDecorator) tipoForma).getForma();
+        Label angleLabel = new Label("Angolo di inclinazione:");
+        angleLabel.setStyle("-fx-font-size: 16px;");
+
+        // Recupera l'angolo attuale
+        double angoloAttuale = forma.getAngoloInclinazione();
+
+        // Creazione dello Spinner
+        Spinner<Double> angleSpinner = new Spinner<>();
+        SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 360, angoloAttuale, 1);
+        angleSpinner.setValueFactory(valueFactory);
+        angleSpinner.setEditable(true); // Permette l'input da tastiera
+
+        VBox dialogContent = new VBox(10, angleLabel, angleSpinner);
+        dialogContent.setAlignment(Pos.CENTER);
+        dialogContent.setPadding(new Insets(20));
+
+        dialog.getDialogPane().setContent(dialogContent);
+        dialog.getDialogPane().setMinWidth(300);
+        dialog.getDialogPane().setMinHeight(200);
+
+        // Aggiunta dei pulsanti OK e Annulla
+        ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
+
+        // Impostazione del comportamento alla conferma
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == confirmButton) {
+                double angoloAggiornato = angleSpinner.getValue();
+                System.out.println("Angolo scelto: " + angoloAggiornato);
+                return angoloAggiornato; // Restituisce l'angolo scelto
+            }
+            System.out.println("Angolo non scelto");
+            return null; // Nessun angolo scelto
+        });
+
+        // Gestione del risultato del dialog
+        Optional<Double> result = dialog.showAndWait();
+        result.ifPresent(angoloAggiornato -> {
+            invoker.setCommand(new RotationCommand(forme, angoloAggiornato));
+            invoker.executeCommand();
+            updateState(true);
+        });
+    }
+
+    /**
+     * Metodo permette di specchiare la figura selezionata
+     * @param event -> evento di pressione su Reflection
+     */
+    @FXML
+    public void onReflectionPressed(ActionEvent event) {
+        invoker.setCommand(new ReflectCommand(forme));
         invoker.executeCommand();
         updateState(true);
     }

@@ -18,5 +18,4 @@ public interface FactoryForma {
     */
     Forma creaForma(double coordinataX, double coordinataY, double altezza, double larghezza,
                     double angoloInclinazione, Color colore, Color coloreInterno);
-
-}
+    }

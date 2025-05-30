@@ -57,6 +57,13 @@ public class Linea extends Forma  {
     }
 
     @Override
+    public void setAngoloInclinazione(double angoloInclinazione) {
+        super.setAngoloInclinazione(angoloInclinazione);
+        updateCoordinateYInizioFine();
+        updateCoordinateXInizioFine();
+    }
+
+    @Override
     public void setCoordinataY(double coordinataY) {
         super.setCoordinataY(coordinataY);
         updateCoordinateYInizioFine();
@@ -120,5 +127,19 @@ public class Linea extends Forma  {
 
         Line2D line = new Line2D.Double(xInizio, yInizio, xFine, yFine);
         return line.ptSegDist(puntoDaValutareX, puntoDaValutareY) <= TOLLERANZA;
+    }
+
+    /**
+     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
+     * cetro della figura stessa
+     */
+    @Override
+    public void specchia(){
+        double centroX = getCoordinataX();
+
+        // Inverti le coordinate X rispetto al centro
+        this.xInizio = 2 * centroX - this.xInizio;
+        this.xFine = 2 * centroX - this.xFine;
+        this.setAngoloInclinazione(180 - this.getAngoloInclinazione());
     }
 }

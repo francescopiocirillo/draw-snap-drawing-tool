@@ -32,6 +32,9 @@ public class DrawState implements DrawingState{
      * Attributi
      */
     private Forme formaCorrente;
+    private boolean creazionePoligono=true;
+    private FactoryPoligono factoryPoligono;
+    AttributiForma attributiForma;
 
     /*
      * Costruttore, getter e setter
@@ -63,12 +66,16 @@ public class DrawState implements DrawingState{
      */
     @Override
     public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
-        AttributiForma attributiForma = helpUIHandleMousePressed(formaCorrente);
 
-        if (attributiForma == null) { // se l'utente ha premuto "Annulla" non fare nulla
-            System.out.println("Creazione forma annullata dall'utente.");
-            return false;
+        if(creazionePoligono) {
+             attributiForma = helpUIHandleMousePressed(formaCorrente);
+            if (attributiForma == null) { // se l'utente ha premuto "Annulla" non fare nulla
+                System.out.println("Creazione forma annullata dall'utente.");
+                return false;
+            }
         }
+
+
 
         Forma formaCreata = null;
         switch (formaCorrente) {
@@ -91,6 +98,23 @@ public class DrawState implements DrawingState{
                         attributiForma.getAngoloInclinazione(), attributiForma.getColore(), attributiForma.getColoreInterno());
                 System.out.println("È una linea");
                 break;
+            case POLIGONO:
+                if(creazionePoligono) {
+                    factoryPoligono = new FactoryPoligono();
+                    creazionePoligono=false;
+                    return false;
+                }else {
+
+                if(event.getClickCount() == 1){
+                    factoryPoligono.addPunto(coordinataX, coordinataY);
+                    return false;
+                }
+                if(event.getClickCount() == 2&&factoryPoligono.getSize()>2){
+                    formaCreata = factoryPoligono.creaForma(factoryPoligono.getCentroX(), factoryPoligono.getCentroY(), factoryPoligono.getAltezza(), factoryPoligono.getLarghezza(),
+                            attributiForma.getAngoloInclinazione(), attributiForma.getColore(), attributiForma.getColoreInterno());
+                    creazionePoligono=true;
+                } else return false;
+                }
         }
         forme.add(formaCreata);
         return true;
@@ -156,7 +180,11 @@ public class DrawState implements DrawingState{
         spinnerLunghezza.setTooltip(new Tooltip("Imposta la lunghezza della linea in pixel"));
         spinnerAngolo.setTooltip(new Tooltip("Angolo di rotazione in gradi (0-360)"));
 
-        if (tipoForma == Forme.LINEA) {
+        if(tipoForma ==Forme.POLIGONO){
+            dimensioniBox.getChildren().addAll(
+                    new Label("Angolo inclinazione (°):"), spinnerAngolo
+            );
+        }else if (tipoForma == Forme.LINEA) {
             dimensioniBox.getChildren().addAll(
                     new Label("Lunghezza:"), spinnerLunghezza,
                     new Label("Angolo inclinazione (°):"), spinnerAngolo
@@ -198,6 +226,10 @@ public class DrawState implements DrawingState{
                 if (tipoForma == Forme.LINEA) {
                     attributi.setLarghezza(spinnerLunghezza.getValue());
                     attributi.setAltezza(0);
+                    attributi.setAngoloInclinazione(spinnerAngolo.getValue());
+                } else if (tipoForma == Forme.POLIGONO) {
+                    attributi.setAltezza(0);
+                    attributi.setLarghezza(0);
                     attributi.setAngoloInclinazione(spinnerAngolo.getValue());
                 } else {
                     attributi.setAltezza(spinnerAltezza.getValue());
