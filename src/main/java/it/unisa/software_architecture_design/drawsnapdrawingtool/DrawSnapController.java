@@ -83,6 +83,8 @@ public class DrawSnapController {
     @FXML
     private Button polygonButton;
     @FXML
+    private Button textButton;
+    @FXML
     private Button selectButton;
     @FXML
     private ToolBar toolBarFX; // barra in alto delle modifiche
@@ -167,6 +169,11 @@ public class DrawSnapController {
             bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
             setDrawMode(event, Forme.POLIGONO);
             polygonButton.getStyleClass().add("selected");
+        });
+        textButton.setOnAction(event -> {
+            bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
+            setDrawMode(event, Forme.TEXT);
+            textButton.getStyleClass().add("selected");
         });
         selectButton.setOnAction(event -> {
             bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
