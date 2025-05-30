@@ -20,6 +20,9 @@ public abstract class Forma implements Serializable, Cloneable{
     private double angoloInclinazione;
     private transient Color colore;
 
+    private double offsetX;
+    private double offsetY;
+
     /*
      * Costruttore, getter e setter
      */
@@ -75,6 +78,30 @@ public abstract class Forma implements Serializable, Cloneable{
 
     public void proportionalResize(double proporzione) {
         setLarghezza(getLarghezza()*proporzione/100);
+    }
+
+    public void setOffsetX(double offsetX) {
+        this.offsetX = offsetX - getCoordinataX();
+    }
+
+    public double getOffsetX() {
+        return offsetX;
+    }
+
+    public void setOffsetY(double offsetY) {
+        this.offsetY = offsetY - getCoordinataY();
+    }
+
+    public double getOffsetY() {
+        return offsetY;
+    }
+
+    public void setCoordinataXForDrag(double coordinataXMouseDragged){
+        setCoordinataX(coordinataXMouseDragged-offsetX);
+    }
+
+    public void setCoordinataYForDrag(double coordinataYMouseDragged){
+        setCoordinataY(coordinataYMouseDragged-offsetY);
     }
 
     /*

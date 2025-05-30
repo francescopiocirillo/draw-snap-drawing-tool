@@ -56,6 +56,8 @@ public class SelectState implements DrawingState{
             if(f.contiene(coordinataX, coordinataY)){
                 formaSelezionata = f;
                 // offset utili per lo spostamento della figura in caso di MouseDragged
+                f.setOffsetX(coordinataX);
+                f.setOffsetY(coordinataY);
                 offsetX = coordinataX - f.getCoordinataX();
                 offsetY = coordinataY - f.getCoordinataY();
             }
@@ -171,14 +173,15 @@ public class SelectState implements DrawingState{
             Forma f = it.next();
             if (f instanceof FormaSelezionataDecorator) {
                 if(((FormaSelezionataDecorator)f).getForma() instanceof FormaComposta){
-                    return false;
+                    f.setCoordinataXForDrag(coordinataX);
+                    f.setCoordinataYForDrag(coordinataY);
+                }else{
+                    double newX = coordinataX - offsetX;
+                    double newY = coordinataY - offsetY;
+                    f.setCoordinataX(newX);
+                    f.setCoordinataY(newY);
                 }
                 result = true;
-                double newX = coordinataX - offsetX;
-                double newY = coordinataY - offsetY;
-
-                f.setCoordinataX(newX);
-                f.setCoordinataY(newY);
                 break; // Presupponendo una sola forma selezionata
             }
         }

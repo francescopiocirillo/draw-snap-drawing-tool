@@ -122,4 +122,28 @@ public class FormaComposta extends Forma{
             f.setAngoloInclinazione(angoloDiInclinazione);
         }
     }
+
+    public void setCoordinataXForDrag(double coordinataXMouseDragged){
+        for(Forma f:forme){
+            f.setCoordinataXForDrag(coordinataXMouseDragged);
+        }
+    }
+
+    public void setCoordinataYForDrag(double coordinataYMouseDragged){
+        for(Forma f:forme){
+            f.setCoordinataYForDrag(coordinataYMouseDragged);
+        }
+    }
+
+    public void setOffsetX(double offsetX){
+        for(Forma f:forme){
+            f.setOffsetX(offsetX);
+        }
+    }
+
+    public void setOffsetY(double offsetY){
+        for(Forma f:forme){
+            f.setOffsetY(offsetY);
+        }
+    }
 }

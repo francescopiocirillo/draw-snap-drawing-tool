@@ -136,6 +136,16 @@ public class Rettangolo extends Forma  {
         updateVertici();
     }
 
+    @Override
+    public void setCoordinataXForDrag(double coordinataXMouseDragged){
+        setCoordinataX(coordinataXMouseDragged-getOffsetX());
+    }
+
+    @Override
+    public void setCoordinataYForDrag(double coordinataYMouseDragged){
+        setCoordinataY(coordinataYMouseDragged-getOffsetY());
+    }
+
     /*
       Logica della classe
      */

@@ -84,6 +84,21 @@ public class FormaSelezionataDecorator extends FormaDecorator{
         getForma().setAngoloInclinazione(angoloDiInclinazione);
     }
 
+    public void setOffsetX(double offsetX){
+        getForma().setOffsetX(offsetX);
+    }
+
+    public void setOffsetY(double offsetY){
+        getForma().setOffsetY(offsetY);
+    }
+
+    public void setCoordinataXForDrag(double coordinataXMouseDragged){
+        getForma().setCoordinataXForDrag(coordinataXMouseDragged);
+    }
+
+    public void setCoordinataYForDrag(double coordinataYMouseDragged){
+        getForma().setCoordinataYForDrag(coordinataYMouseDragged);
+    }
 
     /**
      * Disegna intorno alla figura un bordo evidenziato per indicare che la
