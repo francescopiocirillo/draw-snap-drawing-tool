@@ -644,6 +644,8 @@ public class DrawSnapController {
             coloreAttuale = ((Rettangolo)forma).getColoreInterno();
         } else if ( forma instanceof Ellisse) {
             coloreAttuale = ((Ellisse)forma).getColoreInterno();
+        } else if (forma instanceof Poligono) {
+            coloreAttuale = ((Poligono)forma).getColoreInterno();
         }
         ColorPicker colorPicker = new ColorPicker(coloreAttuale); // Imposta colore di attuale
 
