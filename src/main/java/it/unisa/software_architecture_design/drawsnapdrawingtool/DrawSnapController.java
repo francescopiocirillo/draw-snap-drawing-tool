@@ -447,7 +447,8 @@ public class DrawSnapController {
 
         drawingContext.handleMouseReleased(mouseEvent, logicalCurrentX, logicalCurrentY);
         if(dragged){
-            updateState(dragged);
+            updateState(true);
+            dragged = false;
         }
     }
 
@@ -706,7 +707,10 @@ public class DrawSnapController {
         Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
         Label colorLabel = new Label("Colore di contorno:");
         colorLabel.setStyle("-fx-font-size: 16px;");
-        ColorPicker colorPicker = new ColorPicker(forma.getColore()); // Imposta colore attuale
+        ColorPicker colorPicker = new ColorPicker(
+                forma.getColore() != null ? forma.getColore() : Color.BLACK
+        ); // Imposta colore attuale oppure BLACK se si tratta di una forma composta
+        // o in generale se l'attributo non è disponibile
 
         VBox dialogContent = new VBox(10, colorLabel, colorPicker);
         dialogContent.setAlignment(Pos.CENTER);
@@ -847,19 +851,9 @@ public class DrawSnapController {
     @FXML
     public void onComposePressed(ActionEvent event) {
         System.out.println("Composizione di forme selezionate");
-        return ;
-        /*
-        if (forme.thereIsFormaSelezionata()) {
-            invoker.setCommand(new ComposeCommand(forme));
-            invoker.executeCommand();
-            updateState(true);
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Attenzione");
-            alert.setHeaderText("Nessuna forma selezionata");
-            alert.setContentText("Per comporre una forma, seleziona almeno due forme.");
-            alert.showAndWait();
-        }*/
+        invoker.setCommand(new ComposeCommand(forme));
+        invoker.executeCommand();
+        updateState(true);
     }
 
     /**

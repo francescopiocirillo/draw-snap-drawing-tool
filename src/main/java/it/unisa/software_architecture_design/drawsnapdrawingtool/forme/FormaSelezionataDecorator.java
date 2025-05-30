@@ -17,6 +17,7 @@ public class FormaSelezionataDecorator extends FormaDecorator{
      */
     public FormaSelezionataDecorator(Forma forma) {
         super(forma); //riceve la forma da decorare
+        decorate();
     }
 
     /*
@@ -29,7 +30,9 @@ public class FormaSelezionataDecorator extends FormaDecorator{
     @Override
     public void disegna(GraphicsContext gc) {
         getForma().disegna(gc);
-        disegnaIndicatoreDiSelezione(gc);
+        if(!(getForma() instanceof FormaComposta)){
+            disegnaIndicatoreDiSelezione(gc);
+        }
     }
 
     /**
@@ -45,6 +48,19 @@ public class FormaSelezionataDecorator extends FormaDecorator{
         return getForma().contiene(puntoDaValutareX, puntoDaValutareY);
     }
 
+    public void decorate(){
+        if(getForma() instanceof FormaComposta) {
+            ((FormaComposta) getForma()).decorate();
+        }
+    }
+
+    public Forma undecorate(){
+        if(getForma() instanceof FormaComposta){
+            ((FormaComposta) getForma()).undecorate();
+        }
+        return getForma();
+    }
+
     /**
      * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
      * cetro della figura stessa
@@ -52,6 +68,11 @@ public class FormaSelezionataDecorator extends FormaDecorator{
     @Override
     public void specchia() {
         getForma().specchia();
+    }
+
+    @Override
+    public Forma clone(){
+        return getForma().clone();
     }
 
     /**

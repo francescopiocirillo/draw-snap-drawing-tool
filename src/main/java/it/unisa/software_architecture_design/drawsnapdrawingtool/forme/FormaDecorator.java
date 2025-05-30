@@ -1,6 +1,8 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.forme;
 
 
+import javafx.scene.paint.Color;
+
 public abstract class FormaDecorator extends Forma{
     /*
      * Attributi
@@ -16,6 +18,8 @@ public abstract class FormaDecorator extends Forma{
     public Forma getForma() {
         return formaDecorata;
     }
+
+    public void setForma(Forma forma) { this.formaDecorata = forma; }
 
     public double getCoordinataY() {
         return formaDecorata.getCoordinataY();
@@ -33,6 +37,7 @@ public abstract class FormaDecorator extends Forma{
         formaDecorata.setCoordinataX(coordinataX);
     }
 
+    public void setColore(Color color) { formaDecorata.setColore(color); }
 
     @Override
     public boolean confrontaAttributi(Forma forma) {
