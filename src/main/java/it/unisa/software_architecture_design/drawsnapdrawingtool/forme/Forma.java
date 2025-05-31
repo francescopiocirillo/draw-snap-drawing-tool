@@ -130,7 +130,14 @@ public abstract class Forma implements Serializable, Cloneable{
      * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
      * cetro della figura stessa
      */
-    public abstract void specchia();
+    public abstract void specchiaInVerticale();
+
+    /**
+     * Ridistribuisce i valori della figura per specchiarla lungo l'asse orizzontale che passa per il
+     * cetro della figura stessa
+     */
+    public abstract void specchiaInOrizzontale();
+
     /*
      * Metodi per la serializzazione/deserializzazione
      */

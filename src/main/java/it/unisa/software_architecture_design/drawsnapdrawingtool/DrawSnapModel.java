@@ -491,7 +491,7 @@ public class DrawSnapModel implements Serializable {
         }
     }
 
-    public void reflect(){
+    public void reflect(boolean horizontal){
         Forma formaSelezionata = null;
         for(Forma f:forme){
             if(f instanceof FormaSelezionataDecorator){
@@ -501,8 +501,12 @@ public class DrawSnapModel implements Serializable {
         }
         if (formaSelezionata != null) {
             Forma forma = ((FormaSelezionataDecorator) formaSelezionata).getForma();
-
-            forma.specchia();
+            if(horizontal){
+                forma.specchiaInOrizzontale();
+            }
+            else{
+                forma.specchiaInVerticale();
+            }
         }
     }
 }

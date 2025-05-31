@@ -68,6 +68,28 @@ public class FormaComposta extends Forma{
         return false;
     }
 
+    /**
+     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
+     * cetro della figura stessa
+     */
+    @Override
+    public void specchiaInVerticale() {
+        for(Forma f:forme){
+            f.specchiaInVerticale();
+        }
+    }
+
+    /**
+     * Ridistribuisce i valori della figura per specchiarla lungo l'asse orizzontale che passa per il
+     * cetro della figura stessa
+     */
+    @Override
+    public void specchiaInOrizzontale() {
+        for(Forma f:forme){
+            f.specchiaInOrizzontale();
+        }
+    }
+
     @Override
     public void setColore(Color color) {
         for(Forma f:forme){
@@ -118,13 +140,6 @@ public class FormaComposta extends Forma{
     public void proportionalResize(double proporzione){
         for(Forma f:forme){
             f.proportionalResize(proporzione);
-        }
-    }
-
-    @Override
-    public void specchia(){
-        for(Forma f:forme){
-            f.specchia();
         }
     }
 

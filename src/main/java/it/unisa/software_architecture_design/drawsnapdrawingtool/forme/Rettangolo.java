@@ -294,8 +294,13 @@ public class Rettangolo extends Forma  {
      * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
      * cetro della figura stessa
      */
+
+    /**
+     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
+     * cetro della figura stessa
+     */
     @Override
-    public void specchia() {
+    public void specchiaInVerticale() {
         double centroX = getCoordinataX();
 
         // Inverti le coordinate X dei vertici rispetto al centro
@@ -303,6 +308,27 @@ public class Rettangolo extends Forma  {
         this.verticeBX = 2 * centroX - this.verticeBX;
         this.verticeCX = 2 * centroX - this.verticeCX;
         this.verticeDX = 2 * centroX - this.verticeDX;
+
+        // Aggiorna l'angolo di inclinazione per mantenere la figura correttamente orientata
+        setAngoloInclinazione((360 - getAngoloInclinazione()) % 360);
+
+        // Aggiorna i vertici per riflettere i cambiamenti
+        updateVertici();
+    }
+
+    /**
+     * Ridistribuisce i valori della figura per specchiarla lungo l'asse orizzontale che passa per il
+     * cetro della figura stessa
+     */
+    @Override
+    public void specchiaInOrizzontale() {
+        double centroY = getCoordinataY();
+
+        // Inverti le coordinate Y dei vertici rispetto al centro
+        this.verticeAY = 2 * centroY - this.verticeAY;
+        this.verticeBY = 2 * centroY - this.verticeBY;
+        this.verticeCY = 2 * centroY - this.verticeCY;
+        this.verticeDY = 2 * centroY - this.verticeDY;
 
         // Aggiorna l'angolo di inclinazione per mantenere la figura correttamente orientata
         setAngoloInclinazione((360 - getAngoloInclinazione()) % 360);

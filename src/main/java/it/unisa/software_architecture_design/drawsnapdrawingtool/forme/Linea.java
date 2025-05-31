@@ -149,12 +149,22 @@ public class Linea extends Forma  {
      * cetro della figura stessa
      */
     @Override
-    public void specchia(){
+    public void specchiaInVerticale(){
         double centroX = getCoordinataX();
 
         // Inverti le coordinate X rispetto al centro
         this.xInizio = 2 * centroX - this.xInizio;
         this.xFine = 2 * centroX - this.xFine;
         this.setAngoloInclinazione(180 - this.getAngoloInclinazione());
+    }
+
+    @Override
+    public void specchiaInOrizzontale(){
+        double centroY = getCoordinataY();
+
+        // Inverti le coordinate Y rispetto al centro
+        this.yInizio = 2 * centroY - this.yInizio;
+        this.yFine = 2 * centroY - this.yFine;
+        this.setAngoloInclinazione(360 - this.getAngoloInclinazione());
     }
 }

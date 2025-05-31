@@ -66,8 +66,17 @@ public class FormaSelezionataDecorator extends FormaDecorator{
      * cetro della figura stessa
      */
     @Override
-    public void specchia() {
-        getForma().specchia();
+    public void specchiaInVerticale() {
+        getForma().specchiaInVerticale();
+    }
+
+    /**
+     * Ridistribuisce i valori della figura per specchiarla lungo l'asse orizzontale che passa per il
+     * cetro della figura stessa
+     */
+    @Override
+    public void specchiaInOrizzontale() {
+        getForma().specchiaInOrizzontale();
     }
 
     @Override

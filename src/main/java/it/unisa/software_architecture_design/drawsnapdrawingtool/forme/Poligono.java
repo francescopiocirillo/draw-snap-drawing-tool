@@ -206,7 +206,7 @@ public class Poligono extends Forma {
 
 
     @Override
-    public void specchia() {
+    public void specchiaInVerticale() {
         // Specchia i punti lungo l'asse Y (negando le coordinate X)
         List<Double> nuoviPuntiX = new ArrayList<>();
         for (double px : puntiX) {
@@ -215,6 +215,22 @@ public class Poligono extends Forma {
         this.puntiX = nuoviPuntiX;
 
         // Le coordinate Y rimangono invariate per lo specchiamento lungo l'asse Y
+
+        calcolaBoundingBox();
+
+        super.setAngoloInclinazione(-super.getAngoloInclinazione());
+    }
+
+    @Override
+    public void specchiaInOrizzontale() {
+        // Specchia i punti lungo l'asse X (negando le coordinate Y)
+        List<Double> nuoviPuntiY = new ArrayList<>();
+        for (double py : puntiY) {
+            nuoviPuntiY.add(-py); // Negare la coordinata Y
+        }
+        this.puntiY = nuoviPuntiY;
+
+        // Le coordinate X rimangono invariate per lo specchiamento lungo l'asse X
 
         calcolaBoundingBox();
 

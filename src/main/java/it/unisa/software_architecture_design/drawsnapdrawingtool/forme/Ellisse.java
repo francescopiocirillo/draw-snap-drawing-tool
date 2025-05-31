@@ -169,9 +169,18 @@ public class Ellisse extends Forma {
      * cetro della figura stessa
      */
     @Override
-    public void specchia(){
+    public void specchiaInVerticale(){
         // Inverti l'angolo rispetto all'asse verticale
         double nuovoAngolo = 180 - getAngoloInclinazione();
+
+        // Imposta il nuovo angolo
+        setAngoloInclinazione(nuovoAngolo);
+    }
+
+    @Override
+    public void specchiaInOrizzontale(){
+        // Inverti l'angolo rispetto all'asse orizzontale
+        double nuovoAngolo = 360 - getAngoloInclinazione();
 
         // Imposta il nuovo angolo
         setAngoloInclinazione(nuovoAngolo);
