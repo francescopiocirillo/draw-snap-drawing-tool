@@ -301,6 +301,31 @@ public class Testo extends Forma {
     }
 
     /**
+     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
+     * cetro della figura stessa
+     */
+    @Override
+    public void specchiaInVerticale() {
+        String testoCorrente = getTesto();
+
+        if (testoCorrente != null && !testoCorrente.isEmpty()) {
+            String testoSpecchiato = new StringBuilder(testoCorrente).reverse().toString();
+            setTesto(testoSpecchiato);
+            setAngoloInclinazione(-getAngoloInclinazione());
+        }
+        specchiata = !specchiata;
+    }
+
+    /**
+     * Ridistribuisce i valori della figura per specchiarla lungo l'asse orizzontale che passa per il
+     * cetro della figura stessa
+     */
+    @Override
+    public void specchiaInOrizzontale() {
+        //wip
+    }
+
+    /**
      * Determina se il punto (puntoDaValutareX, puntoDaValutareY) è "alla sinistra" del segmento tra
      * (inizioVettoreCoordinataX, y1) e (x2, y2) tramite il prodotto vettoriale.
      *
@@ -318,18 +343,6 @@ public class Testo extends Forma {
         return crossProduct >= 0 ;
     }
 
-    @Override
-    public void specchia() {
-
-        String testoCorrente = getTesto();
-
-        if (testoCorrente != null && !testoCorrente.isEmpty()) {
-            String testoSpecchiato = new StringBuilder(testoCorrente).reverse().toString();
-            setTesto(testoSpecchiato);
-            setAngoloInclinazione(-getAngoloInclinazione());
-        }
-        specchiata = !specchiata;
-    }
 
     /**
      * Serializza l'oggetto nel complesso con il metodo della superclasse e poi salva
