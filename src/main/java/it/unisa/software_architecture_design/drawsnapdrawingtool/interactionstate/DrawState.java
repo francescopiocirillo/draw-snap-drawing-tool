@@ -197,6 +197,8 @@ public class DrawState implements DrawingState{
         VBox textBox = null;
 
         if(tipoForma == Forme.TEXT){
+            spinnerLarghezza.getValueFactory().setValue(100.0);
+            spinnerAltezza.getValueFactory().setValue(60.0);
             Label testoLabel = new Label("Testo:");
             testoLabel.setStyle("-fx-font-size: 18px;");
             testo = new TextField();

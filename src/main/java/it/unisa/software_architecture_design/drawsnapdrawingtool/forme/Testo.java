@@ -22,6 +22,9 @@ public class Testo extends Forma {
     private double verticeCY;
     private double verticeDX;
     private double verticeDY;
+    private double scaleX = 1.0;
+    private double scaleY = 1.0;
+
 
     /**
      * Costruttore, Getter e Setter
@@ -155,49 +158,52 @@ public class Testo extends Forma {
     }
 
     /**
-     * Restituisce la larghezza effettiva del testo renderizzato con il font calcolato.
+     * Restituisce la larghezza effettiva del testo renderizzato (corrisponde alla larghezza della bounding box).
      * Questo è utile per il decorator di selezione.
-     * @return La larghezza renderizzata del testo.
+     * @return La larghezza della bounding box del testo.
      */
     public double getRenderedWidth() {
-        if (testo == null || testo.isEmpty()) {
-            return 0;
-        }
-        Text tempText = new Text(testo);
-        tempText.setFont(Font.font(FONT_NAME, currentFontSize));
-        return tempText.getLayoutBounds().getWidth();
+        return getLarghezza(); // La larghezza renderizzata è la larghezza della bounding box
     }
 
     /**
-     * Restituisce l'altezza effettiva del testo renderizzato con il font calcolato.
+     * Restituisce l'altezza effettiva del testo renderizzato (corrisponde all'altezza della bounding box).
      * Questo è utile per il decorator di selezione.
-     * @return L'altezza renderizzata del testo.
+     * @return L'altezza della bounding box del testo.
      */
     public double getRenderedHeight() {
-        if (testo == null || testo.isEmpty()) {
-            return 0;
+        return getAltezza(); // L'altezza renderizzata è l'altezza della bounding box
+    }
+
+    /**
+     * Calcola i fattori di scala (scaleX, scaleY) necessari per stirare il testo
+     * in modo che riempia la larghezza e l'altezza della bounding box.
+     * Imposta anche un `currentFontSize` di base per la misurazione del testo.
+     */
+    private void calculateFontSize() {
+        if (getLarghezza() <= 0 || getAltezza() <= 0 || testo == null || testo.isEmpty()) {
+            this.scaleX = 1.0;
+            this.scaleY = 1.0;
+            this.currentFontSize = 12.0;
+            return;
         }
+
+        // Usa una dimensione del font di base per misurare le dimensioni naturali del testo.
+        double baseMeasurementFontSize = 100.0;
         Text tempText = new Text(testo);
-        tempText.setFont(Font.font(FONT_NAME, currentFontSize));
-        return tempText.getLayoutBounds().getHeight();
+        tempText.setFont(Font.font(FONT_NAME, baseMeasurementFontSize));
+
+        double naturalTextWidthAtBaseSize = tempText.getLayoutBounds().getWidth();
+        double naturalTextHeightAtBaseSize = tempText.getLayoutBounds().getHeight();
+
+        // Calcola i fattori di scala necessari per stirare il testo
+        // dalle sue dimensioni naturali alle dimensioni target della bounding box.
+        this.scaleX = naturalTextWidthAtBaseSize > 0 ? getLarghezza() / naturalTextWidthAtBaseSize : 1.0;
+        this.scaleY = naturalTextHeightAtBaseSize > 0 ? getAltezza() / naturalTextHeightAtBaseSize : 1.0;
+
+        this.currentFontSize = baseMeasurementFontSize;
     }
 
-
-
-    private void calculateFontSize(){
-
-        if(!(getLarghezza() <=0 || getAltezza() <= 0 || testo == null || testo.isEmpty())){
-            double targetFontSize = 100.0;
-
-            Text tempText = new Text(testo);
-            tempText.setFont(Font.font(FONT_NAME, targetFontSize));
-
-            double scaleX = getLarghezza() / tempText.getLayoutBounds().getWidth();
-            double scaleY = getAltezza() / tempText.getLayoutBounds().getHeight();
-
-            this.currentFontSize = targetFontSize * Math.min(scaleX, scaleY);
-        }
-    }
 
 
     @Override
@@ -210,6 +216,7 @@ public class Testo extends Forma {
         // Applica le trasformazioni della forma (traslazione e rotazione)
         gc.translate(centroX, centroY);
         gc.rotate(getAngoloInclinazione());
+        gc.scale(this.scaleX, this.scaleY);
 
 
         gc.setFont(Font.font(FONT_NAME, currentFontSize));
@@ -313,7 +320,6 @@ public class Testo extends Forma {
         if (testoCorrente != null && !testoCorrente.isEmpty()) {
             String testoSpecchiato = new StringBuilder(testoCorrente).reverse().toString();
             setTesto(testoSpecchiato);
-            setAngoloInclinazione(-getAngoloInclinazione());
         }
         specchiata = !specchiata;
     }
