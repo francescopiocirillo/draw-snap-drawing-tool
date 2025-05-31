@@ -2,6 +2,7 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionsta
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaComposta;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Linea;
 import javafx.scene.control.Button;
@@ -20,8 +21,6 @@ public class SelectState implements DrawingState{
     /*
      * Attributi
      */
-    private double offsetX;
-    private double offsetY;
     private ToolBar toolBarFX; // barra in alto delle modifiche
     private Button changeFillColorButton;
     private MenuItem composeButton; // pulsante per comporre le forme
@@ -55,8 +54,8 @@ public class SelectState implements DrawingState{
             if(f.contiene(coordinataX, coordinataY)){
                 formaSelezionata = f;
                 // offset utili per lo spostamento della figura in caso di MouseDragged
-                offsetX = coordinataX - f.getCoordinataX();
-                offsetY = coordinataY - f.getCoordinataY();
+                f.setOffsetX(coordinataX);
+                f.setOffsetY(coordinataY);
             }
         }
 
@@ -169,12 +168,9 @@ public class SelectState implements DrawingState{
         while (it.hasNext()) {
             Forma f = it.next();
             if (f instanceof FormaSelezionataDecorator) {
+                f.setCoordinataXForDrag(coordinataX);
+                f.setCoordinataYForDrag(coordinataY);
                 result = true;
-                double newX = coordinataX - offsetX;
-                double newY = coordinataY - offsetY;
-
-                f.setCoordinataX(newX);
-                f.setCoordinataY(newY);
                 break; // Presupponendo una sola forma selezionata
             }
         }

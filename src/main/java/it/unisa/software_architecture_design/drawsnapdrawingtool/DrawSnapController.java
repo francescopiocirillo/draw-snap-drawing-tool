@@ -81,6 +81,10 @@ public class DrawSnapController {
     @FXML
     private Button lineButton;
     @FXML
+    private Button polygonButton;
+    @FXML
+    private Button textButton;
+    @FXML
     private Button selectButton;
     @FXML
     private ToolBar toolBarFX; // barra in alto delle modifiche
@@ -88,6 +92,8 @@ public class DrawSnapController {
     private Button changeFillColorButton;
     @FXML
     private Button undoButton;
+    @FXML
+    private Button proportionalResizePressed;
     private List<Button> bottoniBarraPrincipale = null;
 
     /*
@@ -140,7 +146,7 @@ public class DrawSnapController {
         });
 
         // inizializzazione bottoni per la selezione forma
-        bottoniBarraPrincipale = List.of(handButton, ellipseButton, rectangleButton, lineButton, selectButton);
+        bottoniBarraPrincipale = List.of(handButton, ellipseButton, rectangleButton, lineButton, polygonButton, textButton, selectButton);
         handButton.setOnAction(e -> {
             bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
             setMoveCanvasMode();
@@ -160,6 +166,16 @@ public class DrawSnapController {
             bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
             setDrawMode(event, Forme.LINEA);
             lineButton.getStyleClass().add("selected");
+        });
+        polygonButton.setOnAction(event -> {
+            bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
+            setDrawMode(event, Forme.POLIGONO);
+            polygonButton.getStyleClass().add("selected");
+        });
+        textButton.setOnAction(event -> {
+            bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
+            setDrawMode(event, Forme.TEXT);
+            textButton.getStyleClass().add("selected");
         });
         selectButton.setOnAction(event -> {
             bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
@@ -383,6 +399,28 @@ public class DrawSnapController {
             Forma f = it.next();
             f.disegna(gc);
         }
+        if(drawingContext.getCurrentState() instanceof  DrawState) {
+            DrawState drawState = (DrawState) drawingContext.getCurrentState();
+            if (drawState.getFormaCorrente() == Forme.POLIGONO && drawState.getCreazionePoligono()){
+                List<Double> puntiX = drawState.getPuntiX();
+                List<Double> puntiY = drawState.getPuntiY();
+                if(puntiX.size() >= 2){
+                    double[] xArray = puntiX.stream().mapToDouble(Double::doubleValue).toArray();
+                    double[] yArray = puntiY.stream().mapToDouble(Double::doubleValue).toArray();
+
+                    gc.setStroke(Color.DODGERBLUE);
+                    gc.setLineWidth(1);
+                    gc.setLineDashes(5, 5);
+                    gc.strokePolygon(xArray, yArray, xArray.length);
+
+                    for(int i =0; i < xArray.length; i++){
+                        gc.setFill(Color.RED);
+                        gc.fillOval(xArray[i] -3, yArray[i] -3, 6, 6);
+                    }
+                }
+            }
+            gc.setLineDashes(0);
+        }
         gc.restore();
     }
 
@@ -433,7 +471,8 @@ public class DrawSnapController {
 
         drawingContext.handleMouseReleased(mouseEvent, logicalCurrentX, logicalCurrentY);
         if(dragged){
-            updateState(dragged);
+            updateState(true);
+            dragged = false;
         }
     }
 
@@ -637,6 +676,10 @@ public class DrawSnapController {
             coloreAttuale = ((Rettangolo)forma).getColoreInterno();
         } else if ( forma instanceof Ellisse) {
             coloreAttuale = ((Ellisse)forma).getColoreInterno();
+        } else if (forma instanceof Poligono) {
+            coloreAttuale = ((Poligono)forma).getColoreInterno();
+        }else if(forma instanceof Testo){
+            coloreAttuale = ((Testo) forma).getColoreInterno();
         }
         ColorPicker colorPicker = new ColorPicker(coloreAttuale); // Imposta colore di attuale
 
@@ -690,7 +733,10 @@ public class DrawSnapController {
         Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
         Label colorLabel = new Label("Colore di contorno:");
         colorLabel.setStyle("-fx-font-size: 16px;");
-        ColorPicker colorPicker = new ColorPicker(forma.getColore()); // Imposta colore attuale
+        ColorPicker colorPicker = new ColorPicker(
+                forma.getColore() != null ? forma.getColore() : Color.BLACK
+        ); // Imposta colore attuale oppure BLACK se si tratta di una forma composta
+        // o in generale se l'attributo non è disponibile
 
         VBox dialogContent = new VBox(10, colorLabel, colorPicker);
         dialogContent.setAlignment(Pos.CENTER);
@@ -733,90 +779,104 @@ public class DrawSnapController {
     @FXML
     public void onResizePressed(ActionEvent event) {
         Forma tipoForma = forme.getFormaSelezionata();
-        Dialog<Map<String, Double>> dialog = new Dialog<>();
-        dialog.setTitle("Ridimensiona Figura");
-        dialog.setHeaderText("Vuoi cambiare le dimensioni della figura?");
-
-        VBox contentBox = new VBox(15);
-        contentBox.setPadding(new Insets(20));
-
-        // Spinner per dimensioni
         Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
-        Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, forma.getLarghezza(), 1.0); //imposta dimensioni attuali
-        double altezzaDefault = 0;
-        double larghezzaDefault = 0;
-        if ( forma instanceof Rettangolo ) {
-            altezzaDefault = ((Rettangolo)forma).getAltezza();
-            larghezzaDefault = ((Rettangolo)forma).getLarghezza();
-        } else if ( forma instanceof Ellisse) {
-            altezzaDefault = ((Ellisse)forma).getAltezza();
-            larghezzaDefault = ((Ellisse)forma).getLarghezza();
-        } else if (forma instanceof Linea){
-            larghezzaDefault = ((Linea)forma).getLarghezza();
-        }
-        Spinner<Double>  spinnerAltezza = new Spinner<>(10.0, 500.0, altezzaDefault, 1.0); //imposta dimensioni attuali
 
-        spinnerAltezza.setEditable(true);
-        spinnerLarghezza.setEditable(true);
+        if (forma instanceof FormaComposta) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Avviso");
+            alert.setHeaderText(null);
+            alert.setContentText("Per le forme composte usa la funzione di resize proporzionale.");
+            // Mostra l'alert e aspetta una risposta dell'utente
+            Optional<ButtonType> risultato = alert.showAndWait();
 
-        VBox dimensioniBox = new VBox(10);
-        dimensioniBox.setAlignment(Pos.CENTER);
-
-        if ( ( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea ) {
-            System.out.println("tipoForma: " + tipoForma);
-            dimensioniBox.getChildren().addAll(
-                    new Label("Lunghezza:"), spinnerLarghezza
-            );
-        } else {
-            dimensioniBox.getChildren().addAll(
-                    new Label("Altezza:"), spinnerAltezza,
-                    new Label("Larghezza:"), spinnerLarghezza
-            );
-        }
-
-        contentBox.getChildren().add(dimensioniBox);
-        dialog.getDialogPane().setContent(contentBox);
-        dialog.getDialogPane().setMinWidth(400);
-
-        // Pulsanti di conferma e annullamento
-        ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
-
-        // Impostazione del comportamento alla conferma
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == confirmButton) {
-                Map<String, Double> map = new HashMap<>();
-                if (( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea) {
-                    double lunghezza = spinnerLarghezza.getValue();
-                    map.put("Lunghezza", lunghezza);
-                    System.out.println("Nuova Lunghezza: " + lunghezza);
-                } else {
-                    double altezza = spinnerAltezza.getValue();
-                    double larghezza = spinnerLarghezza.getValue();
-                    map.put("Larghezza", larghezza);
-                    map.put("Altezza", altezza);
-                    System.out.println("Nuova Altezza: " + altezza);
-                    System.out.println("Nuova Larghezza: " + larghezza);
-                }
-                return map;
+            // Controlla se l'utente ha premuto OK
+            if (risultato.isPresent() && risultato.get() == ButtonType.OK) {
+                proportionalResizePressed.fire();
             }
-            return null;
-        });
+        }else{
+            Dialog<Map<String, Double>> dialog = new Dialog<>();
+            dialog.setTitle("Ridimensiona Figura");
+            dialog.setHeaderText("Vuoi cambiare le dimensioni della figura?");
 
-        // Mostra il dialog e gestisce il risultato
-        Optional<Map<String, Double>> result = dialog.showAndWait();
-        result.ifPresent(nuoveDimensioni -> {
-            if (( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea) {
-                invoker.setCommand(new ResizeCommand(forme, nuoveDimensioni.get("Lunghezza"), 0));
-                invoker.executeCommand();
-                updateState(true);
+            VBox contentBox = new VBox(15);
+            contentBox.setPadding(new Insets(20));
+
+            // Spinner per dimensioni
+            Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, forma.getLarghezza(), 1.0); //imposta dimensioni attuali
+            double altezzaDefault = 0;
+            if ( forma instanceof Rettangolo ) {
+                altezzaDefault = ((Rettangolo)forma).getAltezza();
+            } else if ( forma instanceof Ellisse) {
+                altezzaDefault = ((Ellisse)forma).getAltezza();
+            } else if (forma instanceof Poligono){
+                altezzaDefault = ((Poligono)forma).getAltezza();
+            }else if(forma instanceof Testo){
+                altezzaDefault = ((Testo) forma).getAltezza();
+            }
+            Spinner<Double>  spinnerAltezza = new Spinner<>(10.0, 500.0, altezzaDefault, 1.0); //imposta dimensioni attuali
+
+            spinnerAltezza.setEditable(true);
+            spinnerLarghezza.setEditable(true);
+
+            VBox dimensioniBox = new VBox(10);
+            dimensioniBox.setAlignment(Pos.CENTER);
+
+            if ( ( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea ) {
+                System.out.println("tipoForma: " + tipoForma);
+                dimensioniBox.getChildren().addAll(
+                        new Label("Lunghezza:"), spinnerLarghezza
+                );
             } else {
-                invoker.setCommand(new ResizeCommand(forme, nuoveDimensioni.get("Larghezza"), nuoveDimensioni.get("Altezza")));
-                invoker.executeCommand();
-                updateState(true);
+                dimensioniBox.getChildren().addAll(
+                        new Label("Altezza:"), spinnerAltezza,
+                        new Label("Larghezza:"), spinnerLarghezza
+                );
             }
-        });
+
+            contentBox.getChildren().add(dimensioniBox);
+            dialog.getDialogPane().setContent(contentBox);
+            dialog.getDialogPane().setMinWidth(400);
+
+            // Pulsanti di conferma e annullamento
+            ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
+            ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
+            dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
+
+            // Impostazione del comportamento alla conferma
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == confirmButton) {
+                    Map<String, Double> map = new HashMap<>();
+                    if (( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea) {
+                        double lunghezza = spinnerLarghezza.getValue();
+                        map.put("Lunghezza", lunghezza);
+                        System.out.println("Nuova Lunghezza: " + lunghezza);
+                    } else {
+                        double altezza = spinnerAltezza.getValue();
+                        double larghezza = spinnerLarghezza.getValue();
+                        map.put("Larghezza", larghezza);
+                        map.put("Altezza", altezza);
+                        System.out.println("Nuova Altezza: " + altezza);
+                        System.out.println("Nuova Larghezza: " + larghezza);
+                    }
+                    return map;
+                }
+                return null;
+            });
+
+            // Mostra il dialog e gestisce il risultato
+            Optional<Map<String, Double>> result = dialog.showAndWait();
+            result.ifPresent(nuoveDimensioni -> {
+                if (( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea) {
+                    invoker.setCommand(new ResizeCommand(forme, nuoveDimensioni.get("Lunghezza"), 0));
+                    invoker.executeCommand();
+                    updateState(true);
+                } else {
+                    invoker.setCommand(new ResizeCommand(forme, nuoveDimensioni.get("Larghezza"), nuoveDimensioni.get("Altezza")));
+                    invoker.executeCommand();
+                    updateState(true);
+                }
+            });
+        }
     }
 
     /**
@@ -834,19 +894,9 @@ public class DrawSnapController {
     @FXML
     public void onComposePressed(ActionEvent event) {
         System.out.println("Composizione di forme selezionate");
-        return ;
-        /*
-        if (forme.thereIsFormaSelezionata()) {
-            invoker.setCommand(new ComposeCommand(forme));
-            invoker.executeCommand();
-            updateState(true);
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Attenzione");
-            alert.setHeaderText("Nessuna forma selezionata");
-            alert.setContentText("Per comporre una forma, seleziona almeno due forme.");
-            alert.showAndWait();
-        }*/
+        invoker.setCommand(new ComposeCommand(forme));
+        invoker.executeCommand();
+        updateState(true);
     }
 
     /**
@@ -917,5 +967,54 @@ public class DrawSnapController {
         invoker.setCommand(new ReflectCommand(forme));
         invoker.executeCommand();
         updateState(true);
+    }
+
+    @FXML
+    public void onProportionalResizePressed(ActionEvent event) {
+        Forma tipoForma = forme.getFormaSelezionata();
+        Dialog<Double> dialog = new Dialog<>();
+        dialog.setTitle("Ridimensiona Figura");
+        dialog.setHeaderText("La figura sarà ridimensionata sulla base del fattore proporzionale inserito, 100 significa lasciare la figura con le sue dimensioni attuali");
+
+        VBox contentBox = new VBox(15);
+        contentBox.setPadding(new Insets(20));
+
+        // Spinner per dimensioni
+        Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
+        Spinner<Double> spinnerProporzione = new Spinner<>(1.0, 500.0, 100, 1.0); //imposta dimensioni attuali
+        spinnerProporzione.setEditable(true);
+
+        double proporzioneDefault = 100;
+
+        VBox dimensioniBox = new VBox(10);
+        dimensioniBox.setAlignment(Pos.CENTER);
+        dimensioniBox.getChildren().addAll(
+                new Label("Proporzione:"), spinnerProporzione
+        );
+
+        contentBox.getChildren().add(dimensioniBox);
+        dialog.getDialogPane().setContent(contentBox);
+        dialog.getDialogPane().setMinWidth(400);
+
+        // Pulsanti di conferma e annullamento
+        ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
+
+        // Impostazione del comportamento alla conferma
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == confirmButton) {
+                return spinnerProporzione.getValue();
+            }
+            return null;
+        });
+
+        // Mostra il dialog e gestisce il risultato
+        Optional<Double> result = dialog.showAndWait();
+        result.ifPresent(proporzioneUpdate -> {
+            invoker.setCommand(new ProportionalResizeCommand(forme, proporzioneUpdate));
+            invoker.executeCommand();
+            updateState(true);
+        });
     }
 }

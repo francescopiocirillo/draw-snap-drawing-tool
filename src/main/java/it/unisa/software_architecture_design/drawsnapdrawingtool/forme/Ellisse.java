@@ -41,6 +41,22 @@ public class Ellisse extends Forma {
         this.coloreInterno = coloreInterno;
     }
 
+    @Override
+    public void proportionalResize(double proporzione){
+        setLarghezza(getLarghezza()*proporzione/100);
+        setAltezza(getAltezza()*proporzione/100);
+    }
+
+    @Override
+    public void setCoordinataXForDrag(double coordinataXMouseDragged){
+        setCoordinataX(coordinataXMouseDragged-getOffsetX());
+    }
+
+    @Override
+    public void setCoordinataYForDrag(double coordinataYMouseDragged){
+        setCoordinataY(coordinataYMouseDragged-getOffsetY());
+    }
+
     /*
       Logica della classe
      */

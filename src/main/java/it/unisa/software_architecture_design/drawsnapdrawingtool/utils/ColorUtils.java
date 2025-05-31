@@ -10,6 +10,9 @@ public class ColorUtils {
      * @return la stringa HEX corrispondente al Color di input
      */
     public static String toHexString(Color color) {
+        if (color == null) {
+            return "#00000000";
+        }
         int r = (int) Math.round(color.getRed() * 255);
         int g = (int) Math.round(color.getGreen() * 255);
         int b = (int) Math.round(color.getBlue() * 255);
@@ -28,6 +31,9 @@ public class ColorUtils {
      * @return il colore corrisponde al Color restituito
      */
     public static Color fromHexString(String hex) {
+        if (hex == null || hex.isEmpty()) {
+            return null;
+        }
         return Color.web(hex);
     }
 }

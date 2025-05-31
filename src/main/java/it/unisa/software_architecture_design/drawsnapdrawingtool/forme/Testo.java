@@ -1,20 +1,25 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.forme;
 
+
 import it.unisa.software_architecture_design.drawsnapdrawingtool.utils.ColorUtils;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
 
-public class Rettangolo extends Forma  {
-    /*
-     * Attributi
-     */
+public class Testo extends Forma {
+
     private double altezza;
     private transient Color coloreInterno;
+    private transient String testo;
+    private final String FONT_NAME = "Arial";
+    private double currentFontSize = 12.0;
+    private boolean specchiata = false;
     private double verticeAX;
     private double verticeAY;
     private double verticeBX;
@@ -23,35 +28,49 @@ public class Rettangolo extends Forma  {
     private double verticeCY;
     private double verticeDX;
     private double verticeDY;
+    private double scaleX = 1.0;
+    private double scaleY = 1.0;
+
 
     /**
      * Costruttore, Getter e Setter
      */
-    public Rettangolo(double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore, double altezza, Color coloreInterno) {
+    public Testo(double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore, double altezza, Color coloreInterno, String testo) {
         super(coordinataX, coordinataY, larghezza, angoloInclinazione, colore);
         this.altezza = altezza;
         this.coloreInterno = coloreInterno;
-        updateVertici();
+        this.testo = testo;
+        calculateFontSize();
     }
 
+    /**
+     * Aggiorna le coordinate dei vertici del bounding box del testo.
+     * Questo metodo calcola i 4 vertici del rettangolo delimitatore del testo
+     * tenendo conto della sua posizione (centro), larghezza, altezza e angolo di inclinazione.
+     * È simile a updateVertici() del Rettangolo.
+     */
     private void updateVertici() {
+
         double centroX = getCoordinataX();
         double centroY = getCoordinataY();
         double mezzaLarghezza = getLarghezza() / 2;
-        double mezzaAltezza = getAltezza() / 2;
+        double mezzaAltezza = this.altezza / 2;
 
-        double angoloRad = Math.toRadians(getAngoloInclinazione());
-        double cosAngolo = Math.cos(angoloRad);
-        double sinAngolo = Math.sin(angoloRad);
+        double angoloRadianti = Math.toRadians(getAngoloInclinazione());
+        double cosAngolo = Math.cos(angoloRadianti);
+        double sinAngolo = Math.sin(angoloRadianti);
 
         this.verticeAX = centroX - mezzaLarghezza * cosAngolo + mezzaAltezza * sinAngolo;
         this.verticeAY = centroY - mezzaLarghezza * sinAngolo - mezzaAltezza * cosAngolo;
 
+
         this.verticeBX = centroX + mezzaLarghezza * cosAngolo + mezzaAltezza * sinAngolo;
         this.verticeBY = centroY + mezzaLarghezza * sinAngolo - mezzaAltezza * cosAngolo;
 
+
         this.verticeCX = centroX + mezzaLarghezza * cosAngolo - mezzaAltezza * sinAngolo;
         this.verticeCY = centroY + mezzaLarghezza * sinAngolo + mezzaAltezza * cosAngolo;
+
 
         this.verticeDX = centroX - mezzaLarghezza * cosAngolo - mezzaAltezza * sinAngolo;
         this.verticeDY = centroY - mezzaLarghezza * sinAngolo + mezzaAltezza * cosAngolo;
@@ -63,26 +82,22 @@ public class Rettangolo extends Forma  {
 
     public void setAltezza(double altezza) {
         this.altezza = altezza;
+        System.out.println("Altezza: " + altezza);
+        calculateFontSize();
         updateVertici();
     }
 
+    @Override
     public void setLarghezza(double larghezza) {
         super.setLarghezza(larghezza);
+        calculateFontSize();
         updateVertici();
     }
 
-    @Override
-    public void setAngoloInclinazione( double angoloInclinazione ) {
-        super.setAngoloInclinazione( angoloInclinazione );
+    public void setAngoloInclinazione(double angoloInclinazione) {
+        super.setAngoloInclinazione(angoloInclinazione);
         updateVertici();
     }
-
-    @Override
-    public void proportionalResize(double proporzione){
-        setLarghezza(getLarghezza()*proporzione/100);
-        setAltezza(getAltezza()*proporzione/100);
-    }
-
 
     public Color getColoreInterno() {
         return coloreInterno;
@@ -90,6 +105,18 @@ public class Rettangolo extends Forma  {
 
     public void setColoreInterno(Color coloreInterno) {
         this.coloreInterno = coloreInterno;
+    }
+
+    public String getTesto() {
+        return testo;
+    }
+
+    public void setTesto(String testo) {
+        this.testo = testo;
+    }
+
+    public double getCurrentFontSize(){
+        return currentFontSize;
     }
 
     public double getVerticeAY() {
@@ -136,74 +163,123 @@ public class Rettangolo extends Forma  {
         updateVertici();
     }
 
-    @Override
-    public void setCoordinataXForDrag(double coordinataXMouseDragged){
-        setCoordinataX(coordinataXMouseDragged-getOffsetX());
-    }
-
-    @Override
-    public void setCoordinataYForDrag(double coordinataYMouseDragged){
-        setCoordinataY(coordinataYMouseDragged-getOffsetY());
-    }
-
-    /*
-      Logica della classe
+    /**
+     * Restituisce la larghezza effettiva del testo renderizzato (corrisponde alla larghezza della bounding box).
+     * Questo è utile per il decorator di selezione.
+     * @return La larghezza della bounding box del testo.
      */
+    public double getRenderedWidth() {
+        return getLarghezza(); // La larghezza renderizzata è la larghezza della bounding box
+    }
 
     /**
-     * Disegna un rettangolo sul {@link GraphicsContext} specificato.
-     * Questo metodo disegna un rettangolo utilizzando le coordinate dei vertici fornite dagli attributi
-     * dell'oggetto usando il colore della forma e il colore interno del rettangolo.
-     *
-     * @param gc il {@code GraphicsContext} su cui disegnare il rettangolo.
-     *           Deve essere già inizializzato e associato a un {@code Canvas} valido.
+     * Restituisce l'altezza effettiva del testo renderizzato (corrisponde all'altezza della bounding box).
+     * Questo è utile per il decorator di selezione.
+     * @return L'altezza della bounding box del testo.
      */
+    public double getRenderedHeight() {
+        return getAltezza(); // L'altezza renderizzata è l'altezza della bounding box
+    }
+
+    /**
+     * Calcola i fattori di scala (scaleX, scaleY) necessari per stirare il testo
+     * in modo che riempia la larghezza e l'altezza della bounding box.
+     * Imposta anche un `currentFontSize` di base per la misurazione del testo.
+     */
+    private void calculateFontSize() {
+        if (getLarghezza() <= 0 || getAltezza() <= 0 || testo == null || testo.isEmpty()) {
+            this.scaleX = 1.0;
+            this.scaleY = 1.0;
+            this.currentFontSize = 12.0;
+            return;
+        }
+
+        // Usa una dimensione del font di base per misurare le dimensioni naturali del testo.
+        double baseMeasurementFontSize = 100.0;
+        Text tempText = new Text(testo);
+        tempText.setFont(Font.font(FONT_NAME, baseMeasurementFontSize));
+
+        double naturalTextWidthAtBaseSize = tempText.getLayoutBounds().getWidth();
+        double naturalTextHeightAtBaseSize = tempText.getLayoutBounds().getHeight();
+
+        // Calcola i fattori di scala necessari per stirare il testo
+        // dalle sue dimensioni naturali alle dimensioni target della bounding box.
+        this.scaleX = naturalTextWidthAtBaseSize > 0 ? getLarghezza() / naturalTextWidthAtBaseSize : 1.0;
+        this.scaleY = naturalTextHeightAtBaseSize > 0 ? getAltezza() / naturalTextHeightAtBaseSize : 1.0;
+
+        this.currentFontSize = baseMeasurementFontSize;
+    }
+
+
+
     @Override
     public void disegna(GraphicsContext gc) {
-        // Salva lo stato iniziale del foglio di disegno
-        gc.save();
+        gc.save(); // Salva lo stato iniziale del contesto grafico
 
-        // Vertici del rettangolo
-        verticeAX = getVerticeAX();
-        verticeAY = getVerticeAY();
-        verticeBX = getVerticeBX();
-        verticeBY = getVerticeBY();
-        verticeCX = getVerticeCX();
-        verticeCY = getVerticeCY();
-        verticeDX = getVerticeDX();
-        verticeDY = getVerticeDY();
+        double centroX = getCoordinataX();
+        double centroY = getCoordinataY();
 
-        // Imposta il colore del contorno e dell'interno
+        // Applica le trasformazioni della forma (traslazione e rotazione)
+        gc.translate(centroX, centroY);
+        gc.rotate(getAngoloInclinazione());
+        gc.scale(this.scaleX, this.scaleY);
+
+
+        gc.setFont(Font.font(FONT_NAME, currentFontSize));
         gc.setFill(getColoreInterno());
         gc.setStroke(getColore());
-        gc.setLineWidth(2);
 
-        // fill disegna l'area interna del rettangolo
-        gc.fillPolygon(
-                new double[]{verticeAX, verticeBX, verticeCX, verticeDX}, // Coordinate X dei vertici
-                new double[]{verticeAY, verticeBY, verticeCY, verticeDY}, // Coordinate Y dei vertici
-                4 // Numero di punti
-        );
 
-        // stroke disegna il contorno
-        gc.strokePolygon(
-                new double[]{verticeAX, verticeBX, verticeCX, verticeDX},
-                new double[]{verticeAY, verticeBY, verticeCY, verticeDY},
-                4
-        );
+        if (testo == null || testo.isEmpty()) {
+            gc.restore();
+            return;
+        }
 
-        // Ripristina lo stato iniziale del foglio di disegno
+        Text tempMeasureText = new Text(testo);
+        tempMeasureText.setFont(Font.font(FONT_NAME, currentFontSize));
+        double totalTextWidth = tempMeasureText.getLayoutBounds().getWidth();
+        double textHeight = tempMeasureText.getLayoutBounds().getHeight();
+        double baselineOffset = -tempMeasureText.getLayoutBounds().getMinY(); // Offset per allineamento baseline
+
+
+        double currentX = -totalTextWidth / 2;
+
+        double charOffsetY = -textHeight / 2 + baselineOffset;
+
+
+        for (int i = 0; i < testo.length(); i++) {
+            String currentChar = String.valueOf(testo.charAt(i));
+
+            Text charMeasure = new Text(currentChar);
+            charMeasure.setFont(Font.font(FONT_NAME, currentFontSize));
+            double charWidth = charMeasure.getLayoutBounds().getWidth();
+
+            gc.save();
+
+            gc.translate(currentX + charWidth / 2, charOffsetY);
+
+            if(specchiata) {
+                gc.scale(-1, 1);
+            }
+            gc.fillText(currentChar, -charWidth / 2, 0);
+            gc.strokeText(currentChar, -charWidth / 2, 0);
+
+            gc.restore();
+
+            currentX += charWidth;
+        }
+
         gc.restore();
     }
 
-    /**
-     * Determina se il rettangolo contiene un punto specifico nello spazio.
-     *
-     * @param puntoDaValutareX La coordinata X del punto da verificare.
-     * @param puntoDaValutareY La coordinata Y del punto da verificare.
-     * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si trova all'interno del rettangolo,
-     * altrimenti {@code false}.
-     */
+        /**
+         * Determina se il rettangolo contiene un punto specifico nello spazio.
+         *
+         * @param puntoDaValutareX La coordinata X del punto da verificare.
+         * @param puntoDaValutareY La coordinata Y del punto da verificare.
+         * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si trova all'interno del rettangolo,
+         * altrimenti {@code false}.
+         */
     @Override
     public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
         // Vertici del rettangolo
@@ -242,6 +318,19 @@ public class Rettangolo extends Forma  {
         return crossProduct >= 0 ;
     }
 
+    @Override
+    public void specchia() {
+
+        String testoCorrente = getTesto();
+
+        if (testoCorrente != null && !testoCorrente.isEmpty()) {
+            String testoSpecchiato = new StringBuilder(testoCorrente).reverse().toString();
+            setTesto(testoSpecchiato);
+            setAngoloInclinazione(-getAngoloInclinazione());
+        }
+        specchiata = !specchiata;
+    }
+
     /**
      * Serializza l'oggetto nel complesso con il metodo della superclasse e poi salva
      * anche il colore di riempimento che non è serializzabile.
@@ -254,6 +343,9 @@ public class Rettangolo extends Forma  {
         out.writeUTF(ColorUtils.toHexString(getColore()));
         // Serializza il colore interno specifico della sottoclasse
         out.writeUTF(ColorUtils.toHexString(coloreInterno));
+        out.writeUTF(testo);
+        out.writeDouble(currentFontSize);
+        out.writeBoolean(specchiata);
     }
 
     /**
@@ -270,44 +362,9 @@ public class Rettangolo extends Forma  {
         this.setColore(Color.web(colore));
         String coloreInterno = in.readUTF();
         this.setColoreInterno(ColorUtils.fromHexString(coloreInterno));
-    }
-
-    /**
-     * Metodo per il controllare se due forme sono uguali
-     * @param forma -> forma con cui fare il confronto
-     * @return {@code true} se gli attributi sono uguali, altrimenti {@code false}
-     */
-    @Override
-    public boolean confrontaAttributi(Forma forma){
-        Rettangolo rettangolo = (Rettangolo) forma;
-        return super.confrontaAttributi(rettangolo) &&
-                this.verticeAX == rettangolo.getVerticeAX() &&
-                this.verticeAY == rettangolo.getVerticeAY() &&
-                this.verticeBX == rettangolo.getVerticeBX() &&
-                this.verticeCX == rettangolo.getVerticeCX() &&
-                this.verticeCY == rettangolo.getVerticeCY() &&
-                this.verticeDX == rettangolo.getVerticeDX() &&
-                this.verticeDY == rettangolo.getVerticeDY();
-    }
-
-    /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
-     * cetro della figura stessa
-     */
-    @Override
-    public void specchia() {
-        double centroX = getCoordinataX();
-
-        // Inverti le coordinate X dei vertici rispetto al centro
-        this.verticeAX = 2 * centroX - this.verticeAX;
-        this.verticeBX = 2 * centroX - this.verticeBX;
-        this.verticeCX = 2 * centroX - this.verticeCX;
-        this.verticeDX = 2 * centroX - this.verticeDX;
-
-        // Aggiorna l'angolo di inclinazione per mantenere la figura correttamente orientata
-        setAngoloInclinazione((360 - getAngoloInclinazione()) % 360);
-
-        // Aggiorna i vertici per riflettere i cambiamenti
-        updateVertici();
+        String testo = in.readUTF();
+        this.setTesto(testo);
+        this.currentFontSize = in.readDouble();
+        specchiata = in.readBoolean();
     }
 }
