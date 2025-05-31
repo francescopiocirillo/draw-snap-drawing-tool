@@ -3,6 +3,7 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionsta
 import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.*;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -118,6 +119,9 @@ public class DrawState implements DrawingState{
                 break;
             case TEXT:
                 FactoryTesto factoryTesto = new FactoryTesto();
+                if(attributiForma.getTesto() == null || attributiForma.getTesto().equals("")) {
+                    return false;
+                }
                 factoryTesto.setTesto(attributiForma.getTesto());
                 formaCreata = factoryTesto.creaForma(coordinataX, coordinataY,
                         attributiForma.getAltezza(), attributiForma.getLarghezza(),
@@ -125,6 +129,7 @@ public class DrawState implements DrawingState{
                 break;
         }
         forme.add(formaCreata);
+        System.out.println(forme.size());
         return true;
     }
 
@@ -242,6 +247,20 @@ public class DrawState implements DrawingState{
         ColorPicker finalInternoPicker = internoPicker; //necessario per la lambda
         TextField finalTesto = testo;
 
+        final Button okButton = (Button) dialog.getDialogPane().lookupButton(confirmButton);
+        if(tipoForma == Forme.TEXT){
+            okButton.addEventHandler(ActionEvent.ACTION, event -> {
+                if(finalTesto.getText().trim().isEmpty()){
+                    event.consume();
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Il campo testo ha bisogno di non essere una stringa vuota");
+                    alert.showAndWait();
+                }
+            });
+        }
+
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButton) { //se viene premuto conferma crea un nuovo AttributiForma con i parametri scelti
                 AttributiForma attributi = new AttributiForma();
@@ -303,5 +322,17 @@ public class DrawState implements DrawingState{
     public boolean handleMouseReleased(MouseEvent event, double coordinataX, double coordinataY) {
         //WIP
         return false;
+    }
+
+    public boolean getCreazionePoligono(){
+        return !creazionePoligono;
+    }
+
+    public List<Double> getPuntiX(){
+        return factoryPoligono.getPuntiX();
+    }
+
+    public List<Double> getPuntiY(){
+        return factoryPoligono.getPuntiY();
     }
 }

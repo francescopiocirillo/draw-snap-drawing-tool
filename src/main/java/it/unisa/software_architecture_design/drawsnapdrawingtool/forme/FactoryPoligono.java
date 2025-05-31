@@ -9,7 +9,22 @@ public class FactoryPoligono implements FactoryForma{
 
     private List<Double> puntiY;
     private List<Double> puntiX;
-    private boolean creazione=false;
+
+    public List<Double> getPuntiY() {
+        return puntiY;
+    }
+
+    public void setPuntiY(List<Double> puntiY) {
+        this.puntiY = puntiY;
+    }
+
+    public List<Double> getPuntiX() {
+        return puntiX;
+    }
+
+    public void setPuntiX(List<Double> puntiX) {
+        this.puntiX = puntiX;
+    }
 
     public FactoryPoligono() {
         puntiY = new ArrayList<Double>();
@@ -124,18 +139,6 @@ public class FactoryPoligono implements FactoryForma{
     public double getSize(){
         return puntiX.size();
     }
-
-//    public boolean creation(){
-//        return creazione;
-//    }
-//
-//    public void onCreation(){
-//        creazione=true;
-//    }
-//
-//    public void endCreation(){
-//        creazione=false;
-//    }
 
 
 }
