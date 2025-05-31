@@ -89,6 +89,13 @@ public class FormaComposta extends Forma{
                 FormaComposta fc = (FormaComposta) formaCorrente;
                 fc.setColoreInterno(color);
                 System.out.println("cambio colore della forma composta in " + color);
+            }else if (formaCorrente instanceof Poligono) {
+                Poligono poligono = (Poligono) formaCorrente;
+                poligono.setColoreInterno(color);
+                System.out.println("cambio colore del rettangolo in " + color);
+            }else if (formaCorrente instanceof Testo) {
+                Testo testo = (Testo) formaCorrente;
+                testo.setColoreInterno(color);
             }
         }
     }
