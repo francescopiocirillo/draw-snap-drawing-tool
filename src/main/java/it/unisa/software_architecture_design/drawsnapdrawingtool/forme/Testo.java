@@ -320,6 +320,7 @@ public class Testo extends Forma {
         if (testoCorrente != null && !testoCorrente.isEmpty()) {
             String testoSpecchiato = new StringBuilder(testoCorrente).reverse().toString();
             setTesto(testoSpecchiato);
+            setAngoloInclinazione(-getAngoloInclinazione());
         }
         specchiata = !specchiata;
     }
