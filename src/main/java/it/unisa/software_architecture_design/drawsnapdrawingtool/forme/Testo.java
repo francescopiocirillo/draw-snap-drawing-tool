@@ -1,10 +1,16 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.forme;
 
 
+import it.unisa.software_architecture_design.drawsnapdrawingtool.utils.ColorUtils;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serial;
 
 public class Testo extends Forma {
 
@@ -323,5 +329,42 @@ public class Testo extends Forma {
             setAngoloInclinazione(-getAngoloInclinazione());
         }
         specchiata = !specchiata;
+    }
+
+    /**
+     * Serializza l'oggetto nel complesso con il metodo della superclasse e poi salva
+     * anche il colore di riempimento che non è serializzabile.
+     * @param out è lo stream sul quale salvare le informazioni, sarà il File scelto dall'utente
+     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
+     */
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeUTF(ColorUtils.toHexString(getColore()));
+        // Serializza il colore interno specifico della sottoclasse
+        out.writeUTF(ColorUtils.toHexString(coloreInterno));
+        out.writeUTF(testo);
+        out.writeDouble(currentFontSize);
+        out.writeBoolean(specchiata);
+    }
+
+    /**
+     * Deserializza l'oggetto nel complesso con il metodo della superclasse e poi ricava
+     * anche il colore di riempimento che non è serializzabile.
+     * @param in è lo stream dal quale caricare le informazioni, sarà il File scelto dall'utente
+     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
+     * @throws ClassNotFoundException se si verifica un errore nel caricare una classe
+     */
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        String colore = in.readUTF();
+        this.setColore(Color.web(colore));
+        String coloreInterno = in.readUTF();
+        this.setColoreInterno(ColorUtils.fromHexString(coloreInterno));
+        String testo = in.readUTF();
+        this.setTesto(testo);
+        this.currentFontSize = in.readDouble();
+        specchiata = in.readBoolean();
     }
 }
