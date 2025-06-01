@@ -947,7 +947,7 @@ public class DrawSnapController {
 
         // Creazione dello Spinner
         Spinner<Double> angleSpinner = new Spinner<>();
-        SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 360, angoloAttuale, 1);
+        SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(-360, 360, angoloAttuale, 1);
         angleSpinner.setValueFactory(valueFactory);
         angleSpinner.setEditable(true); // Permette l'input da tastiera
 

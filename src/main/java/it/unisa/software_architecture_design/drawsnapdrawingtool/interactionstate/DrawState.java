@@ -181,7 +181,7 @@ public class DrawState implements DrawingState{
         Spinner<Double> spinnerAltezza = new Spinner<>(10.0, 500.0, 100.0, 1.0);
         Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, 100.0, 1.0);
         Spinner<Double> spinnerLunghezza = new Spinner<>(10.0, 500.0, 100.0, 1.0);
-        Spinner<Double> spinnerAngolo = new Spinner<>(0.0, 360.0, 0.0, 1.0);
+        Spinner<Double> spinnerAngolo = new Spinner<>(-360, 360.0, 0.0, 1.0);
 
         spinnerAltezza.setEditable(true);
         spinnerLarghezza.setEditable(true);

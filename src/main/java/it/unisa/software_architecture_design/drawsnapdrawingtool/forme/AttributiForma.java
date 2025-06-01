@@ -66,6 +66,9 @@ public class AttributiForma {
     }
 
     public void setAngoloInclinazione(double angoloInclinazione) {
+        if(angoloInclinazione < 0){
+            angoloInclinazione = angoloInclinazione + 360;
+        }
         this.angoloInclinazione = angoloInclinazione;
     }
 
