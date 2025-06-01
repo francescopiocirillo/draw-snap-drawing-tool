@@ -479,6 +479,16 @@ public class DrawSnapModel implements Serializable {
         forme.add(fc);
     }
 
+    public void decomponiFormaSelezionata(){
+        Forma f = getFormaSelezionata();
+        forme.remove(f);
+        f = ((FormaSelezionataDecorator)f).undecorate();
+        if (f instanceof FormaComposta) {
+            List<Forma> formeComponenti = ((FormaComposta) f).getForme();
+            forme.addAll(formeComponenti);
+        }
+    }
+
     public void rotation(double angoloSelezionato){
         System.out.println("model: " + angoloSelezionato);
 

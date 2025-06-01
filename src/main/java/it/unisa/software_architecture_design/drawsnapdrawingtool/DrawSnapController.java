@@ -55,10 +55,12 @@ public class DrawSnapController {
     private MenuItem copyButton;
     private MenuItem cutButton;
     private MenuItem composeButton;
+    private MenuItem decomposeButton;
     private ImageView imageCopy;
     private ImageView imageCut;
     private ImageView imagePaste;
     private ImageView imageCompose;
+    private ImageView imageDecompose;
 
     /*
      * Attributi per lo zoom
@@ -256,27 +258,33 @@ public class DrawSnapController {
         cutButton = new MenuItem("Taglia");
         pasteButton = new MenuItem("Incolla");
         composeButton = new MenuItem("Componi");
+        decomposeButton = new MenuItem("Decomponi");
         pasteButton.setOnAction(this::onPastePressed);
         copyButton.setOnAction(this::onCopyPressed);
         cutButton.setOnAction(this::onCutPressed);
         composeButton.setOnAction(this::onComposePressed);
+        decomposeButton.setOnAction(this::onDecomposePressed);
         imageCopy = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/copia.png")));
         imageCut = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/taglia.png")));
         imagePaste = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/incolla.png")));
         imageCompose = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/incolla.png")));
+        imageDecompose = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/incolla.png")));
         imageCopy.setFitWidth(16);
         imageCut.setFitWidth(16);
         imagePaste.setFitWidth(16);
         imageCompose.setFitWidth(16);
+        imageDecompose.setFitWidth(16);
         imageCopy.setFitHeight(16);
         imageCut.setFitHeight(16);
         imagePaste.setFitHeight(16);
         imageCompose.setFitHeight(16);
+        imageDecompose.setFitHeight(16);
         copyButton.setGraphic(imageCopy);
         cutButton.setGraphic(imageCut);
         pasteButton.setGraphic(imagePaste);
         composeButton.setGraphic(imageCompose);
-        contextMenu.getItems().addAll(copyButton, cutButton, pasteButton, composeButton);
+        decomposeButton.setGraphic(imageDecompose);
+        contextMenu.getItems().addAll(copyButton, cutButton, pasteButton, composeButton, decomposeButton);
     }
 
     public void setStage(Stage stage) {
@@ -895,6 +903,14 @@ public class DrawSnapController {
     public void onComposePressed(ActionEvent event) {
         System.out.println("Composizione di forme selezionate");
         invoker.setCommand(new ComposeCommand(forme));
+        invoker.executeCommand();
+        updateState(true);
+    }
+
+    @FXML
+    public void onDecomposePressed(ActionEvent event) {
+        System.out.println("Decomposizione di forme selezionate");
+        invoker.setCommand(new DecomposeCommand(forme));
         invoker.executeCommand();
         updateState(true);
     }
