@@ -11,16 +11,15 @@ import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Poligono extends Forma {
+public class Poligono extends Forma2D {
     /*
      * Attributi
      */
     private List<Double> puntiX; // Punti intrinseci, relativi al centro del poligono (0,0)
     private List<Double> puntiY; // Punti intrinseci, relativi al centro del poligono (0,0)
-    private transient Color coloreInterno;
     // Dimensioni intrinseche (non ruotate) del poligono.
-    private double intrinsicLarghezza;
     private double intrinsicAltezza;
+    private double intrinsicLarghezza;
     private double intrinsicCenterX; // Centro X della bounding box intrinseca, relativo all'origine interna (0,0)
     private double intrinsicCenterY; // Centro Y della bounding box intrinseca, relativo all'origine interna (0,0)
 
@@ -31,11 +30,10 @@ public class Poligono extends Forma {
      */
     public Poligono(double initialRefX, double initialRefY, double larghezza, double altezza, double angoloInclinazione, Color colore, List<Double> rawPuntiX, List<Double> rawPuntiY, Color coloreInterno) {
         // Imposta la posizione globale del poligono direttamente al punto di riferimento iniziale.
-        super(initialRefX, initialRefY, 0, angoloInclinazione, colore);
+        super(initialRefX, initialRefY, larghezza, angoloInclinazione, colore, altezza, coloreInterno);
 
         this.puntiX = new ArrayList<>();
         this.puntiY = new ArrayList<>();
-        this.coloreInterno = coloreInterno;
 
         // Converte i punti globali (rawPuntiX, rawPuntiY) in punti relativi
         // sottraendo le coordinate del punto di riferimento iniziale (initialRefX, initialRefY).
@@ -50,11 +48,11 @@ public class Poligono extends Forma {
     // Getter per le dimensioni intrinseche
     @Override
     public double getLarghezza() {
-        return intrinsicLarghezza;
+        return super.getLarghezza();
     }
 
     public double getAltezza() {
-        return intrinsicAltezza;
+        return super.getAltezza();
     }
 
     @Override
@@ -67,13 +65,13 @@ public class Poligono extends Forma {
         super.setCoordinataY(coordinataY);
     }
 
-
+    @Override
     public Color getColoreInterno() {
-        return coloreInterno;
+        return super.getColoreInterno();
     }
-
+    @Override
     public void setColoreInterno(Color coloreInterno) {
-        this.coloreInterno = coloreInterno;
+        super.setColoreInterno(coloreInterno);
     }
 
     // Aggiungi questi getter:
@@ -83,6 +81,22 @@ public class Poligono extends Forma {
 
     public double getIntrinsicCenterY() {
         return intrinsicCenterY;
+    }
+
+    public double getIntrinsicAltezza() {
+        return intrinsicAltezza;
+    }
+
+    public void setIntrinsicAltezza(double intrinsicAltezza) {
+        this.intrinsicAltezza = intrinsicAltezza;
+    }
+
+    public double getIntrinsicLarghezza() {
+        return intrinsicLarghezza;
+    }
+
+    public void setIntrinsicLarghezza(double intrinsicLarghezza) {
+        this.intrinsicLarghezza = intrinsicLarghezza;
     }
 
     /*
@@ -291,6 +305,7 @@ public class Poligono extends Forma {
             this.intrinsicCenterX = 0;
             this.intrinsicCenterY = 0;
             super.setLarghezza(0);
+            super.setAltezza(0);
             return;
         }
 
@@ -314,6 +329,7 @@ public class Poligono extends Forma {
         this.intrinsicCenterY = (minY + maxY) / 2.0;
 
         super.setLarghezza(this.intrinsicLarghezza);
+        super.setAltezza(this.intrinsicAltezza);
     }
 
     /**
@@ -328,7 +344,7 @@ public class Poligono extends Forma {
         cloned.puntiX = new ArrayList<>(this.puntiX);
         cloned.puntiY = new ArrayList<>(this.puntiY);
 
-        cloned.coloreInterno = this.coloreInterno;
+        cloned.getColoreInterno() = getColoreInterno();
         cloned.intrinsicLarghezza = this.intrinsicLarghezza;
         cloned.intrinsicAltezza = this.intrinsicAltezza;
 
@@ -379,7 +395,7 @@ public class Poligono extends Forma {
         out.defaultWriteObject();
         out.writeUTF(ColorUtils.toHexString(getColore()));
         // Serializza il colore interno specifico della sottoclasse
-        out.writeUTF(ColorUtils.toHexString(coloreInterno));
+        out.writeUTF(ColorUtils.toHexString(getColoreInterno()));
     }
 
     /**
