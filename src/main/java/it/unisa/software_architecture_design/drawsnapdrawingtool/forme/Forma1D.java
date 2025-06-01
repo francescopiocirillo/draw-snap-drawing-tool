@@ -89,16 +89,6 @@ public abstract class Forma1D extends Forma{
     }
 
     /**
-     * Esegue il resize proporzionale.
-     * Il resize avviene impostando la larghezza al proporzione% del valore attuale
-     * @param proporzione -> la proporzione per realizzare la modifica.
-     */
-    @Override
-    public void proportionalResize(double proporzione){
-        setLarghezza(getLarghezza()*proporzione/100);
-    }
-
-    /**
      * Modifica l'attributo {@code angoloDiInclinazione}, l'override è necessario
      * in quanto le Forme 1D necessitano di aggiornare le coordinate di inizio e fine
      * lungo i due assi quando avviene una modifica dell'angolo di inclinazione.
@@ -109,28 +99,6 @@ public abstract class Forma1D extends Forma{
         super.setAngoloInclinazione(angoloInclinazione);
         updateCoordinateYInizioFine();
         updateCoordinateXInizioFine();
-    }
-
-    /**
-     * Setter della coordinata X secondo la logica necessaria per l'operazione di Drag.
-     * La coordinata deve essere impostata alla differenza tra la coordinata x dell'evento e il valore di offset
-     * lungo l'asse x che viene impostato in seguito all'evento di mouse pressed che precede il drag.
-     * @param coordinataXMouseDragged -> Coordinata X dell'evento mouse dragged
-     */
-    @Override
-    public void setCoordinataXForDrag(double coordinataXMouseDragged){
-        setCoordinataX(coordinataXMouseDragged-getOffsetX());
-    }
-
-    /**
-     * Setter della coordinata Y secondo la logica necessaria per l'operazione di Drag.
-     * La coordinata deve essere impostata alla differenza tra la coordinata x dell'evento e il valore di offset
-     * lungo l'asse x che viene impostato in seguito all'evento di mouse pressed che precede il drag.
-     * @param coordinataYMouseDragged -> Coordinata X dell'evento mouse dragged
-     */
-    @Override
-    public void setCoordinataYForDrag(double coordinataYMouseDragged){
-        setCoordinataY(coordinataYMouseDragged-getOffsetY());
     }
 
     /**

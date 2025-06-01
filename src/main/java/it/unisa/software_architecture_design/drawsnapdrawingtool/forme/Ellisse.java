@@ -9,52 +9,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
 
-public class Ellisse extends Forma {
-    /*
-     * Attributi
-     */
-    private double altezza;
-    private transient Color coloreInterno;
+public class Ellisse extends Forma2D {
 
-    /**
+    /*
      * Costruttore, Getter e Setter
      */
     public Ellisse(double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore, double altezza, Color coloreInterno) {
-        super(coordinataX, coordinataY, larghezza, angoloInclinazione, colore);
-        this.altezza = altezza;
-        this.coloreInterno = coloreInterno;
-    }
-
-    public double getAltezza() {
-        return altezza;
-    }
-
-    public void setAltezza(double altezza) {
-        this.altezza = altezza;
-    }
-
-    public Color getColoreInterno() {
-        return coloreInterno;
-    }
-
-    public void setColoreInterno(Color coloreInterno) {
-        this.coloreInterno = coloreInterno;
-    }
-
-    @Override
-    public void proportionalResize(double proporzione){
-        setLarghezza(getLarghezza()*proporzione/100);
-        setAltezza(getAltezza()*proporzione/100);
-    }
-
-    @Override
-    public void setCoordinataXForDrag(double coordinataXMouseDragged){
-        setCoordinataX(coordinataXMouseDragged-getOffsetX());
-    }
-
-    @Override
-    public void setCoordinataYForDrag(double coordinataYMouseDragged){
-        setCoordinataY(coordinataYMouseDragged-getOffsetY());
+        super(coordinataX, coordinataY, larghezza, angoloInclinazione, colore, altezza, coloreInterno);
     }
 
     /*
@@ -79,13 +40,13 @@ public class Ellisse extends Forma {
         gc.rotate(getAngoloInclinazione());
 
         // fill disegna l'area interna dell'ellisse
-        gc.setFill(coloreInterno);
-        gc.fillOval(-getLarghezza()/ 2, -altezza / 2, getLarghezza(), altezza);
+        gc.setFill(getColoreInterno());
+        gc.fillOval(-getLarghezza()/ 2, -getAltezza() / 2, getLarghezza(), getAltezza());
 
         // stroke disegna il contorno
         gc.setStroke(getColore());
         gc.setLineWidth(2);
-        gc.strokeOval(-getLarghezza() / 2, -altezza / 2, getLarghezza(), altezza);
+        gc.strokeOval(-getLarghezza() / 2, -getAltezza() / 2, getLarghezza(), getAltezza());
 
         // Ripristina lo stato iniziale del foglio di disegno
         gc.restore();
@@ -105,7 +66,7 @@ public class Ellisse extends Forma {
     @Override
     public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
         double mezzaLarghezza = getLarghezza() / 2;
-        double mezzaAltezza = altezza / 2;
+        double mezzaAltezza = getAltezza() / 2;
 
         // Traslazione rispetto al centro dell'ellisse
         double dx = puntoDaValutareX - getCoordinataX();
@@ -122,36 +83,6 @@ public class Ellisse extends Forma {
     }
 
     /**
-     * Serializza l'oggetto nel complesso con il metodo della superclasse e poi salva
-     * anche il colore di riempimento che non è serializzabile.
-     * @param out è lo stream sul quale salvare le informazioni, sarà il File scelto dall'utente
-     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
-     */
-    @Serial
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        out.writeUTF(ColorUtils.toHexString(getColore()));
-        // Serializza il colore interno specifico della sottoclasse
-        out.writeUTF(ColorUtils.toHexString(coloreInterno));
-    }
-
-    /**
-     * Deserializza l'oggetto nel complesso con il metodo della superclasse e poi ricava
-     * anche il colore di riempimento che non è serializzabile.
-     * @param in è lo stream dal quale caricare le informazioni, sarà il File scelto dall'utente
-     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
-     * @throws ClassNotFoundException se si verifica un errore nel caricare una classe
-     */
-    @Serial
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        String colore = in.readUTF();
-        this.setColore(Color.web(colore));
-        String coloreInterno = in.readUTF();
-        this.setColoreInterno(ColorUtils.fromHexString(coloreInterno));
-    }
-
-    /**
      * Metodo per il controllare se due forme sono uguali
      * @param forma -> forma con cui fare il confronto
      * @return {@code true} se gli attributi sono uguali, altrimenti {@code false}
@@ -160,8 +91,8 @@ public class Ellisse extends Forma {
     public boolean confrontaAttributi(Forma forma){
         Ellisse ellisse = (Ellisse) forma;
         return super.confrontaAttributi(ellisse) &&
-                this.altezza == ellisse.getAltezza() &&
-                this.coloreInterno == ellisse.getColoreInterno();
+                this.getAltezza() == ellisse.getAltezza() &&
+                this.getColoreInterno() == ellisse.getColoreInterno();
     }
 
     /**

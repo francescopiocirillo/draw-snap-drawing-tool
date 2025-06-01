@@ -76,10 +76,6 @@ public abstract class Forma implements Serializable, Cloneable{
         this.angoloInclinazione = angoloInclinazione;
     }
 
-    public void proportionalResize(double proporzione) {
-        setLarghezza(getLarghezza()*proporzione/100);
-    }
-
     public void setOffsetX(double coordinataXPressed) {
         this.offsetX = coordinataXPressed - getCoordinataX();
     }
@@ -96,12 +92,33 @@ public abstract class Forma implements Serializable, Cloneable{
         return offsetY;
     }
 
+    /**
+     * Setter della coordinata X secondo la logica necessaria per l'operazione di Drag.
+     * La coordinata deve essere impostata alla differenza tra la coordinata x dell'evento e il valore di offset
+     * lungo l'asse x che viene impostato in seguito all'evento di mouse pressed che precede il drag.
+     * @param coordinataXMouseDragged -> Coordinata X dell'evento mouse dragged
+     */
     public void setCoordinataXForDrag(double coordinataXMouseDragged){
-        setCoordinataX(coordinataXMouseDragged-offsetX);
+        setCoordinataX(coordinataXMouseDragged-getOffsetX());
     }
 
+    /**
+     * Setter della coordinata Y secondo la logica necessaria per l'operazione di Drag.
+     * La coordinata deve essere impostata alla differenza tra la coordinata x dell'evento e il valore di offset
+     * lungo l'asse x che viene impostato in seguito all'evento di mouse pressed che precede il drag.
+     * @param coordinataYMouseDragged -> Coordinata X dell'evento mouse dragged
+     */
     public void setCoordinataYForDrag(double coordinataYMouseDragged){
-        setCoordinataY(coordinataYMouseDragged-offsetY);
+        setCoordinataY(coordinataYMouseDragged-getOffsetY());
+    }
+
+    /**
+     * Esegue il resize proporzionale.
+     * Il resize avviene impostando la larghezza al proporzione% del valore attuale.
+     * @param proporzione -> la proporzione per realizzare la modifica.
+     */
+    public void proportionalResize(double proporzione){
+        setLarghezza(getLarghezza()*proporzione/100);
     }
 
     /*
