@@ -15,13 +15,12 @@ public class Poligono extends Forma2D {
     /*
      * Attributi
      */
-    private List<Double> puntiX; // Punti intrinseci, relativi al centro del poligono (0,0)
-    private List<Double> puntiY; // Punti intrinseci, relativi al centro del poligono (0,0)
-    // Dimensioni intrinseche (non ruotate) del poligono.
-    private double intrinsicAltezza;
-    private double intrinsicLarghezza;
-    private double intrinsicCenterX; // Centro X della bounding box intrinseca, relativo all'origine interna (0,0)
-    private double intrinsicCenterY; // Centro Y della bounding box intrinseca, relativo all'origine interna (0,0)
+    private List<Double> puntiX; // Punti intrinseci, relativi al centro del poligono
+    private List<Double> puntiY; // Punti intrinseci, relativi al centro del poligono
+    private double intrinsicAltezza; // Altezza della bounding box del poligono.
+    private double intrinsicLarghezza; // Larghezza della bounding box del poligono.
+    private double intrinsicCenterX; // Centro X della bounding box, relativo all'origine interna (0,0)
+    private double intrinsicCenterY; // Centro Y della bounding box, relativo all'origine interna (0,0)
 
     /**
      * Costruttore, Getter e Setter
@@ -35,17 +34,16 @@ public class Poligono extends Forma2D {
         this.puntiX = new ArrayList<>();
         this.puntiY = new ArrayList<>();
 
-        // Converte i punti globali (rawPuntiX, rawPuntiY) in punti relativi
+        // Converte i punti globali in punti relativi
         // sottraendo le coordinate del punto di riferimento iniziale (initialRefX, initialRefY).
         for (int i = 0; i < rawPuntiX.size(); i++) {
             this.puntiX.add(rawPuntiX.get(i) - initialRefX);
             this.puntiY.add(rawPuntiY.get(i) - initialRefY);
         }
-        // Calcola la bounding box intrinseca (larghezze/altezze minime e massime) dei punti relativi.
+        // Calcola la bounding box dei punti relativi.
         calcolaBoundingBox();
     }
 
-    // Getter per le dimensioni intrinseche
     @Override
     public double getLarghezza() {
         return super.getLarghezza();
@@ -74,29 +72,12 @@ public class Poligono extends Forma2D {
         super.setColoreInterno(coloreInterno);
     }
 
-    // Aggiungi questi getter:
     public double getIntrinsicCenterX() {
         return intrinsicCenterX;
     }
 
     public double getIntrinsicCenterY() {
         return intrinsicCenterY;
-    }
-
-    public double getIntrinsicAltezza() {
-        return intrinsicAltezza;
-    }
-
-    public void setIntrinsicAltezza(double intrinsicAltezza) {
-        this.intrinsicAltezza = intrinsicAltezza;
-    }
-
-    public double getIntrinsicLarghezza() {
-        return intrinsicLarghezza;
-    }
-
-    public void setIntrinsicLarghezza(double intrinsicLarghezza) {
-        this.intrinsicLarghezza = intrinsicLarghezza;
     }
 
     /*
@@ -118,7 +99,7 @@ public class Poligono extends Forma2D {
 
         gc.rotate(super.getAngoloInclinazione());
 
-        // I punti sono già relativi all'origine (0,0) a causa della traslazione iniziale nel costruttore.
+        //converte la List<Double> in un array double
         double[] xArray = puntiX.stream().mapToDouble(Double::doubleValue).toArray();
         double[] yArray = puntiY.stream().mapToDouble(Double::doubleValue).toArray();
 
@@ -160,29 +141,28 @@ public class Poligono extends Forma2D {
 
     /**
      * Verifica se un punto (px, py) è sufficientemente vicino al contorno del poligono.
-     * Questo metodo opera nel sistema di coordinate intrinseco del poligono (dopo traslazione e rotazione inversa).
      *
-     * @param px La coordinata X del punto da verificare (nel sistema di coordinate intrinseco).
-     * @param py La coordinata Y del punto da verificare (nel sistema di coordinate intrinseco).
+     * @param px La coordinata X del punto da verificare.
+     * @param py La coordinata Y del punto da verificare.
      * @param tolleranza La distanza massima per considerare il punto "vicino" al contorno.
      * @return {@code true} se il punto è vicino al contorno, altrimenti {@code false}.
      */
     private boolean puntoVicinoAlContorno(double px, double py, double tolleranza) {
         int n = puntiX.size();
-        if (n < 2) return false; // Non c'è contorno con meno di 2 punti
+        if (n < 3) return false; // Non c'è poligono con meno di 3 punti
 
         double tolleranzaQuadrata = tolleranza * tolleranza;
-
+        //iterazione sui segmenti del poligono
         for (int i = 0, j = n - 1; i < n; j = i++) {
-            double ax = puntiX.get(j); // Vertice precedente (o ultimo vertice per il primo lato)
+            double ax = puntiX.get(j); //coordinate punto di inizio del segmento corrente
             double ay = puntiY.get(j);
-            double bx = puntiX.get(i); // Vertice corrente
+            double bx = puntiX.get(i); //coordinate punto di fine del segmento corrente
             double by = puntiY.get(i);
 
             // Calcola la distanza dal punto (px, py) al segmento (ax, ay) - (bx, by)
             double lunghezzaSegmentoQuadrata = distanzaQuadrata(ax, ay, bx, by);
 
-            if (lunghezzaSegmentoQuadrata == 0.0) {
+            if (lunghezzaSegmentoQuadrata == 0.0) { //il segmento è un punto
                 if (distanzaQuadrata(px, py, ax, ay) <= tolleranzaQuadrata) {
                     return true;
                 }
@@ -215,37 +195,53 @@ public class Poligono extends Forma2D {
      * Determina se un punto specificato si trova all'interno del poligono.
      * Considera anche una piccola tolleranza per la selezione del bordo.
      *
-     * @param x La coordinata X del punto da valutare (in coordinate globali).
-     * @param y La coordinata Y del punto da valutare (in coordinate globali).
+     * @param x La coordinata X del punto da valutare.
+     * @param y La coordinata Y del punto da valutare.
      * @return {@code true} se il punto si trova all'interno o sul bordo del poligono, altrimenti {@code false}.
      */
     @Override
     public boolean contiene(double x, double y) {
+        // I punti del poligono (puntiX, puntiY) sono relativi al suo centro e non ruotati.
+        // Per verificare il contenimento, bisogna portare il punto di input (x, y) nello stesso sistema.
+        // Prima, si trasla il punto in modo che sia relativo al centro globale del poligono.
         double translatedX = x - super.getCoordinataX();
         double translatedY = y - super.getCoordinataY();
-
+        // Poi, ruota il punto traslato all'indietro (con l'angolo inverso del poligono).
+        // Questo annulla la rotazione del poligono rispetto al punto di input.
         double angleRad = Math.toRadians(-super.getAngoloInclinazione());
         double rotatedX = translatedX * Math.cos(angleRad) - translatedY * Math.sin(angleRad);
         double rotatedY = translatedX * Math.sin(angleRad) + translatedY * Math.cos(angleRad);
 
         double tolleranzaClick = 3.0;
-        if (puntoVicinoAlContorno(rotatedX, rotatedY, tolleranzaClick)) {
+        if (puntoVicinoAlContorno(rotatedX, rotatedY, tolleranzaClick)) { //se il punto cliccato è vicino al bordo
             return true;
         }
 
+        //controllo se il punto è all'interno del poligono
         int n = puntiX.size();
-        if (n < 3) return false;
+        if (n < 3) return false; // Non c'è poligono con meno di 3 punti
 
         boolean dentro = false;
+        //algortimo Ray Casting:
+        // Si traccia un raggio orizzontale dal punto (rotatedX, rotatedY) verso destra.
+        // Si conta quante volte questo raggio interseca i lati del poligono.
+        // Se il numero di intersezioni è dispari, il punto è dentro; se è pari, è fuori.
+
+        //itera sui segmenti del poligono
         for (int i = 0, j = n - 1; i < n; j = i++) {
             double xi = puntiX.get(i), yi = puntiY.get(i);
             double xj = puntiX.get(j), yj = puntiY.get(j);
 
             double yDiff = yj - yi;
-            if (Math.abs(yDiff) < 1e-9) continue;
+            if (Math.abs(yDiff) < 1e-9) continue; //se il segmento è orizzontale viene saltato
 
+            // L'intersezione è valida solo se:
+            // 1. Il raggio attraversa verticalmente il segmento: un vertice è sopra il raggio e l'altro è sotto (o viceversa).
+            // 2. L'intersezione avviene a destra del punto di partenza del raggio.
+            //    La seconda parte calcola la X di intersezione e verifica se è maggiore della rotatedX del punto.
             boolean interseca = ((yi > rotatedY) != (yj > rotatedY)) &&
                     (rotatedX < (xj - xi) * (rotatedY - yi) / yDiff + xi);
+            // Se il raggio interseca il segmento, si inverte lo stato di 'dentro'.
             if (interseca) dentro = !dentro;
         }
         return dentro;
@@ -261,14 +257,14 @@ public class Poligono extends Forma2D {
         // Specchia i punti lungo l'asse Y (negando le coordinate X)
         List<Double> nuoviPuntiX = new ArrayList<>();
         for (double px : puntiX) {
-            nuoviPuntiX.add(-px); // Negare la coordinata X
+            nuoviPuntiX.add(-px); // Nega la coordinata X
         }
         this.puntiX = nuoviPuntiX;
 
         // Le coordinate Y rimangono invariate per lo specchiamento lungo l'asse Y
 
         calcolaBoundingBox();
-
+        // Inverte l'angolo di inclinazione.
         super.setAngoloInclinazione(-super.getAngoloInclinazione());
     }
 
@@ -281,7 +277,7 @@ public class Poligono extends Forma2D {
         // Specchia i punti lungo l'asse X (negando le coordinate Y)
         List<Double> nuoviPuntiY = new ArrayList<>();
         for (double py : puntiY) {
-            nuoviPuntiY.add(-py); // Negare la coordinata Y
+            nuoviPuntiY.add(-py); // Nega la coordinata Y
         }
         this.puntiY = nuoviPuntiY;
 
@@ -296,7 +292,8 @@ public class Poligono extends Forma2D {
     /**
      * Calcola la bounding box del poligono (min/max X/Y) e il suo centro
      * basandosi sui punti intrinseci (non ruotati) del poligono.
-     * Aggiorna le proprietà `intrinsicLarghezza` e `intrinsicAltezza`.
+     * Aggiorna le proprietà `intrinsicLarghezza`, `intrinsicAltezza`, `intrinsicCenterX`, `intrinsicCenterY`
+     * e le dimensioni della superclasse
      */
     private void calcolaBoundingBox() {
         if (puntiX == null || puntiX.isEmpty()) {
@@ -308,19 +305,20 @@ public class Poligono extends Forma2D {
             super.setAltezza(0);
             return;
         }
-
+        // Inizializza min/max con il primo punto.
         double minX = puntiX.get(0);
         double maxX = puntiX.get(0);
         double minY = puntiY.get(0);
         double maxY = puntiY.get(0);
 
+        // Itera sui restanti punti per trovare i valori min/max X e Y.
         for (int i = 1; i < puntiX.size(); i++) {
             minX = Math.min(minX, puntiX.get(i));
             maxX = Math.max(maxX, puntiX.get(i));
             minY = Math.min(minY, puntiY.get(i));
             maxY = Math.max(maxY, puntiY.get(i));
         }
-
+        // Calcola la larghezza e l'altezza intrinseche basate sui valori min/max trovati.
         this.intrinsicLarghezza = maxX - minX;
         this.intrinsicAltezza = maxY - minY;
 
@@ -328,12 +326,13 @@ public class Poligono extends Forma2D {
         this.intrinsicCenterX = (minX + maxX) / 2.0;
         this.intrinsicCenterY = (minY + maxY) / 2.0;
 
+        // Aggiorna anche le proprietà di larghezza e altezza nella superclasse Forma2D.
         super.setLarghezza(this.intrinsicLarghezza);
         super.setAltezza(this.intrinsicAltezza);
     }
 
     /**
-     * Scala i punti intrinseci del poligono rispetto al suo centro (0,0).
+     * Scala i punti intrinseci del poligono rispetto al suo centro locale (0,0).
      * Questo metodo modifica le coordinate dei vertici, ridimensionando la forma.
      *
      * @param scalaX Il fattore di scala sull'asse X.
@@ -345,6 +344,7 @@ public class Poligono extends Forma2D {
         List<Double> nuoviPuntiX = new ArrayList<>();
         List<Double> nuoviPuntiY = new ArrayList<>();
 
+        // Itera su ogni punto e applica i fattori di scala.
         for (int i = 0; i < puntiX.size(); i++) {
             double oldX = puntiX.get(i);
             double oldY = puntiY.get(i);
@@ -359,6 +359,11 @@ public class Poligono extends Forma2D {
     }
 
 
+    /**
+     * Imposta un nuovo angolo di inclinazione per il poligono.
+     *
+     * @param nuovoAngolo Il nuovo angolo di inclinazione in gradi.
+     */
     @Override
     public void setAngoloInclinazione(double nuovoAngolo) {
         super.setAngoloInclinazione(nuovoAngolo);
