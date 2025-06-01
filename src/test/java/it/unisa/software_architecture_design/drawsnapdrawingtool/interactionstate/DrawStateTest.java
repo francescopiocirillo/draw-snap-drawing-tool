@@ -2,13 +2,7 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionsta
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiForma;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FactoryPoligono;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Ellisse;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Rettangolo;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Linea;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Poligono;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.*;
 
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -432,6 +426,95 @@ class DrawStateTest {
         assertEquals(0, forme.size(), "Nessun poligono dovrebbe essere creato.");
         // Lo stato di creazionePoligono (interno) rimane false, quindi getCreazionePoligono() è true.
         assertTrue(state.getCreazionePoligono(), "Lo stato di aggiunta punti dovrebbe rimanere attivo.");
+    }
+
+    /**
+     * Verifica la corretta creazione di un Testo quando avviene la pressione del mouse.
+     */
+    @Test
+    void testHandleMousePressed_CreaTesto() {
+        AttributiForma attributi = new AttributiForma();
+        attributi.setAltezza(50);
+        attributi.setLarghezza(150);
+        attributi.setAngoloInclinazione(0);
+        attributi.setColore(Color.RED);
+        attributi.setColoreInterno(Color.BLACK);
+        attributi.setTesto("Hello World");
+
+        DrawState state = spy(new DrawState(Forme.TEXT));
+        doReturn(attributi).when(state).helpUIHandleMousePressed(Forme.TEXT);
+
+        MouseEvent mouseEvent = mock(MouseEvent.class);
+        when(mouseEvent.getX()).thenReturn(100.0);
+        when(mouseEvent.getY()).thenReturn(100.0);
+        when(mouseEvent.getClickCount()).thenReturn(1);
+        when(mouseEvent.getButton()).thenReturn(MouseButton.PRIMARY);
+
+        DrawSnapModel forme = new DrawSnapModel();
+
+        state.handleMousePressed(mouseEvent, forme, 100.0, 100.0);
+
+        assertEquals(1, forme.size());
+        Testo forma = (Testo) forme.get(0);
+        assertNotNull(forma);
+        assertEquals("Testo", forma.getClass().getSimpleName());
+        assertEquals(100.0, forma.getCoordinataX(), 0.001);
+        assertEquals(100.0, forma.getCoordinataY(), 0.001);
+        assertEquals(150.0, forma.getLarghezza(), 0.001);
+        assertEquals(50.0, forma.getAltezza(), 0.001);
+        assertEquals(Color.RED, forma.getColore());
+        assertEquals(Color.BLACK, forma.getColoreInterno());
+        assertEquals("Hello World", forma.getTesto());
+    }
+
+    /**
+     * Verifica che il Testo non venga creato se la stringa di testo è vuota.
+     */
+    @Test
+    void testHandleMousePressed_CreaTesto_TestoVuoto() {
+        AttributiForma attributi = new AttributiForma();
+        attributi.setAltezza(50);
+        attributi.setLarghezza(150);
+        attributi.setAngoloInclinazione(0);
+        attributi.setColore(Color.RED);
+        attributi.setColoreInterno(Color.BLACK);
+        attributi.setTesto(""); // Testo vuoto
+
+        DrawState state = spy(new DrawState(Forme.TEXT));
+        doReturn(attributi).when(state).helpUIHandleMousePressed(Forme.TEXT);
+
+        MouseEvent mouseEvent = mock(MouseEvent.class);
+        when(mouseEvent.getX()).thenReturn(100.0);
+        when(mouseEvent.getY()).thenReturn(100.0);
+        when(mouseEvent.getClickCount()).thenReturn(1);
+        when(mouseEvent.getButton()).thenReturn(MouseButton.PRIMARY);
+
+        DrawSnapModel forme = new DrawSnapModel();
+
+        state.handleMousePressed(mouseEvent, forme, 100.0, 100.0);
+
+        assertEquals(0, forme.size(), "Nessun testo dovrebbe essere creato con stringa vuota.");
+    }
+
+    /**
+     * Verifica che il Testo non venga creato se l'utente annulla il dialogo.
+     */
+    @Test
+    void testHandleMousePressed_CreaTesto_AnnullatoDaDialogo() {
+        DrawState state = spy(new DrawState(Forme.TEXT));
+        doReturn(null).when(state).helpUIHandleMousePressed(Forme.TEXT); // Simula l'annullamento del dialogo
+
+        MouseEvent mouseEvent = mock(MouseEvent.class);
+        when(mouseEvent.getX()).thenReturn(100.0);
+        when(mouseEvent.getY()).thenReturn(100.0);
+        when(mouseEvent.getClickCount()).thenReturn(1);
+        when(mouseEvent.getButton()).thenReturn(MouseButton.PRIMARY);
+
+        DrawSnapModel forme = new DrawSnapModel();
+
+        state.handleMousePressed(mouseEvent, forme, 100.0, 100.0);
+
+        assertEquals(0, forme.size(), "Nessun testo dovrebbe essere creato se il dialogo è annullato.");
     }
 
 
