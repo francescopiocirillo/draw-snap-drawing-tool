@@ -23,9 +23,7 @@ public class Poligono extends Forma2D {
     private double intrinsicCenterY; // Centro Y della bounding box, relativo all'origine interna (0,0)
 
     /**
-     * Costruttore, Getter e Setter
-     *
-     *
+     * Costruttore, getter e setter
      */
     public Poligono(double initialRefX, double initialRefY, double larghezza, double altezza, double angoloInclinazione, Color colore, List<Double> rawPuntiX, List<Double> rawPuntiY, Color coloreInterno) {
         // Imposta la posizione globale del poligono direttamente al punto di riferimento iniziale.
@@ -35,11 +33,11 @@ public class Poligono extends Forma2D {
         this.puntiY = new ArrayList<>();
 
         // Converte i punti globali in punti relativi
-        // sottraendo le coordinate del punto di riferimento iniziale (initialRefX, initialRefY).
         for (int i = 0; i < rawPuntiX.size(); i++) {
             this.puntiX.add(rawPuntiX.get(i) - initialRefX);
             this.puntiY.add(rawPuntiY.get(i) - initialRefY);
         }
+
         // Calcola la bounding box dei punti relativi.
         calcolaBoundingBox();
     }
@@ -67,6 +65,7 @@ public class Poligono extends Forma2D {
     public Color getColoreInterno() {
         return super.getColoreInterno();
     }
+
     @Override
     public void setColoreInterno(Color coloreInterno) {
         super.setColoreInterno(coloreInterno);
@@ -78,6 +77,14 @@ public class Poligono extends Forma2D {
 
     public double getIntrinsicCenterY() {
         return intrinsicCenterY;
+    }
+
+    @Override
+    public double getAngoloInclinazione() { return super.getAngoloInclinazione();}
+
+    @Override
+    public void setAngoloInclinazione(double nuovoAngolo) {
+        super.setAngoloInclinazione(nuovoAngolo);
     }
 
     /*
@@ -247,7 +254,6 @@ public class Poligono extends Forma2D {
         return dentro;
     }
 
-
     /**
      * Specchia il poligono lungo l'asse Y del suo sistema di coordinate intrinseco.
      * Questo viene fatto negando le coordinate X di tutti i punti.
@@ -287,7 +293,6 @@ public class Poligono extends Forma2D {
 
         super.setAngoloInclinazione(-super.getAngoloInclinazione());
     }
-
 
     /**
      * Calcola la bounding box del poligono (min/max X/Y) e il suo centro
@@ -357,18 +362,6 @@ public class Poligono extends Forma2D {
         this.puntiY = nuoviPuntiY;
         calcolaBoundingBox(); // Ricalcola le dimensioni intrinseche dopo la scala
     }
-
-
-    /**
-     * Imposta un nuovo angolo di inclinazione per il poligono.
-     *
-     * @param nuovoAngolo Il nuovo angolo di inclinazione in gradi.
-     */
-    @Override
-    public void setAngoloInclinazione(double nuovoAngolo) {
-        super.setAngoloInclinazione(nuovoAngolo);
-    }
-
 
     /**
      * Serializza l'oggetto nel complesso con il metodo della superclasse e poi salva
