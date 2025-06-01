@@ -37,12 +37,13 @@ public class Poligono extends Forma {
         this.puntiY = new ArrayList<>();
         this.coloreInterno = coloreInterno;
 
-
+        // Converte i punti globali (rawPuntiX, rawPuntiY) in punti relativi
+        // sottraendo le coordinate del punto di riferimento iniziale (initialRefX, initialRefY).
         for (int i = 0; i < rawPuntiX.size(); i++) {
             this.puntiX.add(rawPuntiX.get(i) - initialRefX);
             this.puntiY.add(rawPuntiY.get(i) - initialRefY);
         }
-
+        // Calcola la bounding box intrinseca (larghezze/altezze minime e massime) dei punti relativi.
         calcolaBoundingBox();
     }
 
@@ -84,7 +85,17 @@ public class Poligono extends Forma {
         return intrinsicCenterY;
     }
 
+    /*
+     Logica della classe
+    */
 
+    /**
+     * Disegna il poligono sul contesto grafico specificato.
+     * Applica le trasformazioni (traslazione e rotazione) e poi disegna il poligono
+     * utilizzando i suoi punti relativi.
+     *
+     * @param gc Il contesto grafico su cui disegnare il poligono.
+     */
     @Override
     public void disegna(GraphicsContext gc) {
         gc.save();
@@ -118,14 +129,30 @@ public class Poligono extends Forma {
         gc.restore();
     }
 
-    // Metodo helper per calcolare la distanza al quadrato tra due punti
+    /**
+     * Metodo helper per calcolare la distanza euclidea al quadrato tra due punti.
+     *
+     * @param x1 Coordinata X del primo punto.
+     * @param y1 Coordinata Y del primo punto.
+     * @param x2 Coordinata X del secondo punto.
+     * @param y2 Coordinata Y del secondo punto.
+     * @return La distanza al quadrato tra i due punti.
+     */
     private double distanzaQuadrata(double x1, double y1, double x2, double y2) {
         double dx = x1 - x2;
         double dy = y1 - y2;
         return dx * dx + dy * dy;
     }
 
-    // Metodo per verificare se un punto è vicino al contorno
+    /**
+     * Verifica se un punto (px, py) è sufficientemente vicino al contorno del poligono.
+     * Questo metodo opera nel sistema di coordinate intrinseco del poligono (dopo traslazione e rotazione inversa).
+     *
+     * @param px La coordinata X del punto da verificare (nel sistema di coordinate intrinseco).
+     * @param py La coordinata Y del punto da verificare (nel sistema di coordinate intrinseco).
+     * @param tolleranza La distanza massima per considerare il punto "vicino" al contorno.
+     * @return {@code true} se il punto è vicino al contorno, altrimenti {@code false}.
+     */
     private boolean puntoVicinoAlContorno(double px, double py, double tolleranza) {
         int n = puntiX.size();
         if (n < 2) return false; // Non c'è contorno con meno di 2 punti
@@ -170,7 +197,14 @@ public class Poligono extends Forma {
         return false;
     }
 
-
+    /**
+     * Determina se un punto specificato si trova all'interno del poligono.
+     * Considera anche una piccola tolleranza per la selezione del bordo.
+     *
+     * @param x La coordinata X del punto da valutare (in coordinate globali).
+     * @param y La coordinata Y del punto da valutare (in coordinate globali).
+     * @return {@code true} se il punto si trova all'interno o sul bordo del poligono, altrimenti {@code false}.
+     */
     @Override
     public boolean contiene(double x, double y) {
         double translatedX = x - super.getCoordinataX();
@@ -204,7 +238,10 @@ public class Poligono extends Forma {
     }
 
 
-
+    /**
+     * Specchia il poligono lungo l'asse Y del suo sistema di coordinate intrinseco.
+     * Questo viene fatto negando le coordinate X di tutti i punti.
+     */
     @Override
     public void specchiaInVerticale() {
         // Specchia i punti lungo l'asse Y (negando le coordinate X)
@@ -221,6 +258,10 @@ public class Poligono extends Forma {
         super.setAngoloInclinazione(-super.getAngoloInclinazione());
     }
 
+    /**
+     * Specchia il poligono lungo l'asse X del suo sistema di coordinate intrinseco.
+     * Questo viene fatto negando le coordinate Y di tutti i punti.
+     */
     @Override
     public void specchiaInOrizzontale() {
         // Specchia i punti lungo l'asse X (negando le coordinate Y)
@@ -275,6 +316,10 @@ public class Poligono extends Forma {
         super.setLarghezza(this.intrinsicLarghezza);
     }
 
+    /**
+     * Crea e restituisce una copia profonda di questo oggetto Poligono.
+     * @return Un nuovo oggetto Poligono che è una copia esatta di questo.
+     */
     @Override
     public Poligono clone() {
         Poligono cloned = (Poligono) super.clone();
@@ -290,7 +335,13 @@ public class Poligono extends Forma {
         return cloned;
     }
 
-    // Scala i punti intrinseci del poligono rispetto al suo centro (0,0).
+    /**
+     * Scala i punti intrinseci del poligono rispetto al suo centro (0,0).
+     * Questo metodo modifica le coordinate dei vertici, ridimensionando la forma.
+     *
+     * @param scalaX Il fattore di scala sull'asse X.
+     * @param scalaY Il fattore di scala sull'asse Y.
+     */
     public void scala(double scalaX, double scalaY) {
         if (puntiX.isEmpty()) return;
 
@@ -347,6 +398,12 @@ public class Poligono extends Forma {
         this.setColoreInterno(ColorUtils.fromHexString(coloreInterno));
     }
 
+    /**
+     * Ridimensiona il poligono in modo proporzionale applicando un fattore di scala uniforme
+     * a tutti i suoi punti intrinseci.
+     *
+     * @param proporzione La percentuale di ridimensionamento (es. 100 per nessuna modifica, 50 per metà dimensione).
+     */
     @Override
     public void proportionalResize(double proporzione) {
         double fattoreScala = proporzione / 100.0;
