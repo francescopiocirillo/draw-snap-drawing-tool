@@ -59,6 +59,9 @@ public class SelectState implements DrawingState{
                 System.out.println("è contenuta");
             }
         }
+        if(!event.isControlDown()){
+            forme.deselezionaEccetto(formaSelezionata);
+        }
 
         int count = forme.countFormeSelezionate();
 
