@@ -33,9 +33,10 @@ public class DrawState implements DrawingState{
     /*
      * Attributi
      */
+    private PoligonoBuilder poligonoBuilder; //Il builder da usare per la creazione del poligono
     private Forme formaCorrente; //Enum della figura corrente che si intende creare
     private boolean creazionePoligono=false; //Booleano che indica che vi è un poligono in creazione
-    private FactoryPoligono factoryPoligono; //Il factory da usare per la creazione del poligono
+    //private FactoryPoligono factoryPoligono; //Il factory da usare per la creazione del poligono
     private AttributiForma attributiForma; //Gli attributi per la creazione della figura
     private Forma currentDrawingShapePreview = null; //Preview dellac forma da disegnare
     private double startX; //Punto di inizio (coordinata X) per il drag & drop
@@ -105,16 +106,18 @@ public class DrawState implements DrawingState{
                     dialogShown = true;
                 }
 
-                //Creazione del factory (builder)
-                factoryPoligono = new FactoryPoligono();
+                poligonoBuilder = new PoligonoBuilder()
+                        .setColore(attributiForma.getColore())
+                        .setColoreInterno(attributiForma.getColoreInterno())
+                        .setAngoloInclinazione(attributiForma.getAngoloInclinazione());
                 creazionePoligono=true;
             }else {
 
                 //Distinzione tra aggiunta di un punto e fine creazione tramite il numero di click
                 if (event.getClickCount() == 1) { //1 click: aggiunta punto
-                    factoryPoligono.addPunto(coordinataX, coordinataY);
+                    poligonoBuilder.addPunto(coordinataX, coordinataY);
                     return false;
-                } else if (event.getClickCount() == 2 && factoryPoligono.getSize() > 2) { //2 click: fine creazione
+                } else if (event.getClickCount() == 2 && poligonoBuilder.getNumeroPunti() > 2) { //2 click: fine creazione
                     Forma formaCreata = createShapePreview(coordinataX, coordinataY);
 
                     //Aggiunta alla lista di forme
@@ -339,13 +342,27 @@ public class DrawState implements DrawingState{
             finalAltezza = 0.0;
             finalCentroX = startX;
             finalCentroY = startY;
-        }else if (formaCorrente == Forme.POLIGONO){
-            finalLarghezza = factoryPoligono.getLarghezza();
-            finalAltezza = factoryPoligono.getAltezza();
-            finalCentroX = factoryPoligono.getCentroX();
-            finalCentroY = factoryPoligono.getCentroY();
-            finalAngle = attributiForma.getAngoloInclinazione();
-        }else{
+        }else if (formaCorrente == Forme.POLIGONO) {
+            if (poligonoBuilder != null && (poligonoBuilder.getNumeroPunti() > 0 || currentDrawingShapePreview != null) ) {
+                PoligonoBuilder previewBuilder = new PoligonoBuilder()
+                        .setColore(attributiForma.getColore())
+                        .setColoreInterno(attributiForma.getColoreInterno())
+                        .setAngoloInclinazione(attributiForma.getAngoloInclinazione());
+
+                if (poligonoBuilder.getNumeroPunti() > 0) {
+                    previewBuilder.setPuntiX(poligonoBuilder.getPuntiX());
+                    previewBuilder.setPuntiY(poligonoBuilder.getPuntiY());
+                }
+                previewBuilder.addPunto(coordinataX, coordinataY);
+
+                try {
+                    return previewBuilder.build();
+                } catch (IllegalStateException e) {
+                    return null;
+                }
+            }
+            return null;
+        } else{
             finalLarghezza = Math.abs(coordinataX - startX);
             finalAltezza = Math.abs(coordinataY-startY);
             finalCentroX = (startX + coordinataX) /2.0;
@@ -368,10 +385,6 @@ public class DrawState implements DrawingState{
             case LINEA:
                 return new FactoryLinea().creaForma(startX, startY, 0, finalLarghezza,
                         finalAngle, attributiForma.getColore(), null);
-            case POLIGONO:
-                return factoryPoligono.creaForma(finalCentroX, finalCentroY, finalAltezza,
-                        finalLarghezza, attributiForma.getAngoloInclinazione(), attributiForma.getColore(),
-                        attributiForma.getColoreInterno());
             case TEXT:
                 FactoryTesto factoryTesto = new FactoryTesto();
                 if(attributiForma.getTesto() == null || attributiForma.getTesto().equals("")) {
@@ -401,7 +414,7 @@ public class DrawState implements DrawingState{
      * @return la lista di coordinate X ad un certo momento
      */
     public List<Double> getPuntiX(){
-        return factoryPoligono.getPuntiX();
+        return poligonoBuilder.getPuntiX();
     }
 
     /**
@@ -409,6 +422,6 @@ public class DrawState implements DrawingState{
      * @return la lista di coordinate Y ad un certo momento
      */
     public List<Double> getPuntiY(){
-        return factoryPoligono.getPuntiY();
+        return poligonoBuilder.getPuntiY();
     }
 }
