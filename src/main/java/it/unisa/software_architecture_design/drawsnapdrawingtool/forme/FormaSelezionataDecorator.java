@@ -97,4 +97,24 @@ public class FormaSelezionataDecorator extends FormaDecorator{
         gc.restore();
     }
 
+    /**
+     * Applica la decorazione alle componenti della forma composta
+     */
+    public void decorate(){
+        if(getForma() instanceof FormaComposta) {
+            ((FormaComposta) getForma()).decorate();
+        }
+    }
+
+    /**
+     * Rimuove la decorazione, eventualmente anche alle componenti della forma composta, e restituisce la forma
+     * non decorata.
+     */
+    public Forma undecorate(){
+        if(getForma() instanceof FormaComposta){
+            ((FormaComposta) getForma()).undecorate();
+        }
+        return getForma();
+    }
+
 }
