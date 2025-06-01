@@ -59,7 +59,7 @@ public class DrawState implements DrawingState{
     }
 
     public boolean getCreazionePoligono(){
-        return !creazionePoligono;
+        return creazionePoligono;
     }
 
     public void setCreazionePoligono(boolean creazionePoligono){
@@ -107,25 +107,28 @@ public class DrawState implements DrawingState{
 
                 //Creazione del factory (builder)
                 factoryPoligono = new FactoryPoligono();
-                creazionePoligono=false;
-            }
+                creazionePoligono=true;
+            }else {
 
-            //Distinzione tra aggiunta di un punto e fine creazione tramite il numero di click
-            if(event.getClickCount() == 1){ //1 click: aggiunta punto
-                factoryPoligono.addPunto(coordinataX, coordinataY);
+                //Distinzione tra aggiunta di un punto e fine creazione tramite il numero di click
+                if (event.getClickCount() == 1) { //1 click: aggiunta punto
+                    factoryPoligono.addPunto(coordinataX, coordinataY);
+                    return false;
+                } else if (event.getClickCount() == 2 && factoryPoligono.getSize() > 2) { //2 click: fine creazione
+                    Forma formaCreata = createShapePreview(coordinataX, coordinataY);
+
+                    //Aggiunta alla lista di forme
+                    if (formaCreata != null) {
+                        forme.add(formaCreata);
+                        creazionePoligono = false;
+                        dialogShown = false;
+                        currentDrawingShapePreview = null;
+                        return true;
+                    } else return false;
+                }
                 return false;
-            }else if(event.getClickCount() == 2 && factoryPoligono.getSize() > 2){ //2 click: fine creazione
-                Forma formaCreata = createShapePreview(coordinataX, coordinataY);
-
-                //Aggiunta alla lista di forme
-                if(formaCreata!=null){
-                    forme.add(formaCreata);
-                    creazionePoligono=true;
-                    dialogShown = false;
-                    currentDrawingShapePreview = null;
-                    return true;
-                }else return false;
-            }else return false;
+            }
+            return false;
         }else{//Caso alternativo al Poligono
 
             //Visione della finestra di dialogo
@@ -388,7 +391,7 @@ public class DrawState implements DrawingState{
         this.dialogShown = false;
         this.currentDrawingShapePreview = null;
         this.attributiForma = null;
-        this.creazionePoligono = true;
+        this.creazionePoligono = false;
     }
 
     /**

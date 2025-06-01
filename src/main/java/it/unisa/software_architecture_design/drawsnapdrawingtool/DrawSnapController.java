@@ -508,9 +508,10 @@ public class DrawSnapController {
                 double[] xArray = puntiX.stream().mapToDouble(Double::doubleValue).toArray();
                 double[] yArray = puntiY.stream().mapToDouble(Double::doubleValue).toArray();
 
+                gc.setLineDashes(5, 5);
                 gc.setStroke(Color.DODGERBLUE);
                 gc.setLineWidth(1);
-                gc.setLineDashes(5, 5);
+
                 gc.strokePolygon(xArray, yArray, xArray.length);
 
                 for(int i =0; i < xArray.length; i++){
@@ -554,7 +555,8 @@ public class DrawSnapController {
     private void handleMouseDragged(MouseEvent mouseEvent) {
         double logicalCurrentX = mouseEvent.getX() / zoomLevels[currentZoomIndex];
         double logicalCurrentY = mouseEvent.getY() / zoomLevels[currentZoomIndex];
-        canvas.setCursor(Cursor.CROSSHAIR);
+        if(drawingContext.getCurrentState() instanceof DrawState) canvas.setCursor(Cursor.CROSSHAIR);
+        if(drawingContext.getCurrentState() instanceof SelectState) canvas.setCursor(Cursor.MOVE);
         dragged = drawingContext.handleMouseDragged(mouseEvent, forme, logicalCurrentX, logicalCurrentY);
         updateState(false);
     }
@@ -568,7 +570,7 @@ public class DrawSnapController {
     private void handleMouseReleased(MouseEvent mouseEvent) {
         double logicalCurrentX = mouseEvent.getX() / zoomLevels[currentZoomIndex];
         double logicalCurrentY = mouseEvent.getY() / zoomLevels[currentZoomIndex];
-
+        if(drawingContext.getCurrentState() instanceof SelectState) canvas.setCursor(Cursor.DEFAULT);
         boolean stateChanged = drawingContext.handleMouseReleased(mouseEvent, forme, logicalCurrentX, logicalCurrentY);
         if(dragged || stateChanged){
             updateState(true);
