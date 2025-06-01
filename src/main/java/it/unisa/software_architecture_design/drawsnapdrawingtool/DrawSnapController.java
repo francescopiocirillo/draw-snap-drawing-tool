@@ -318,6 +318,17 @@ public class DrawSnapController {
         // di drag la flag viene asserita
         dragged = false;
         double scale = canvas.getScaleX();
+        Forma formaSelezionata = forme.getFormaSelezionata();
+        if(formaSelezionata != null && forme.countFormeSelezionate() == 1) {
+            formaSelezionata = ((FormaSelezionataDecorator)formaSelezionata).getForma();
+            if(formaSelezionata instanceof FormaComposta) {
+                decomposeButton.setDisable(false);
+            }else{
+                decomposeButton.setDisable(true);
+            }
+        }else{
+            decomposeButton.setDisable(true);
+        }
 
         if (contextMenu.isShowing()) {
             contextMenu.hide();
@@ -341,7 +352,6 @@ public class DrawSnapController {
 
             //Se c'è una forma selezionata controlla se il click è avvenuto all'interno di essa
             if(hasSelection){
-                Forma formaSelezionata = forme.getFormaSelezionata();
                 if(formaSelezionata!= null){
                     clickInterno = formaSelezionata.contiene(lastClickX, lastClickY);
                 }
@@ -412,20 +422,20 @@ public class DrawSnapController {
             if (drawState.getFormaCorrente() == Forme.POLIGONO && drawState.getCreazionePoligono()){
                 List<Double> puntiX = drawState.getPuntiX();
                 List<Double> puntiY = drawState.getPuntiY();
-                if(puntiX.size() >= 2){
-                    double[] xArray = puntiX.stream().mapToDouble(Double::doubleValue).toArray();
-                    double[] yArray = puntiY.stream().mapToDouble(Double::doubleValue).toArray();
 
-                    gc.setStroke(Color.DODGERBLUE);
-                    gc.setLineWidth(1);
-                    gc.setLineDashes(5, 5);
-                    gc.strokePolygon(xArray, yArray, xArray.length);
+                double[] xArray = puntiX.stream().mapToDouble(Double::doubleValue).toArray();
+                double[] yArray = puntiY.stream().mapToDouble(Double::doubleValue).toArray();
 
-                    for(int i =0; i < xArray.length; i++){
-                        gc.setFill(Color.RED);
-                        gc.fillOval(xArray[i] -3, yArray[i] -3, 6, 6);
-                    }
+                gc.setStroke(Color.DODGERBLUE);
+                gc.setLineWidth(1);
+                gc.setLineDashes(5, 5);
+                gc.strokePolygon(xArray, yArray, xArray.length);
+
+                for(int i =0; i < xArray.length; i++){
+                    gc.setFill(Color.RED);
+                    gc.fillOval(xArray[i] -3, yArray[i] -3, 6, 6);
                 }
+
             }
             gc.setLineDashes(0);
         }
