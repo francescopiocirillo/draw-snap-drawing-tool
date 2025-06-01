@@ -36,80 +36,6 @@ public class FormaSelezionataDecorator extends FormaDecorator{
     }
 
     /**
-     * Determina se la forma contiene un punto specifico nello spazio.
-     *
-     * @param puntoDaValutareX La coordinata X del punto da verificare.
-     * @param puntoDaValutareY La coordinata Y del punto da verificare.
-     * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si trova all'interno della forma,
-     * altrimenti {@code false}.
-     */
-    @Override
-    public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
-        return getForma().contiene(puntoDaValutareX, puntoDaValutareY);
-    }
-
-    public void decorate(){
-        if(getForma() instanceof FormaComposta) {
-            ((FormaComposta) getForma()).decorate();
-        }
-    }
-
-    public Forma undecorate(){
-        if(getForma() instanceof FormaComposta){
-            ((FormaComposta) getForma()).undecorate();
-        }
-        return getForma();
-    }
-
-    /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
-     * cetro della figura stessa
-     */
-    @Override
-    public void specchiaInVerticale() {
-        getForma().specchiaInVerticale();
-    }
-
-    /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse orizzontale che passa per il
-     * cetro della figura stessa
-     */
-    @Override
-    public void specchiaInOrizzontale() {
-        getForma().specchiaInOrizzontale();
-    }
-
-    @Override
-    public Forma clone(){
-        return getForma().clone();
-    }
-
-    @Override
-    public void proportionalResize(double proporzione){
-        getForma().proportionalResize(proporzione);
-    }
-
-    public void setAngoloInclinazione(double angoloDiInclinazione){
-        getForma().setAngoloInclinazione(angoloDiInclinazione);
-    }
-
-    public void setOffsetX(double coordinataXPressed){
-        getForma().setOffsetX(coordinataXPressed);
-    }
-
-    public void setOffsetY(double coordinataYPressed){
-        getForma().setOffsetY(coordinataYPressed);
-    }
-
-    public void setCoordinataXForDrag(double coordinataXMouseDragged){
-        getForma().setCoordinataXForDrag(coordinataXMouseDragged);
-    }
-
-    public void setCoordinataYForDrag(double coordinataYMouseDragged){
-        getForma().setCoordinataYForDrag(coordinataYMouseDragged);
-    }
-
-    /**
      * Disegna intorno alla figura un bordo evidenziato per indicare che la
      * figura è stata cliccata
      *
@@ -170,6 +96,5 @@ public class FormaSelezionataDecorator extends FormaDecorator{
 
         gc.restore();
     }
-
 
 }
