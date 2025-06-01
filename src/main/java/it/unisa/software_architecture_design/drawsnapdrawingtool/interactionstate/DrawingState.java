@@ -13,5 +13,5 @@ public interface DrawingState {
 
     boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double x, double y);
 
-    boolean handleMouseReleased(MouseEvent event, double x, double y);
+    boolean handleMouseReleased(MouseEvent event, DrawSnapModel forme, double x, double y);
 }

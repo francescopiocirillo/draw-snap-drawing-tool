@@ -21,7 +21,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -32,50 +31,44 @@ import java.util.*;
 public class DrawSnapController {
 
     /*
-     * Attributi per il foglio di disegno
+     * Attributi grafici per la finestra principale
      */
     @FXML
     private Canvas canvas;
     @FXML
-    private AnchorPane canvasContainer;
-    @FXML
-    private ScrollBar scrollBarH;
-    @FXML
-    private ScrollBar scrollBarV;
-    @FXML
     private ScrollPane scrollPane;
     private GraphicsContext gc;
-    private DrawingContext drawingContext;
-    private DrawSnapModel forme = null;
     private Stage stage;
 
-    //Menù contestuale
+    /*
+     * Attributi grafici per il menu contestuale
+     */
     private ContextMenu contextMenu;
     private MenuItem pasteButton;
     private MenuItem copyButton;
     private MenuItem cutButton;
     private MenuItem composeButton;
     private MenuItem decomposeButton;
-    private ImageView imageCopy;
-    private ImageView imageCut;
-    private ImageView imagePaste;
-    private ImageView imageCompose;
-    private ImageView imageDecompose;
 
     /*
-     * Attributi per lo zoom
+     * Attributi grafici per lo zoom
      */
     @FXML
     private ComboBox<Double> zoom;
 
+    /*
+     * Attributi grafici per la griglia
+     */
     @FXML
     private Slider gridSlider;
 
     /*
-     * Attributi per i bottoni
+     * Attributi grafici per la barra principale
      */
     @FXML
     private Button handButton;
+    @FXML
+    private Button selectButton;
     @FXML
     private Button ellipseButton;
     @FXML
@@ -86,68 +79,124 @@ public class DrawSnapController {
     private Button polygonButton;
     @FXML
     private Button textButton;
-    @FXML
-    private Button selectButton;
-    @FXML
-    private ToolBar toolBarFX; // barra in alto delle modifiche
-    @FXML
-    private Button changeFillColorButton;
-    @FXML
-    private Button undoButton;
-    @FXML
-    private Button proportionalResizePressed;
     private List<Button> bottoniBarraPrincipale = null;
 
     /*
-     * Attributi per la logica
+     * Attributi grafici per la ToolBar
      */
-    private DrawSnapHistory history = null;
-    private Invoker invoker = null;
-    private double lastClickX = -1;
-    private double lastClickY = -1;
-    private final Double[] zoomLevels = {1.25, 1.5, 1.75, 2.0};
-    private int currentZoomIndex = 1;
-    private boolean dragged = false;
+    @FXML
+    private ToolBar toolBarFX;
+    @FXML
+    private Button changeFillColorButton;
+    @FXML
+    private Button proportionalResizePressed;
+
+    /*
+     * Attributi grafici per l'undo
+     */
+    @FXML
+    private Button undoButton;
+
+    /*
+     * Attributi per la logica della finestra
+     */
     private final double baseCanvasWidth = 2048;
     private final double baseCanvasHeight = 2048;
+    private double lastClickX = -1;
+    private double lastClickY = -1;
+    private boolean dragged = false;
+    private DrawSnapModel forme = null;
+    private DrawingContext drawingContext;
+
+    /*
+     * Attributi per la logica dello zoom
+     */
+    private final Double[] zoomLevels = {1.25, 1.5, 1.75, 2.0};
+    private int currentZoomIndex = 1;
+
+    /*
+     * Attributi per la logica della griglia
+     */
     private boolean gridVisible = false;
     private double currentGridSize = 20.0;
 
+    /*
+     * Attributi per la logica dell'undo
+     */
+    private DrawSnapHistory history = null;
 
+    /*
+     * Attributi per la logica dei command
+     */
+    private Invoker invoker = null;
 
     /**
-     * Metodo di Inizializzazione dopo il caricamento del foglio fxml
+     * Gestisce l'inizializzazione dell'applicativo dopo il caricamento
+     * del foglio fxml
      */
     @FXML
     void initialize() {
+        invoker = new Invoker(); //Creazione Invoker
+        history = new DrawSnapHistory(); //Creazione DrawSnapHistory
+        initializeWindow(); //Inizializzaizone Finestra
+        drawingContext = new DrawingContext(new SelectState(toolBarFX, changeFillColorButton, composeButton)); //Inizializzazione DrawingContext
+        initializeCanvasEventHandlers(); //Inizializzazione handler
+        initializePrincipalBar(); //Inizializzazione barra principale
+        initializeContextMenu(); //Inizializzazione menu contestuale
+        initializeZoom(); //Inizializzazione zoom
+        initializeGridSlider(); //Inizializzazione griglia
+        undoButton.setDisable(true); //Disabilitamento pulsante undo
+    }
+
+    /**
+     * Gestisce l'inizializzazione della finestra
+     * Si occupa di:
+     * -    inizializzare il {@link Canvas}
+     * -    inizializzare il {@link GraphicsContext}
+     * -    inizializzare lo {@link ScrollPane}
+     * -    impostare il livello di zoom iniziale
+     */
+    private void initializeWindow(){
+        //Inizializzazione del Canvas
         canvas.setHeight(baseCanvasHeight);
         canvas.setWidth(baseCanvasWidth);
+
+        //Inizializzazione del GraphicContext
         gc = canvas.getGraphicsContext2D();
-        drawingContext = new DrawingContext(new SelectState(toolBarFX, changeFillColorButton, composeButton));
-        invoker = new Invoker();
-        history = new DrawSnapHistory();
 
+        //Inizializzazione dello ScrollPane
         scrollPane.setContent(canvas);
-
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
-
-        // Ritarda l'applicazione della posizione iniziale del canvas al momento successivo al caricamento della UI
+        //Settaggio iniziale di zoom
         Platform.runLater(() -> {
             invoker.setCommand(new ZoomCommand(canvas, scrollPane, baseCanvasWidth, baseCanvasHeight, zoomLevels[currentZoomIndex]));
             invoker.executeCommand();
 
-            // Imposta la posizione di scorrimento iniziale al centro del canvas grande.
-            // Questo è utile per iniziare la visualizzazione al centro dell'area di disegno.
+            //Focus al centro dello ScrollPane
             scrollPane.setHvalue(0.5);
             scrollPane.setVvalue(0.5);
-            // in questo modo si può scegliere manualmente quale bottone deve essere in focus al caricamento
-            // dell'app, altrimenti JavaFX mette in focus il primo controllo che rileva
             canvas.requestFocus();
         });
+    }
 
-        // inizializzazione bottoni per la selezione forma
+    /**
+     * Gestisce l'inzializzazione degli handler del {@link Canvas}
+     */
+    private void initializeCanvasEventHandlers() {
+        canvas.setOnMousePressed(this::handleMousePressed);
+        canvas.setOnMouseDragged(this::handleMouseDragged);
+        canvas.setOnMouseReleased(this::handleMouseReleased);
+    }
+
+    /**
+     * Gestisce l'inizializzazione della barra principale
+     * Si occupa di:
+     * -    gestire lo stile dei pulsanti quando selezionati
+     * -    settare la modalità dell'applicativo
+     */
+    private void initializePrincipalBar(){
         bottoniBarraPrincipale = List.of(handButton, ellipseButton, rectangleButton, lineButton, polygonButton, textButton, selectButton);
         handButton.setOnAction(e -> {
             bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
@@ -185,37 +234,74 @@ public class DrawSnapController {
             selectButton.getStyleClass().add("selected");
         });
         selectButton.getStyleClass().add("selected");
-
-        undoButton.setDisable(true);
-
-        initializeContextMenu();
-
-        initializeZoom();
-
-        initializeCanvasEventHandlers();
-
-        initializeGridSlider();
     }
 
     /**
-     * Inizializza gli elementi grafici per lo {@code slider}
+     * Gestisce l'inizializzazione del menu contestuale
+     * Si occupa di:
+     * -    creare del {@link ContextMenu}
+     * -    creare dei {@link MenuItem}
+     * -    definire gli handler dei {@link MenuItem}
+     * -    aggiungere le {@link ImageView} ai {@link MenuItem}
+     * -    aggiungere i {@link MenuItem} al menu contestuale
      */
-    private void initializeGridSlider(){
-        gridSlider.setValue(currentGridSize);
-        gridSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            currentGridSize = newValue.doubleValue();
-            redrawAll();
-        });
-        gridSlider.setVisible(false);
-        gridSlider.setManaged(false);
+    private void initializeContextMenu() {
+        //Creazione Context Menu
+        contextMenu = new ContextMenu();
+
+        //Creazione Menu Item
+        copyButton = new MenuItem("Copia");
+        cutButton = new MenuItem("Taglia");
+        pasteButton = new MenuItem("Incolla");
+        composeButton = new MenuItem("Componi");
+        decomposeButton = new MenuItem("Decomponi");
+
+        //Definizione handler
+        pasteButton.setOnAction(this::onPastePressed);
+        copyButton.setOnAction(this::onCopyPressed);
+        cutButton.setOnAction(this::onCutPressed);
+        composeButton.setOnAction(this::onComposePressed);
+        decomposeButton.setOnAction(this::onDecomposePressed);
+
+        //Aggiunta delle ImageView
+        ImageView imageCopy = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/copia.png")));
+        ImageView imageCut = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/taglia.png")));
+        ImageView imagePaste = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/incolla.png")));
+        ImageView imageCompose = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/incolla.png")));
+        ImageView imageDecompose = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/incolla.png")));
+        imageCopy.setFitWidth(16);
+        imageCut.setFitWidth(16);
+        imagePaste.setFitWidth(16);
+        imageCompose.setFitWidth(16);
+        imageDecompose.setFitWidth(16);
+        imageCopy.setFitHeight(16);
+        imageCut.setFitHeight(16);
+        imagePaste.setFitHeight(16);
+        imageCompose.setFitHeight(16);
+        imageDecompose.setFitHeight(16);
+        copyButton.setGraphic(imageCopy);
+        cutButton.setGraphic(imageCut);
+        pasteButton.setGraphic(imagePaste);
+        composeButton.setGraphic(imageCompose);
+        decomposeButton.setGraphic(imageDecompose);
+
+        //Aggiunta dei Menu Item al Context Menu
+        contextMenu.getItems().addAll(copyButton, cutButton, pasteButton, composeButton, decomposeButton);
     }
 
     /**
-     * Inizializza gli elementi grafici per lo {@code zoom}
+     * Gestisce l'inizializzaione dello zoom
+     * Si occupa di:
+     * -    definire il menu a tendina dello zoom
+     * -    aggiungere la {@link ImageView} al pulsante di Zoom
+     * -    aggiungere i testi per il menu a tendina
      */
     private void initializeZoom(){
+        //Definizione menu a tendina
         zoom.getItems().addAll(zoomLevels);
         zoom.setValue(zoomLevels[currentZoomIndex]);
+
+        //Aggiunta dell'ImageView
         zoom.setButtonCell(new ListCell<>(){
             private final ImageView zoomImage = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/zoom.png")));
             {
@@ -236,6 +322,7 @@ public class DrawSnapController {
             }
         });
 
+        //Aggiunta dei testi
         zoom.setCellFactory(lv -> new ListCell<Double>(){
             @Override
             protected void updateItem(Double item, boolean empty) {
@@ -250,43 +337,28 @@ public class DrawSnapController {
     }
 
     /**
-     * Inizializza gli elementi grafici del menu contestuale
+     * Gestisce l'inizializzazione dello Slider per il cambio dimensione della griglia
+     * Si occupa di:
+     * -    definire un {@link EventListener} (forse da cambiare) per il cambio dimensione
+     * -    non rendere visibile lo slider
      */
-    private void initializeContextMenu() {
-        contextMenu = new ContextMenu();
-        copyButton = new MenuItem("Copia");
-        cutButton = new MenuItem("Taglia");
-        pasteButton = new MenuItem("Incolla");
-        composeButton = new MenuItem("Componi");
-        decomposeButton = new MenuItem("Decomponi");
-        pasteButton.setOnAction(this::onPastePressed);
-        copyButton.setOnAction(this::onCopyPressed);
-        cutButton.setOnAction(this::onCutPressed);
-        composeButton.setOnAction(this::onComposePressed);
-        decomposeButton.setOnAction(this::onDecomposePressed);
-        imageCopy = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/copia.png")));
-        imageCut = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/taglia.png")));
-        imagePaste = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/incolla.png")));
-        imageCompose = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/incolla.png")));
-        imageDecompose = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/incolla.png")));
-        imageCopy.setFitWidth(16);
-        imageCut.setFitWidth(16);
-        imagePaste.setFitWidth(16);
-        imageCompose.setFitWidth(16);
-        imageDecompose.setFitWidth(16);
-        imageCopy.setFitHeight(16);
-        imageCut.setFitHeight(16);
-        imagePaste.setFitHeight(16);
-        imageCompose.setFitHeight(16);
-        imageDecompose.setFitHeight(16);
-        copyButton.setGraphic(imageCopy);
-        cutButton.setGraphic(imageCut);
-        pasteButton.setGraphic(imagePaste);
-        composeButton.setGraphic(imageCompose);
-        decomposeButton.setGraphic(imageDecompose);
-        contextMenu.getItems().addAll(copyButton, cutButton, pasteButton, composeButton, decomposeButton);
+    private void initializeGridSlider(){
+        //Cambio dimensione
+        gridSlider.setValue(currentGridSize);
+        gridSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            currentGridSize = newValue.doubleValue();
+            redrawAll();
+        });
+
+        //Visibilità
+        gridSlider.setVisible(false);
+        gridSlider.setManaged(false);
     }
 
+
+    /*
+     * Setter per lo stage e il Model
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
@@ -295,23 +367,16 @@ public class DrawSnapController {
         this.forme = model;
     }
 
-    /**
-     * Inizializza gli event handler per gli eventi di interesse relativi al {@link Canvas}.
-     */
-    private void initializeCanvasEventHandlers() {
-        canvas.setOnMousePressed(this::handleMousePressed);
-        canvas.setOnMouseDragged(this::handleMouseDragged);
-        canvas.setOnMouseReleased(this::handleMouseReleased);
-    }
 
     /**
      * Gestisce l'evento di pressione del mouse sul {@link Canvas}.
      * Controlla se viene cliccato il tasto destro o il sinistro e si comporta di conseguenza
-     * Se cliccato il tasto sinistro chiama {@code handleMousePressed()} del {@code drawingContext}
-     * e ridisegna tutto richiamando {@code redrawAll()}.
-     * Se cliccato il tasto destro mostra il menu contestuale con i bottoni di {@code pasteButton}
-     * {@code copyButton} e {@code cutButton} a seconda delle casistiche
-     * @param mouseEvent -> evento generato dalla pressione del mouse sul canvas
+     * -    Se cliccato il tasto sinistro chiama {@code handleMousePressed()} del {@code drawingContext}
+     *      e ridisegna tutto richiamando {@code redrawAll()}.
+     * -    Se cliccato il tasto destro mostra il menu contestuale con i bottoni di {@code pasteButton},
+     *      {@code copyButton}, {@code cutButton}, {@code composeButton} e {@code decomposeButton},
+     *      cliccabili a seconda delle casistiche
+     * @param mouseEvent è l' evento di pressione del mouse
      */
     private void handleMousePressed(MouseEvent mouseEvent) {
         // alla pressione del mouse si suppone sempre che non si tratta di un drag, solo all'interno del metodo
@@ -330,16 +395,24 @@ public class DrawSnapController {
             decomposeButton.setDisable(true);
         }
 
+        //Chiusura del Context Menu se già aperto
         if (contextMenu.isShowing()) {
             contextMenu.hide();
         }
-        if (mouseEvent.getButton() == MouseButton.PRIMARY) { //Click Sinistro
+
+        //Caso click sinistro
+        if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+
+            //Calcolo coordinate logiche
             lastClickX = mouseEvent.getX() / zoomLevels[currentZoomIndex];
             lastClickY = mouseEvent.getY() / zoomLevels[currentZoomIndex];
 
+            //Chiamata all'handler del Drawing Context e update dello stato
             boolean stateChanged = drawingContext.handleMousePressed(mouseEvent, forme, lastClickX, lastClickY);
             updateState(stateChanged);
-        } else if(mouseEvent.getButton() == MouseButton.SECONDARY) {//Click destro
+        } else if(mouseEvent.getButton() == MouseButton.SECONDARY) {//Caso click destro
+
+            //Calcolo coordinate logiche
             lastClickX = mouseEvent.getX() / zoomLevels[currentZoomIndex];
             lastClickY = mouseEvent.getY() / zoomLevels[currentZoomIndex];
 
@@ -350,20 +423,19 @@ public class DrawSnapController {
             cutButton.setDisable(false);
             pasteButton.setDisable(false);
 
-            //Se c'è una forma selezionata controlla se il click è avvenuto all'interno di essa
+            //Caso click su figura selezionata
             if(hasSelection){
                 if(formaSelezionata!= null){
                     clickInterno = formaSelezionata.contiene(lastClickX, lastClickY);
                 }
             }
 
-            //Se vi è una forma selezionata e il click è avvenuto al suo interno mostra copia e taglia
+            //Abilitazione dei pulsanti in caso di click su figura selezionata
             if(hasSelection && clickInterno){
                 pasteButton.setDisable(!hasClipboard);
                 copyButton.setDisable(false);
                 cutButton.setDisable(false);
-
-            }else{
+            }else{ //Abilitazione dei pulsanti in caso di click non su figura selezionata
                 copyButton.setDisable(true);
                 cutButton.setDisable(true);
                 pasteButton.setDisable(!hasClipboard);
@@ -378,11 +450,11 @@ public class DrawSnapController {
                 composeButton.setDisable(true);
             }
 
+            //Visione del Context Menu
             if(!contextMenu.getItems().isEmpty()){
                 contextMenu.show(canvas, mouseEvent.getScreenX(), mouseEvent.getScreenY());
             }
         }
-
     }
 
     /**
@@ -419,6 +491,16 @@ public class DrawSnapController {
         }
         if(drawingContext.getCurrentState() instanceof  DrawState) {
             DrawState drawState = (DrawState) drawingContext.getCurrentState();
+            Forma previewShape = drawState.getCurrentDrawingShapePreview();
+            if(previewShape != null){
+                gc.setStroke(Color.DODGERBLUE);
+                gc.setLineWidth(2.0 / zoomLevels[currentZoomIndex]);
+                gc.setLineDashes(5, 5);
+                previewShape.disegna(gc);
+                gc.setLineDashes(0);
+                gc.setStroke(Color.BLACK);
+                gc.setLineWidth(1.0);
+            }
             if (drawState.getFormaCorrente() == Forme.POLIGONO && drawState.getCreazionePoligono()){
                 List<Double> puntiX = drawState.getPuntiX();
                 List<Double> puntiY = drawState.getPuntiY();
@@ -472,7 +554,7 @@ public class DrawSnapController {
     private void handleMouseDragged(MouseEvent mouseEvent) {
         double logicalCurrentX = mouseEvent.getX() / zoomLevels[currentZoomIndex];
         double logicalCurrentY = mouseEvent.getY() / zoomLevels[currentZoomIndex];
-
+        canvas.setCursor(Cursor.CROSSHAIR);
         dragged = drawingContext.handleMouseDragged(mouseEvent, forme, logicalCurrentX, logicalCurrentY);
         updateState(false);
     }
@@ -487,8 +569,8 @@ public class DrawSnapController {
         double logicalCurrentX = mouseEvent.getX() / zoomLevels[currentZoomIndex];
         double logicalCurrentY = mouseEvent.getY() / zoomLevels[currentZoomIndex];
 
-        drawingContext.handleMouseReleased(mouseEvent, logicalCurrentX, logicalCurrentY);
-        if(dragged){
+        boolean stateChanged = drawingContext.handleMouseReleased(mouseEvent, forme, logicalCurrentX, logicalCurrentY);
+        if(dragged || stateChanged){
             updateState(true);
             dragged = false;
         }
@@ -500,9 +582,11 @@ public class DrawSnapController {
      * @param forma -> forma corrispondente al bottone che è stato premuto
      */
     void setDrawMode(ActionEvent event, Forme forma) {
-        drawingContext.setCurrentState(new DrawState(forma), forme);
+        DrawState newDrawState = new DrawState(forma);
+        drawingContext.setCurrentState(newDrawState, forme);
         canvas.setCursor(Cursor.DEFAULT);
         updateState(false);
+        newDrawState.resetDialogShown();
     }
 
     /**

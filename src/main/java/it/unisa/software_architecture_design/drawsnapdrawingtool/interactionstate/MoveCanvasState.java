@@ -30,10 +30,11 @@ public class MoveCanvasState implements DrawingState {
 
     /**
      * Gestisce l'evento di pressione del mouse sul canvas per permettere lo spostamento
-     * @param event l'evento di pressione del mouse
-     * @param forme la lista di forme presenti sul canvas (non utilizzato in questo metodo)
-     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
-     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
+     * @param event è l'evento di pressione del mouse
+     * @param forme è la lista di forme presenti sul canvas (non utilizzato in questo metodo)
+     * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
+     * @return
      */
     @Override
     public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
@@ -47,10 +48,11 @@ public class MoveCanvasState implements DrawingState {
      * Gestisce l'evento di trascinamento del mouse per implementare lo spostamento del canvas.
      * Quando il mouse viene trascinato, aggiorna i valori di scorrimento della ScrollPane
      * traslando la vista in base allo spostamento del mouse.
-     * @param event l'evento di trascinamento del mouse
-     * @param forme la lista di forme presenti sul canvas (non utilizzato in questo metodo)
-     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
-     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
+     * @param event è l'evento di trascinamento del mouse
+     * @param forme è la lista di forme presenti sul canvas (non utilizzato in questo metodo)
+     * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
+     * @return
      */
     @Override
     public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
@@ -78,23 +80,25 @@ public class MoveCanvasState implements DrawingState {
 
         return false;
     }
+
     /**
      * Gestisce l'evento di rilascio del mouse sul canvas e rende il cursore una manina aperta
-     * @param event evento di rilascio del mouse
-     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
-     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
+     * @param event è l'evento di rilascio del mouse
+     * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
+     * @return
      */
     @Override
-    public boolean handleMouseReleased(MouseEvent event, double coordinataX, double coordinataY) {
+    public boolean handleMouseReleased(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
         canvas.setCursor(Cursor.OPEN_HAND);
         return false;
     }
 
     /**
      * Restringe un valore all'interno di un intervallo specificato.
-     * @param value il valore da limitare
-     * @param min il valore minimo consentito
-     * @param max il valore massimo consentito
+     * @param value è il valore da limitare
+     * @param min è il valore minimo consentito
+     * @param max è il valore massimo consentito
      * @return il valore limitato nell'intervallo [min, max]
      */
     private double clamp(double value, double min, double max) {

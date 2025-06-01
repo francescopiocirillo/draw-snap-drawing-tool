@@ -21,9 +21,10 @@ public class SelectState implements DrawingState{
     /*
      * Attributi
      */
-    private ToolBar toolBarFX; // barra in alto delle modifiche
-    private Button changeFillColorButton;
-    private MenuItem composeButton; // pulsante per comporre le forme
+    private final ToolBar toolBarFX; // barra in alto delle modifiche
+    private final Button changeFillColorButton;
+    private final MenuItem composeButton; // pulsante per comporre le forme
+
     /*
      * Costruttore
      */
@@ -39,10 +40,11 @@ public class SelectState implements DrawingState{
 
     /**
      * Gestisce l'evento di pressione del mouse sul canvas per permettere la selezione di una figura
-     * @param event l'evento di pressione del mouse
-     * @param forme lista delle forme presenti sul foglio di disegno
-     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
-     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
+     * @param event è l'evento di pressione del mouse
+     * @param forme è la lista delle forme presenti sul foglio di disegno
+     * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
+     * @return
      */
     @Override
     public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme, double coordinataX , double coordinataY) {
@@ -156,10 +158,11 @@ public class SelectState implements DrawingState{
 
     /**
      * Gestisce l'evento di trascinamento del mouse permettendo lo spostamento della forma selezionata.
-     * @param event l'evento di trascinamento del mouse
-     * @param forme la lista di forme presenti sul canvas
-     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
-     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
+     * @param event è l'evento di trascinamento del mouse
+     * @param forme è la lista di forme presenti sul canvas
+     * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
+     * @return
      */
     @Override
     public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
@@ -183,12 +186,13 @@ public class SelectState implements DrawingState{
 
     /**
      * METODO MOMENTANEAMENTE NON NECESSARI0
-     * @param event evento di rilascio del mouse
-     * @param coordinataX coordinata logica per l'asse x dell'evento mouse
-     * @param coordinataY coordinata logica per l'asse y dell'evento mouse
+     * @param event è l'evento di rilascio del mouse
+     * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
+     * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
+     * @return
      */
     @Override
-    public boolean handleMouseReleased(MouseEvent event, double coordinataX, double coordinataY) {
+    public boolean handleMouseReleased(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
         //NA
         return false;
     }

@@ -41,10 +41,11 @@ public class DrawingContext {
 
     /**
      * DrawingContext delega la gestione dell'evento pressione del mouse allo stato corrente
-     * @param event l'evento di pressione del Mouse
-     * @param forme la lista delle forme presenti sul canvas
-     * @param x coordinata logica per l'asse x dell'evento mouse
-     * @param y coordinata logica per l'asse y dell'evento mouse
+     * @param event è l'evento di pressione del Mouse
+     * @param forme è la lista delle forme presenti sul canvas
+     * @param x è la coordinata logica per l'asse x dell'evento mouse
+     * @param y è la coordinata logica per l'asse y dell'evento mouse
+     * @return {@code true} in caso di risultato positivo, altrimenti {@code false}
      */
     public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme, double x, double y){
         return currentState.handleMousePressed(event, forme,x, y);
@@ -52,10 +53,11 @@ public class DrawingContext {
 
     /**
      * DrawingContext delega la gestione dell'evento di trascinamento del mouse allo stato corrente
-     * @param event l'evento di pressione del Mouse
-     * @param forme la lista delle forme presenti sul canvas
-     * @param x coordinata logica per l'asse x dell'evento mouse
-     * @param y coordinata logica per l'asse y dell'evento mouse
+     * @param event è l'evento di pressione del Mouse
+     * @param forme è la lista delle forme presenti sul canvas
+     * @param x è la coordinata logica per l'asse x dell'evento mouse
+     * @param y è la coordinata logica per l'asse y dell'evento mouse
+     * @return {@code true} in caso di risultato positivo, altrimenti {@code false}
      */
     public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double x, double y){
         return currentState.handleMouseDragged(event, forme, x, y);
@@ -63,12 +65,13 @@ public class DrawingContext {
 
     /**
      * DrawingContext delega la gestione dell'evento di rilascio del mouse allo stato corrente
-     * @param event l'evento di rilascio del Mouse
-     * @param x coordinata logica per l'asse x dell'evento mouse
-     * @param y coordinata logica per l'asse y dell'evento mouse
+     * @param event è l'evento di rilascio del Mouse
+     * @param x è la coordinata logica per l'asse x dell'evento mouse
+     * @param y è la coordinata logica per l'asse y dell'evento mouse
+     * @return {@code true} in caso di risultato positivo, altrimenti {@code false}
      */
-    public boolean handleMouseReleased(MouseEvent event, double x, double y){
-        return currentState.handleMouseReleased(event, x, y);
+    public boolean handleMouseReleased(MouseEvent event, DrawSnapModel forme, double x, double y){
+        return currentState.handleMouseReleased(event, forme, x, y);
     }
 
 }

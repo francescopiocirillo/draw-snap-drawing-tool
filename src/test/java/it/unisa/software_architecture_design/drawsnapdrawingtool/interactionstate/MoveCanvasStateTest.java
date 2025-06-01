@@ -204,7 +204,7 @@ public class MoveCanvasStateTest {
     void testHandleMouseReleased() {
         double testCoordX = 0.0;
         double testCoordY = 0.0;
-        boolean result = moveCanvasState.handleMouseReleased(mockMouseEvent, testCoordX, testCoordY);
+        boolean result = moveCanvasState.handleMouseReleased(mockMouseEvent, mockDrawSnapModel, testCoordX, testCoordY);
 
         // Verifica che il metodo setCursor sia stato chiamato su mockCanvas con l'argomento corretto
         verify(mockCanvas).setCursor(Cursor.OPEN_HAND);
