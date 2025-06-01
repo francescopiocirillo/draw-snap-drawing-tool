@@ -80,8 +80,8 @@ public class FormaSelezionataDecorator extends FormaDecorator{
             offsetY_bbox = poligono.getIntrinsicCenterY();
         }else if (getForma() instanceof Testo){
             Testo testo = (Testo) getForma();
-            larghezza = testo.getRenderedWidth();
-            altezza = testo.getRenderedHeight();
+            larghezza = testo.getLarghezza();
+            altezza = testo.getAltezza();
         }
 
         double rectWidth = larghezza + 2 * MARGINE_SELEZIONE;

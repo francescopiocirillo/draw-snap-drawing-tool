@@ -12,8 +12,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
 
+/**
+ * La classe {@code Testo} rappresenta la forma Testo e presenta tutte le caratteristiche
+ * ereditate da {@code Forma2D} in più alla stringa {@code testo} che rappresenterà.
+ */
 public class Testo extends Forma2D {
 
+    /*
+     * Attributi
+     */
     private transient String testo;
     private final String FONT_NAME = "Arial";
     private double currentFontSize = 12.0;
@@ -41,6 +48,114 @@ public class Testo extends Forma2D {
         calculateFontSize();
         updateVertici();
     }
+
+    @Override
+    public double getAltezza() {
+        return super.getAltezza();
+    }
+
+    @Override
+    public void setAltezza(double altezza) {
+        super.setAltezza(altezza);
+        System.out.println("Altezza: " + altezza);
+        calculateFontSize();
+        updateVertici();
+    }
+
+    @Override
+    public double getLarghezza() {
+        return super.getLarghezza();
+    }
+
+    @Override
+    public void setLarghezza(double larghezza) {
+        super.setLarghezza(larghezza);
+        calculateFontSize();
+        updateVertici();
+    }
+
+    @Override
+    public double getAngoloInclinazione() {
+        return super.getAngoloInclinazione();
+    }
+
+    @Override
+    public void setAngoloInclinazione(double angoloInclinazione) {
+        super.setAngoloInclinazione(angoloInclinazione);
+        updateVertici();
+    }
+
+    @Override
+    public Color getColoreInterno() {
+        return super.getColoreInterno();
+    }
+
+    @Override
+    public void setColoreInterno(Color coloreInterno) {
+        super.setColoreInterno(coloreInterno);
+    }
+
+    public String getTesto() {
+        return testo;
+    }
+
+    public void setTesto(String testo) {
+        this.testo = testo;
+    }
+
+    public double getCurrentFontSize(){
+        return currentFontSize;
+    }
+
+    public void setCurrentFontSize(double currentFontSize) {
+        this.currentFontSize = currentFontSize;
+    }
+
+    public double getVerticeAY() {
+        return verticeAY;
+    }
+
+    public double getVerticeAX() {
+        return verticeAX;
+    }
+
+    public double getVerticeDY() {
+        return verticeDY;
+    }
+
+    public double getVerticeDX() {
+        return verticeDX;
+    }
+
+    public double getVerticeCY() {
+        return verticeCY;
+    }
+
+    public double getVerticeCX() {
+        return verticeCX;
+    }
+
+    public double getVerticeBY() {
+        return verticeBY;
+    }
+
+    public double getVerticeBX() {
+        return verticeBX;
+    }
+
+
+    @Override
+    public void setCoordinataY(double coordinataY) {
+        super.setCoordinataY(coordinataY);
+        updateVertici();
+    }
+
+    @Override
+    public void setCoordinataX(double coordinataX) {
+        super.setCoordinataX(coordinataX);
+        updateVertici();
+    }
+
 
     /**
      * Aggiorna le coordinate dei vertici del bounding box del testo.
@@ -75,114 +190,6 @@ public class Testo extends Forma2D {
         this.verticeDY = centroY - mezzaLarghezza * sinAngolo + mezzaAltezza * cosAngolo;
     }
 
-    @Override
-    public double getAltezza() {
-        return super.getAltezza();
-    }
-
-    @Override
-    public void setAltezza(double altezza) {
-        super.setAltezza(altezza);
-        System.out.println("Altezza: " + altezza);
-        calculateFontSize();
-        updateVertici();
-    }
-
-    @Override
-    public void setLarghezza(double larghezza) {
-        super.setLarghezza(larghezza);
-        calculateFontSize();
-        updateVertici();
-    }
-
-    public void setAngoloInclinazione(double angoloInclinazione) {
-        super.setAngoloInclinazione(angoloInclinazione);
-        updateVertici();
-    }
-
-    @Override
-    public Color getColoreInterno() {
-        return super.getColoreInterno();
-    }
-
-    @Override
-    public void setColoreInterno(Color coloreInterno) {
-        super.setColoreInterno(coloreInterno);
-    }
-
-    public String getTesto() {
-        return testo;
-    }
-
-    public void setTesto(String testo) {
-        this.testo = testo;
-    }
-
-    public double getCurrentFontSize(){
-        return currentFontSize;
-    }
-
-    public double getVerticeAY() {
-        return verticeAY;
-    }
-
-    public double getVerticeDY() {
-        return verticeDY;
-    }
-
-    public double getVerticeDX() {
-        return verticeDX;
-    }
-
-    public double getVerticeCY() {
-        return verticeCY;
-    }
-
-    public double getVerticeCX() {
-        return verticeCX;
-    }
-
-    public double getVerticeBY() {
-        return verticeBY;
-    }
-
-    public double getVerticeBX() {
-        return verticeBX;
-    }
-
-    public double getVerticeAX() {
-        return verticeAX;
-    }
-
-    @Override
-    public void setCoordinataY(double coordinataY) {
-        super.setCoordinataY(coordinataY);
-        updateVertici();
-    }
-
-    @Override
-    public void setCoordinataX(double coordinataX) {
-        super.setCoordinataX(coordinataX);
-        updateVertici();
-    }
-
-    /**
-     * Restituisce la larghezza effettiva del testo renderizzato (corrisponde alla larghezza della bounding box).
-     * Questo è utile per il decorator di selezione.
-     * @return La larghezza della bounding box del testo.
-     */
-    public double getRenderedWidth() {
-        return getLarghezza(); // La larghezza renderizzata è la larghezza della bounding box
-    }
-
-    /**
-     * Restituisce l'altezza effettiva del testo renderizzato (corrisponde all'altezza della bounding box).
-     * Questo è utile per il decorator di selezione.
-     * @return L'altezza della bounding box del testo.
-     */
-    public double getRenderedHeight() {
-        return getAltezza(); // L'altezza renderizzata è l'altezza della bounding box
-    }
 
     /**
      * Calcola i fattori di scala (scaleX, scaleY) necessari per stirare il testo
@@ -212,8 +219,6 @@ public class Testo extends Forma2D {
 
         this.currentFontSize = baseMeasurementFontSize;
     }
-
-
 
     @Override
     public void disegna(GraphicsContext gc) {
@@ -280,7 +285,7 @@ public class Testo extends Forma2D {
     }
 
     /**
-     * Determina se il rettangolo contiene un punto specifico nello spazio.
+     * Determina se il testo contiene un punto specifico nello spazio.
      *
      * @param puntoDaValutareX La coordinata X del punto da verificare.
      * @param puntoDaValutareY La coordinata Y del punto da verificare.
