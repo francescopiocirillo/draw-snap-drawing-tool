@@ -35,12 +35,20 @@ class BackToFrontCommandTest {
         Forma f1 = new Forma(10, 10, 20, 0, Color.RED) {
             @Override public void disegna(GraphicsContext gc) {}
             @Override public boolean contiene(double x, double y) { return false; }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         };
         Forma f2 = new Forma(10, 10, 20, 0, Color.RED) {
             @Override public void disegna(GraphicsContext gc) {}
             @Override public boolean contiene(double x, double y) { return false; }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         };
         model.add(f1);
         model.add(f2);
@@ -59,12 +67,20 @@ class BackToFrontCommandTest {
         Forma nonSelezionata = new Forma(10, 10, 20, 0, Color.BLUE) {
             @Override public void disegna(GraphicsContext gc) {}
             @Override public boolean contiene(double x, double y) { return false; }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         };
         Forma formaSelezionata = new FormaSelezionataDecorator(new Forma(20, 20, 30, 0, Color.GREEN) {
             @Override public void disegna(GraphicsContext gc) {}
             @Override public boolean contiene(double x, double y) { return true; }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         });
 
         model.add(nonSelezionata);
@@ -83,13 +99,21 @@ class BackToFrontCommandTest {
         Forma formaSelezionata = new FormaSelezionataDecorator(new Forma(10, 10, 20, 0, Color.RED) {
             @Override public void disegna(GraphicsContext gc) {}
             @Override public boolean contiene(double x, double y) { return true; }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         });
 
         model.add(new Forma(5, 5, 15, 0, Color.GRAY) {
             @Override public void disegna(GraphicsContext gc) {}
             @Override public boolean contiene(double x, double y) { return false; }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         });
         model.add(formaSelezionata);
 
@@ -105,7 +129,11 @@ class BackToFrontCommandTest {
         Forma selezionata = new FormaSelezionataDecorator(new Forma(10, 10, 20, 0, Color.RED) {
             @Override public void disegna(GraphicsContext gc) {}
             @Override public boolean contiene(double x, double y) { return true; }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         });
 
         model.add(selezionata);

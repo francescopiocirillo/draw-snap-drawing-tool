@@ -30,10 +30,18 @@ class PasteCommandTest {
                 return new Forma(getCoordinataX(), getCoordinataY(), getLarghezza(), 0, getColore()) {
                     @Override public void disegna(GraphicsContext gc) {}
                     @Override public boolean contiene(double x, double y) { return false; }
-                    @Override public void specchia(){}
+                    @Override
+                    public void specchiaInVerticale(){}
+
+                    @Override
+                    public void specchiaInOrizzontale() {}
                 };
             }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         };
         model.addFormaCopiata(originale);
 
@@ -60,7 +68,11 @@ class PasteCommandTest {
             public Forma clone() {
                 return null; // clone non valido
             }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         };
         model.addFormaCopiata(formaCheNonClona);
 
@@ -81,10 +93,18 @@ class PasteCommandTest {
                 return new Forma(getCoordinataX(), getCoordinataY(), getLarghezza(), 0, getColore()) {
                     @Override public void disegna(GraphicsContext gc) {}
                     @Override public boolean contiene(double x, double y) { return false; }
-                    @Override public void specchia(){}
+                    @Override
+                    public void specchiaInVerticale(){}
+
+                    @Override
+                    public void specchiaInOrizzontale() {}
                 };
             }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         };
         model.addFormaCopiata(originale);
 
@@ -117,10 +137,18 @@ class PasteCommandTest {
                 return new Forma(getCoordinataX(), getCoordinataY(), getLarghezza(), 0, getColore()) {
                     @Override public void disegna(GraphicsContext gc) {}
                     @Override public boolean contiene(double x, double y) { return false; }
-                    @Override public void specchia(){}
+                    @Override
+                    public void specchiaInVerticale(){}
+
+                    @Override
+                    public void specchiaInOrizzontale() {}
                 };
             }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         };
         model.addFormaCopiata(formaCopiata);
 
@@ -140,7 +168,11 @@ class PasteCommandTest {
         Forma formaPreesistente = new Forma(5, 5, 20, 0, Color.BLACK) {
             @Override public void disegna(GraphicsContext gc) {}
             @Override public boolean contiene(double x, double y) { return false; }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         };
         model.add(formaPreesistente);
 
@@ -152,10 +184,18 @@ class PasteCommandTest {
                 return new Forma(getCoordinataX(), getCoordinataY(), getLarghezza(), 0, getColore()) {
                     @Override public void disegna(GraphicsContext gc) {}
                     @Override public boolean contiene(double x, double y) { return false; }
-                    @Override public void specchia(){}
+                    @Override
+                    public void specchiaInVerticale(){}
+
+                    @Override
+                    public void specchiaInOrizzontale() {}
                 };
             }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         };
         model.addFormaCopiata(formaCopiata);
 

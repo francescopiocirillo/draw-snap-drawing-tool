@@ -51,7 +51,10 @@ class CutCommandTest {
             }
 
             @Override
-            public void specchia(){}
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
 
         };
 
@@ -82,9 +85,11 @@ class CutCommandTest {
             public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
                 return true; // Mock: Il punto è contenuto
             }
+            @Override
+            public void specchiaInVerticale(){}
 
             @Override
-            public void specchia(){}
+            public void specchiaInOrizzontale() {}
         });
 
         //Aggiungo la forma a lista
@@ -126,7 +131,11 @@ class CutCommandTest {
             }
 
             @Override
-            public void specchia(){}
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
+
 
         };
 
@@ -142,7 +151,10 @@ class CutCommandTest {
                 return true; // Mock: Il punto è contenuto
             }
             @Override
-            public void specchia(){}
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
 
         });
 
@@ -182,7 +194,10 @@ class CutCommandTest {
                 public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) { return false; }
 
                 @Override
-                public void specchia(){}
+                public void specchiaInVerticale(){}
+
+                @Override
+                public void specchiaInOrizzontale() {}
             });
         }
 
@@ -194,7 +209,10 @@ class CutCommandTest {
             public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) { return true; }
 
             @Override
-            public void specchia(){}
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         });
 
         //Aggiungo la forma selezionata a lista

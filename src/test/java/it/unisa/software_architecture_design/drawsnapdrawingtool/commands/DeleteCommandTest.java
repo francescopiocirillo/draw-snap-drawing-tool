@@ -29,7 +29,11 @@ class DeleteCommandTest {
                 return false; // Mock: Nessun punto è contenuto
             }
 
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         };
 
         Forma formaSelezionata = new FormaSelezionataDecorator(new Forma(50, 60, 30, 0, Color.BLUE) {
@@ -43,7 +47,11 @@ class DeleteCommandTest {
                 return true; // Mock: Il punto è contenuto
             }
 
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         });
 
         DrawSnapModel forme = new DrawSnapModel();
@@ -64,7 +72,11 @@ class DeleteCommandTest {
             public void disegna(GraphicsContext gc) {}
             @Override
             public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) { return true; }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         });
 
         DrawSnapModel forme = new DrawSnapModel();
@@ -86,7 +98,11 @@ class DeleteCommandTest {
                 return puntoDaValutareX >= 50 && puntoDaValutareX <= 80 &&
                         puntoDaValutareY >= 50 && puntoDaValutareY <= 80;
             }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         };
 
         Forma formaSelezionata = new FormaSelezionataDecorator(new Forma(50, 50, 30, 0, Color.BLUE) {
@@ -97,7 +113,11 @@ class DeleteCommandTest {
                 return puntoDaValutareX >= 50 && puntoDaValutareX <= 80 &&
                         puntoDaValutareY >= 50 && puntoDaValutareY <= 80;
             }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         });
 
         Forma forma3 = new Forma(50, 50, 30, 0, Color.GREEN) {
@@ -108,7 +128,11 @@ class DeleteCommandTest {
                 return puntoDaValutareX >= 50 && puntoDaValutareX <= 80 &&
                         puntoDaValutareY >= 50 && puntoDaValutareY <= 80;
             }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         };
 
         DrawSnapModel forme = new DrawSnapModel();
@@ -133,7 +157,11 @@ class DeleteCommandTest {
                 public void disegna(GraphicsContext gc) {}
                 @Override
                 public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) { return false; }
-                @Override public void specchia(){}
+                @Override
+                public void specchiaInVerticale(){}
+
+                @Override
+                public void specchiaInOrizzontale() {}
             });
         }
 
@@ -142,7 +170,11 @@ class DeleteCommandTest {
             public void disegna(GraphicsContext gc) {}
             @Override
             public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) { return true; }
-            @Override public void specchia(){}
+            @Override
+            public void specchiaInVerticale(){}
+
+            @Override
+            public void specchiaInOrizzontale() {}
         });
 
         forme.add(formaSelezionata);
