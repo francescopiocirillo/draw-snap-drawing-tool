@@ -32,32 +32,67 @@ class TestoTest {
     }
 
 
-//    @Test
-//    void testSpecchia_testoOrizzontale() {
-//        Testo testo = new Testo(100, 100, 50, 0, Color.BLUE, 20, Color.RED, "pepi");
-//        assertEquals("pepi", testo.getTesto()); // Verifica stato iniziale stringa
-//        assertEquals(0.0, testo.getAngoloInclinazione(), 0.001); // Verifica stato iniziale angolo
-//
-//        testo.specchia();
-//
-//        assertEquals("ipep", testo.getTesto()); // Verifica inversione stringa
-//        assertEquals(0.0, testo.getAngoloInclinazione(), 0.001); // Verifica angolo (0 gradi specchiato rimane 0)
-//        assertTrue(testo.contiene(100, 100)); // Verifica che il punto centrale sia ancora contenuto
-//        assertTrue(testo.contiene(100 + 10, 100 + 5)); // Punto interno originale
-//        assertTrue(testo.contiene(100 - 10, 100 + 5)); // Punto interno originale
-//    }
-//
-//
-//    @Test
-//    void testSpecchia_doppiaSpecchiatura() {
-//        Testo testo = new Testo(100, 100, 50, 0, Color.BLUE, 20, Color.RED, "test");
-//
-//        testo.specchia(); // Prima specchiatura: "tset", angolo 0
-//        assertEquals("tset", testo.getTesto());
-//        assertEquals(0.0, testo.getAngoloInclinazione(), 0.001);
-//
-//        testo.specchia(); // Seconda specchiatura: "test", angolo 0
-//        assertEquals("test", testo.getTesto());
-//        assertEquals(0.0, testo.getAngoloInclinazione(), 0.001);
-//    }
+    @Test
+    void testSpecchia_testoVerticale() {
+        Testo testo = new Testo(100, 100, 50, 0, Color.BLUE, 20, Color.RED, "pepi");
+        assertEquals("pepi", testo.getTesto()); // Verifica stato iniziale stringa
+        assertEquals(0.0, testo.getAngoloInclinazione(), 0.001); // Verifica stato iniziale angolo
+
+        testo.specchiaInVerticale();
+
+        assertEquals("ipep", testo.getTesto()); // Verifica inversione stringa
+        assertEquals(0.0, testo.getAngoloInclinazione(), 0.001); // Verifica angolo (0 gradi specchiato rimane 0)
+        assertTrue(testo.contiene(100, 100)); // Verifica che il punto centrale sia ancora contenuto
+        assertTrue(testo.contiene(100 + 10, 100 + 5)); // Punto interno originale
+        assertTrue(testo.contiene(100 - 10, 100 + 5)); // Punto interno originale
+    }
+
+
+    @Test
+    void testSpecchia_doppiaSpecchiaturaVerticale() {
+        Testo testo = new Testo(100, 100, 50, 0, Color.BLUE, 20, Color.RED, "test");
+
+        testo.specchiaInVerticale(); // Prima specchiatura: "tset", angolo 0
+        assertEquals("tset", testo.getTesto());
+        assertEquals(0.0, testo.getAngoloInclinazione(), 0.001);
+
+        testo.specchiaInVerticale(); // Seconda specchiatura: "test", angolo 0
+        assertEquals("test", testo.getTesto());
+        assertEquals(0.0, testo.getAngoloInclinazione(), 0.001);
+    }
+
+    @Test
+    void testSpecchia_testoOrizzontale() {
+        String stringaIniziale = "orizzontale";
+        double angoloIniziale = 30.0;
+        Testo testo = new Testo(200, 150, 120, angoloIniziale, Color.DARKCYAN, 30, Color.CYAN, stringaIniziale);
+
+        assertEquals(stringaIniziale, testo.getTesto(), "Verifica stato iniziale stringa.");
+        assertEquals(angoloIniziale, testo.getAngoloInclinazione(), 0.001, "Verifica stato iniziale angolo.");
+
+        testo.specchiaInOrizzontale();
+
+        assertEquals(stringaIniziale, testo.getTesto(), "La stringa NON deve cambiare dopo specchiaInOrizzontale.");
+        assertEquals(-angoloIniziale, testo.getAngoloInclinazione(), 0.001, "L'angolo deve essere negato.");
+    }
+
+    @Test
+    void testSpecchia_doppiaSpecchiaturaOrizzontale() {
+        String stringaIniziale = "doppia";
+        double angoloIniziale = -25.0; // Inizia con un angolo negativo
+        Testo testo = new Testo(50, 80, 90, angoloIniziale, Color.MAGENTA, 25, Color.PINK, stringaIniziale);
+
+        assertEquals(stringaIniziale, testo.getTesto());
+        assertEquals(angoloIniziale, testo.getAngoloInclinazione(), 0.001);
+
+        // Prima specchiatura orizzontale
+        testo.specchiaInOrizzontale();
+        assertEquals(stringaIniziale, testo.getTesto(), "Stringa dopo la prima specchiatura.");
+        assertEquals(-angoloIniziale, testo.getAngoloInclinazione(), 0.001, "Angolo dopo la prima specchiatura.");
+
+        // Seconda specchiatura orizzontale
+        testo.specchiaInOrizzontale();
+        assertEquals(stringaIniziale, testo.getTesto(), "Stringa dopo la seconda specchiatura.");
+        assertEquals(angoloIniziale, testo.getAngoloInclinazione(), 0.001, "Angolo dopo la seconda specchiatura (ripristinato).");
+    }
 }
