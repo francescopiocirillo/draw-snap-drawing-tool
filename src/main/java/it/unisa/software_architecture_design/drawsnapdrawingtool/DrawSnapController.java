@@ -130,6 +130,10 @@ public class DrawSnapController {
      */
     private Invoker invoker = null;
 
+    /*
+     * Metodi di Inizializzazione
+     */
+
     /**
      * Gestisce l'inizializzazione dell'applicativo dopo il caricamento
      * del foglio fxml
@@ -355,7 +359,6 @@ public class DrawSnapController {
         gridSlider.setManaged(false);
     }
 
-
     /*
      * Setter per lo stage e il Model
      */
@@ -367,6 +370,9 @@ public class DrawSnapController {
         this.forme = model;
     }
 
+    /*
+     * Handler del Canvas
+     */
 
     /**
      * Gestisce l'evento di pressione del mouse sul {@link Canvas}.
@@ -458,118 +464,39 @@ public class DrawSnapController {
     }
 
     /**
-     * Metodo che salva lo stato dopo un cambiamento e poi ricarica il canvas
-     * @param stateChanged boolean che decide se lo stato va salvato o meno
-     */
-    void updateState(boolean stateChanged){
-        if(stateChanged){
-            history.saveState(forme.saveToMemento());
-            undoButton.setDisable(false);
-        }
-        redrawAll();
-    }
-
-    /**
-     * Metodo che cancella il contenuto del {@link Canvas} e ridisegna tutte le forme presenti
-     * nella lista {@code forme} utilizzando il {@link GraphicsContext}.
-     * Chiamato dopo una modifica nel canvas per aggiornarne la visualizzazione.
-     */
-    void redrawAll() {
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-        gc.save();
-        gc.scale(zoomLevels[currentZoomIndex], zoomLevels[currentZoomIndex]);
-
-        if(gridVisible){
-            drawGrid(zoomLevels[currentZoomIndex], canvas.getWidth(), canvas.getHeight());
-        }
-
-        Iterator<Forma> it = forme.getIteratorForme();
-        while (it.hasNext()) {
-            Forma f = it.next();
-            f.disegna(gc);
-        }
-        if(drawingContext.getCurrentState() instanceof  DrawState) {
-            DrawState drawState = (DrawState) drawingContext.getCurrentState();
-            Forma previewShape = drawState.getCurrentDrawingShapePreview();
-            if(previewShape != null){
-                gc.setStroke(Color.DODGERBLUE);
-                gc.setLineWidth(2.0 / zoomLevels[currentZoomIndex]);
-                gc.setLineDashes(5, 5);
-                previewShape.disegna(gc);
-                gc.setLineDashes(0);
-                gc.setStroke(Color.BLACK);
-                gc.setLineWidth(1.0);
-            }
-            if (drawState.getFormaCorrente() == Forme.POLIGONO && drawState.getCreazionePoligono()){
-                List<Double> puntiX = drawState.getPuntiX();
-                List<Double> puntiY = drawState.getPuntiY();
-
-                double[] xArray = puntiX.stream().mapToDouble(Double::doubleValue).toArray();
-                double[] yArray = puntiY.stream().mapToDouble(Double::doubleValue).toArray();
-
-                gc.setLineDashes(5, 5);
-                gc.setStroke(Color.DODGERBLUE);
-                gc.setLineWidth(1);
-
-                gc.strokePolygon(xArray, yArray, xArray.length);
-
-                for(int i =0; i < xArray.length; i++){
-                    gc.setFill(Color.RED);
-                    gc.fillOval(xArray[i] -3, yArray[i] -3, 6, 6);
-                }
-
-            }
-            gc.setLineDashes(0);
-        }
-        gc.restore();
-    }
-
-    /**
-     * Metodo per disegnare la griglia all'interno del canvas
-     * Nota: La griglia viene disegnata usando coordinate logiche,
-     * la scala del GraphicsContext la renderà correttamente.
-     */
-    private void drawGrid(double currentZoomLevel, double canvasPhysicalWidth, double canvasPhysicalHeight) {
-        gc.setStroke(Color.LIGHTGRAY);
-
-        gc.setLineWidth(1.0 / currentZoomLevel);
-
-        double maxLogicalX = canvasPhysicalWidth / currentZoomLevel;
-        double maxLogicalY = canvasPhysicalHeight / currentZoomLevel;
-
-        for (double x = 0; x <= maxLogicalX; x += currentGridSize) {
-            gc.strokeLine(x, 0, x, maxLogicalY);
-        }
-
-        for (double y = 0; y <= maxLogicalY; y += currentGridSize) {
-            gc.strokeLine(0, y, maxLogicalX, y);
-        }
-    }
-
-    /**
-     * Gestisce l'evento di mouse trascinato delegandone la gestione all'omonimo metodo di {@codeDrawingContext} che
-     * a sua volta delega all'omonimo metodo della classe corrispondente allo stato attuale.
-     * @param mouseEvent -> l'evento scatenante
+     * Gestisce l'evento di trascinamento del mouse sul {@link Canvas}.
+     * Se si trascina viene chiamato {@code handleMouseDragged()} del {@code drawingContext}
+     * e ridisegna tutto richiamando {@code redrawAll()}.
+     * @param mouseEvent è l'evento di trascinamento del mouse
      */
     private void handleMouseDragged(MouseEvent mouseEvent) {
+        //Calcolo coordinate logiche
         double logicalCurrentX = mouseEvent.getX() / zoomLevels[currentZoomIndex];
         double logicalCurrentY = mouseEvent.getY() / zoomLevels[currentZoomIndex];
+
+        //Cambio cursore
         if(drawingContext.getCurrentState() instanceof DrawState) canvas.setCursor(Cursor.CROSSHAIR);
+
+        //Chiamata all'handler del Drawing Context e update dello stato
         dragged = drawingContext.handleMouseDragged(mouseEvent, forme, logicalCurrentX, logicalCurrentY);
         updateState(false);
     }
 
     /**
-     * Aggiornare il canvas durante il dragging è corretto ma il salvataggio del memento va effettuato solo al termine
-     * dell'evento di drag, da cui la necessità di questo metodo e dell'attributo dragged che per ogni interazione con
-     * il canvas conserva l'informazioni che dice se si tratta di un drag o meno
-     * @param mouseEvent
+     * Gestisce l'evento di rilascio del mouse sul {@link Canvas}.
+     * Se si rilascia viene chiamato {@code hndleMouseReleased()} del {@code drawingContext}
+     * e ridisegna tutto richiamando {@code redrawAll()}.
+     * @param mouseEvent è l'evento di rilascio del mouse
      */
     private void handleMouseReleased(MouseEvent mouseEvent) {
+        //Calcolo coordinate logiche
         double logicalCurrentX = mouseEvent.getX() / zoomLevels[currentZoomIndex];
         double logicalCurrentY = mouseEvent.getY() / zoomLevels[currentZoomIndex];
+
+        //Cambio cursore
         if(drawingContext.getCurrentState() instanceof DrawState) canvas.setCursor(Cursor.DEFAULT);
+
+        //Chiamata all'handler del Drawing Context e update dello stato
         boolean stateChanged = drawingContext.handleMouseReleased(mouseEvent, forme, logicalCurrentX, logicalCurrentY);
         if(dragged || stateChanged){
             updateState(true);
@@ -577,190 +504,250 @@ public class DrawSnapController {
         }
     }
 
+    /*
+     * Handler della barra principale
+     */
+
     /**
-     * Metodo per passare alla modalità di disegno
-     * @param event -> evento che ha causato la chiamata alla funzione
-     * @param forma -> forma corrispondente al bottone che è stato premuto
+     * Gestisce il cambio di stato in {@code DrawState}
+     * @param event è l'evento che ha causato la chiamata alla funzione
+     * @param forma è la forma corrispondente al bottone che è stato premuto
      */
     void setDrawMode(ActionEvent event, Forme forma) {
+        //Cambio di stato
         DrawState newDrawState = new DrawState(forma);
         drawingContext.setCurrentState(newDrawState, forme);
+
+        //Cambio cursore
         canvas.setCursor(Cursor.DEFAULT);
+
+        //Update dello stato
         updateState(false);
+
+        //Reset della finestra di dialogo
         newDrawState.resetDialogShown();
     }
 
     /**
-     * Metodo per passare alla modalità di selezione
+     * Gestisce il cambio di stato in {@code SelectState}
      */
     void setSelectMode() {
+        //Cambio di stato
         drawingContext.setCurrentState(new SelectState(toolBarFX, changeFillColorButton, composeButton), forme);
+
+        //Cambio cursore
         canvas.setCursor(Cursor.DEFAULT);
+
+        //Upsate dello stato
         updateState(false);
     }
 
     /**
-     * Metodo per passare alla modalità di panning (scorrimento)
+     * Gestisce il cambio di stato in {@code MoveCanvasState}
      */
     void setMoveCanvasMode() {
+        //Cambio stato
         drawingContext.setCurrentState(new MoveCanvasState(canvas, scrollPane), forme);
+
+        //Cambio cursore
         canvas.setCursor(Cursor.OPEN_HAND);
+
+        //Update dello stato
         updateState(false);
     }
 
+    /*
+     * Handler del Menubar
+     */
+
     /**
-     * Metodo per salvare su file il disegno corrente
-     * @param event -> evento che causa l'operazione di salvataggio
+     * Gestisce il salvataggio del {@link Canvas} corrente all'interno di
+     * un {@link java.io.File} attraverso l'esecuzione del {@code SaveCommand}
+     * @param event è l'evento che ha causato la chiamata alla funzione
      */
     @FXML
     void onSavePressed(ActionEvent event) {
+        //Creazione del comando
         invoker.setCommand(new SaveCommand(forme, stage));
+
+        //Esecuzione del comando
         invoker.executeCommand();
     }
 
     /**
-     * Metodo per caricare da file un disegno precedentemente salvato
-     * @param event -> evento che causa l'operazione di caricamento
+     * Gestisce il caricamento del {@link java.io.File} all'interno del
+     * {@link Canvas} attraverso l'esecuzione del {@code LoadCommand}
+     * @param event è l'evento che ha causato la chiamata alla funzione
      */
     @FXML
     void onLoadPressed(ActionEvent event) {
+        //Creazione del comando
         invoker.setCommand(new LoadCommand(forme, stage));
+
+        //Esecuzione del comando
         invoker.executeCommand();
+
+        //Update dello stato
         updateState(true);
     }
 
+    /*
+     * Handler del Context Menu
+     */
+
     /**
-     * Metodo per eliminare una figura selezionata
-     * @param event -> evento che causa l'operazione di elimina
+     * Gestisce l'esecuzione del {@code DeleteCommand} sulla
+     * {@code FormaSelezionataDecorator} corrente
+     * @param event è l'evento che ha causato la chiamata alla funzione
      */
     @FXML
     void onDeletePressed(ActionEvent event) {
+        //Creazione del comando
         invoker.setCommand(new DeleteCommand(forme));
+
+        //Esecuzione del comando
         invoker.executeCommand();
+
+        //Disabilitazione della toolbar
         toolBarFX.setDisable(true);
+
+        //Update dello stato
         updateState(true);
     }
 
     /**
-     * Metodo per tagliare una figura selezionata
-     * @param event -> evento che causa l'operazione di taglia
+     * Gestisce l'eseguzione del {@code CutCommand}
+     * sulla {@code FormaSelezionataDecorator} corrente
+     * @param event è l'evento che ha causato la chiamata alla funzione
      */
     void onCutPressed(ActionEvent event) {
+        //Creazione del comando
         invoker.setCommand(new CutCommand(forme));
+
+        //Esecuzione del comando
         invoker.executeCommand();
+
+        //Disabilitazione della toolbar
         toolBarFX.setDisable(true);
+
+        //Update dello stato
         updateState(true);
     }
 
     /**
-     * Metodo per copiare una figura selezionata
-     * @param event -> evento che causa l'operazione di copia
+     * Gestisce l'esecuzione del {@code CopyCommand}
+     * sulla {@code FormaSelezionataDecorator}
+     * @param event è l'evento che ha causato la chiamata alla funzione
      */
     void onCopyPressed(ActionEvent event) {
+        //Creazione del comando
         invoker.setCommand(new CopyCommand(forme));
+
+        //Esecuzione del comando
         invoker.executeCommand();
+
+        //Disabilitazione della toolbar
         toolBarFX.setDisable(true);
+
+        //Update dello stato
         updateState(false);
     }
 
     /**
-     * Metodo per incollare una figura selezionata
-     * @param event -> evento che causa l'operazione di incolla
+     * Gestisce l'esecuzione del {@code PasteCommand}
+     * sulla {@code FormaSelezionataDecorator}
+     * @param event è l'evento che ha causato la chiamata alla funzione
      */
     void onPastePressed(ActionEvent event) {
+        //Creazione del comando
         invoker.setCommand(new PasteCommand(forme, lastClickX, lastClickY));
+
+        //Esecuzione del comando
         invoker.executeCommand();
+
+        //Dusabilitazione della toolbar
         toolBarFX.setDisable(true);
+
+        //Update dello stato
         updateState(true);
     }
 
     /**
-     * Metodo per mettere in primo piano la figura selezionata
-     * @param event -> evento che causa l'operazione di incolla
+     * Gestisce l'esecuzione del {@code ComposeCommand}
+     * sulle {@code FormaSelezionataDecorator}
+     * @param event è l'evento che ha causato la chiamata alla funzione
+     */
+    @FXML
+    public void onComposePressed(ActionEvent event) {
+        //Creazione del comando
+        invoker.setCommand(new ComposeCommand(forme));
+
+        //Esecuzione del comando
+        invoker.executeCommand();
+
+        //Update dello stato
+        updateState(true);
+    }
+
+    /**
+     * Gestisce l'esecuzione del {@code DecomposeCommand}
+     * sulla {@code FormaSelezionataDecorator}
+     * @param event è l'evento che ha causato la chiamata alla funzione
+     */
+    @FXML
+    public void onDecomposePressed(ActionEvent event) {
+        //Creazione comando
+        invoker.setCommand(new DecomposeCommand(forme));
+
+        //Esecuzione comando
+        invoker.executeCommand();
+
+        //Update dello stato
+        updateState(true);
+    }
+
+    /*
+     * Handler della ToolBar
+     */
+
+    /**
+     * Gestisce l'esecuzione del {@code BackToFrontCommand}
+     * sulla {@code FormaSelezionataDecorator}
+     * @param event è l'evento che ha causato la chiamata alla funzione
      */
     @FXML
     void onBackToFrontPressed(ActionEvent event) {
+        //Creazione del comando
         invoker.setCommand(new BackToFrontCommand(forme));
+
+        //Esecuzione del comando
         invoker.executeCommand();
+
+        //Update dello stato
         updateState(true);
     }
 
     /**
-     * Metodo per mettere in secondo piano la figura selezionata
-     * @param event -> evento che causa l'operazione di messa in secondo piano
+     * Gestisce l'esecuzione del {@code FrontToBackCommand}
+     * sulla {@code FormaSelezionataDecorator}
+     * @param event è l'evento che ha causato la chiamata alla funzione
      */
     @FXML
     void onFrontToBackPressed(ActionEvent event) {
+        //Creazione del comando
         invoker.setCommand(new FrontToBackCommand(forme));
+
+        //Esecuzione del comando
         invoker.executeCommand();
+
+        //Update dello stato
         updateState(true);
     }
 
-
     /**
-     * Metodo per modificare lo zoom con il livello selezionato
-     * @param event -> evento che causa il cambio di zoom
-     */
-    @FXML
-    void onZoomChangePressed(ActionEvent event) {
-        int selectedIndex = zoom.getSelectionModel().getSelectedIndex();
-        if(selectedIndex >= 0){
-            currentZoomIndex = selectedIndex;
-            invoker.setCommand(new ZoomCommand(canvas, scrollPane, baseCanvasWidth, baseCanvasHeight, zoomLevels[currentZoomIndex]));
-            invoker.executeCommand();
-            updateState(false);
-        }
-    }
-
-    /**
-     * Metodo per aumentare lo zoom di un livello
-     * @param event -> evento che causa l'aumento di zoom
-     */
-    @FXML
-    void onZoomInPressed(ActionEvent event) {
-        if(currentZoomIndex < zoomLevels.length - 1 ){
-            currentZoomIndex++;
-            invoker.setCommand(new ZoomCommand(canvas, scrollPane, baseCanvasWidth, baseCanvasHeight, zoomLevels[currentZoomIndex]));
-            invoker.executeCommand();
-            zoom.getSelectionModel().select(currentZoomIndex);
-            updateState(false);
-        }
-    }
-
-    /**
-     * Metodo per diminuire lo zoom di un livello
-     * @param event -> evento che causa la riduzione di zoom
-     */
-    @FXML
-    void onZoomOutPressed(ActionEvent event) {
-        if(currentZoomIndex > 0){
-            currentZoomIndex--;
-            invoker.setCommand(new ZoomCommand(canvas, scrollPane, baseCanvasWidth, baseCanvasHeight, zoomLevels[currentZoomIndex]));
-            invoker.executeCommand();
-            zoom.getSelectionModel().select(currentZoomIndex);
-            updateState(false);
-        }
-    }
-
-    /**
-     * Metodo per invocare il comando di ripristino dello stato precedente dell'applicazione
-     * @param event -> evento di pressione del mouse sul tasto undo
-     */
-    @FXML
-    void onUndoPressed(ActionEvent event) {
-        invoker.setCommand(new UndoCommand(forme, history));
-        invoker.executeCommand();
-        updateState(false);
-        toolBarFX.setDisable(true);
-        if(history.isEmpty()){
-            undoButton.setDisable(true);
-        }
-        canvas.requestFocus();
-    }
-
-    /**
-     * Metodo per invocare il comando di cambio del colore interno della figura
-     * @param event -> evento di pressione del mouse sul tasto changeFillColor
+     * Gestisce l'esecuzione del {@code ChangeFillColorCommand}
+     * sulla {@code FormaSelezionataDecorator}
+     * @param event è l'evento che ha causato la chiamata alla funzione
      */
     @FXML
     void onChangeFillColorPressed(ActionEvent event) {
@@ -821,8 +808,9 @@ public class DrawSnapController {
     }
 
     /**
-     * Metodo per invocare il comando di modifica del colore di contorno della figura
-     * @param event -> evento di pressione del mouse sul tasto changeOutlineColor
+     * Gestisce l'esecuzione del {@code ChangeOutlineColorCommand}
+     * sulla {@code FormaSelezionataDecorator}
+     * @param event è l'evento che ha causato la chiamata alla funzione
      */
     @FXML
     void onChangeOutlineColorPressed(ActionEvent event) {
@@ -876,8 +864,9 @@ public class DrawSnapController {
     }
 
     /**
-     * Metodo per invocare il comando di cambio delle dimensioni della figura
-     * @param event -> evento di pressione del mouse sul tasto resize
+     * Gestisce l'esecuzione del {@code ResizeCommand}
+     * sulla {@code FormaSelezionataDecorator}
+     * @param event è l'evento che ha causato la chiamata alla funzione
      */
     @FXML
     public void onResizePressed(ActionEvent event) {
@@ -983,36 +972,63 @@ public class DrawSnapController {
     }
 
     /**
-     * Metodo perrendere la griglia visibile e permetterne il disegno
-     * @param event -> evento che ne causa la visualizzazione
+     * Gestisce l'esecuzione del {@code ProportionalResizeCommand}
+     * sulla {@code FormaSelezionataDecorator}
+     * @param event è l'evento che ha causato la chiamata alla funzione
      */
     @FXML
-    public void onGridPressed(ActionEvent event) {
-        gridVisible = !gridVisible;
-        gridSlider.setVisible(gridVisible);
-        gridSlider.setManaged(gridVisible);
-        updateState(false);
-    }
+    public void onProportionalResizePressed(ActionEvent event) {
+        Forma tipoForma = forme.getFormaSelezionata();
+        Dialog<Double> dialog = new Dialog<>();
+        dialog.setTitle("Ridimensiona Figura");
+        dialog.setHeaderText("La figura sarà ridimensionata sulla base del fattore proporzionale inserito, 100 significa lasciare la figura con le sue dimensioni attuali");
 
-    @FXML
-    public void onComposePressed(ActionEvent event) {
-        System.out.println("Composizione di forme selezionate");
-        invoker.setCommand(new ComposeCommand(forme));
-        invoker.executeCommand();
-        updateState(true);
-    }
+        VBox contentBox = new VBox(15);
+        contentBox.setPadding(new Insets(20));
 
-    @FXML
-    public void onDecomposePressed(ActionEvent event) {
-        System.out.println("Decomposizione di forme selezionate");
-        invoker.setCommand(new DecomposeCommand(forme));
-        invoker.executeCommand();
-        updateState(true);
+        // Spinner per dimensioni
+        Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
+        Spinner<Double> spinnerProporzione = new Spinner<>(1.0, 500.0, 100, 1.0); //imposta dimensioni attuali
+        spinnerProporzione.setEditable(true);
+
+        double proporzioneDefault = 100;
+
+        VBox dimensioniBox = new VBox(10);
+        dimensioniBox.setAlignment(Pos.CENTER);
+        dimensioniBox.getChildren().addAll(
+                new Label("Proporzione:"), spinnerProporzione
+        );
+
+        contentBox.getChildren().add(dimensioniBox);
+        dialog.getDialogPane().setContent(contentBox);
+        dialog.getDialogPane().setMinWidth(400);
+
+        // Pulsanti di conferma e annullamento
+        ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
+
+        // Impostazione del comportamento alla conferma
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == confirmButton) {
+                return spinnerProporzione.getValue();
+            }
+            return null;
+        });
+
+        // Mostra il dialog e gestisce il risultato
+        Optional<Double> result = dialog.showAndWait();
+        result.ifPresent(proporzioneUpdate -> {
+            invoker.setCommand(new ProportionalResizeCommand(forme, proporzioneUpdate));
+            invoker.executeCommand();
+            updateState(true);
+        });
     }
 
     /**
-     * Metodo per invocare il comando di cambio dell'angolo di inclinazione della figura
-     * @param event -> evento di pressione del mouse sul tasto Rotation
+     * Gestisce l'esecuzione del {@code RotationCommand}
+     * sulla {@code FormaSelezionataDecorator}
+     * @param event è l'evento che ha causato la chiamata alla funzione
      */
     @FXML
     void onRotationPressed(ActionEvent event){
@@ -1070,73 +1086,291 @@ public class DrawSnapController {
     }
 
     /**
-     * Metodo permette di specchiare la figura selezionata
-     * @param event -> evento di pressione su Reflection
+     * Gestisce l'esecuzione verticale del {@code ReflectCommand}
+     * sulla {@code FormaSelezionataDecorator}
+     * @param event è l'evento che ha causato la chiamata alla funzione
      */
     @FXML
     public void onVerticalReflectionPressed(ActionEvent event) {
+        //Creazione del comando
         invoker.setCommand(new ReflectCommand(forme, false));
+
+        //Esecuzione del comando
         invoker.executeCommand();
+
+        //Update dello stato
         updateState(true);
     }
 
     /**
-     * Metodo permette di specchiare la figura selezionata
-     * @param event -> evento di pressione su Reflection
+     * Gestisce l'esecuzione orizzontale del {@code ReflectCommand}
+     * sulla {@code FormaSelezionataDecorator}
+     * @param event è l'evento che ha causato la chiamata alla funzione
      */
     @FXML
     public void onHorizontalReflectionPressed(ActionEvent event) {
+        //Creazione del comando
         invoker.setCommand(new ReflectCommand(forme, true));
+
+        //Esecuzione del comando
         invoker.executeCommand();
+
+        //Update dello stato
         updateState(true);
     }
 
+    /*
+     * Handler dello Zoom
+     */
+
+    /**
+     * Gestisce l'esecuzione del {@code ZoomCommand}
+     * sul {@link Canvas} quando si cambia il livello di {@code zoom}
+     * tramite il menu a tendina
+     * @param event è l'evento che ha causato la chiamata alla funzione
+     */
     @FXML
-    public void onProportionalResizePressed(ActionEvent event) {
-        Forma tipoForma = forme.getFormaSelezionata();
-        Dialog<Double> dialog = new Dialog<>();
-        dialog.setTitle("Ridimensiona Figura");
-        dialog.setHeaderText("La figura sarà ridimensionata sulla base del fattore proporzionale inserito, 100 significa lasciare la figura con le sue dimensioni attuali");
+    void onZoomChangePressed(ActionEvent event) {
+        //Ottenimento del livello selezionato
+        int selectedIndex = zoom.getSelectionModel().getSelectedIndex();
+        if(selectedIndex >= 0){
+            //Cambio del livello corrente
+            currentZoomIndex = selectedIndex;
 
-        VBox contentBox = new VBox(15);
-        contentBox.setPadding(new Insets(20));
+            //Creazione del comando
+            invoker.setCommand(new ZoomCommand(canvas, scrollPane, baseCanvasWidth, baseCanvasHeight, zoomLevels[currentZoomIndex]));
 
-        // Spinner per dimensioni
-        Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
-        Spinner<Double> spinnerProporzione = new Spinner<>(1.0, 500.0, 100, 1.0); //imposta dimensioni attuali
-        spinnerProporzione.setEditable(true);
-
-        double proporzioneDefault = 100;
-
-        VBox dimensioniBox = new VBox(10);
-        dimensioniBox.setAlignment(Pos.CENTER);
-        dimensioniBox.getChildren().addAll(
-                new Label("Proporzione:"), spinnerProporzione
-        );
-
-        contentBox.getChildren().add(dimensioniBox);
-        dialog.getDialogPane().setContent(contentBox);
-        dialog.getDialogPane().setMinWidth(400);
-
-        // Pulsanti di conferma e annullamento
-        ButtonType confirmButton = new ButtonType("Conferma", ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelButton = new ButtonType("Annulla", ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialog.getDialogPane().getButtonTypes().addAll(confirmButton, cancelButton);
-
-        // Impostazione del comportamento alla conferma
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == confirmButton) {
-                return spinnerProporzione.getValue();
-            }
-            return null;
-        });
-
-        // Mostra il dialog e gestisce il risultato
-        Optional<Double> result = dialog.showAndWait();
-        result.ifPresent(proporzioneUpdate -> {
-            invoker.setCommand(new ProportionalResizeCommand(forme, proporzioneUpdate));
+            //Esecuzione del comando
             invoker.executeCommand();
-            updateState(true);
-        });
+
+            //Update dello stato
+            updateState(false);
+        }
+    }
+
+    /**
+     * Gestisce l'esecuzione del {@code ZoomCommand}
+     * sul {@link Canvas} quando si aumenta il livello di {@code zoom}
+     * @param event è l'evento che ha causato la chiamata alla funzione
+     */
+    @FXML
+    void onZoomInPressed(ActionEvent event) {
+        //Controllo sul livello corrente
+        if(currentZoomIndex < zoomLevels.length - 1 ){
+            //Aumento dello zoom
+            currentZoomIndex++;
+
+            //Creazione del comando
+            invoker.setCommand(new ZoomCommand(canvas, scrollPane, baseCanvasWidth, baseCanvasHeight, zoomLevels[currentZoomIndex]));
+
+            //Esecuzione del comando
+            invoker.executeCommand();
+
+            //Cambio di livello nel menu a tendina
+            zoom.getSelectionModel().select(currentZoomIndex);
+
+            //Update dello stato
+            updateState(false);
+        }
+    }
+
+    /**
+     * Gestisce l'esecuzione del {@code ZoomCommand}
+     * sul {@link Canvas} quando si diminuisce il livello di {@code zoom}
+     * @param event è l'evento che ha causato la chiamata alla funzione
+     */
+    @FXML
+    void onZoomOutPressed(ActionEvent event) {
+        //Controllo sul livello corrente
+        if(currentZoomIndex > 0){
+            //Riduzione dello zoom
+            currentZoomIndex--;
+
+            //Creazione del comando
+            invoker.setCommand(new ZoomCommand(canvas, scrollPane, baseCanvasWidth, baseCanvasHeight, zoomLevels[currentZoomIndex]));
+
+            //Esecuzione del comando
+            invoker.executeCommand();
+
+            //Cambio di livello nel menu a tendina
+            zoom.getSelectionModel().select(currentZoomIndex);
+
+            //Update dello stato
+            updateState(false);
+        }
+    }
+
+    /*
+     * Handler per l'Undo
+     */
+
+    /**
+     * Metodo per invocare il comando di ripristino dello stato precedente dell'applicazione
+     * @param event -> evento di pressione del mouse sul tasto undo
+     */
+    @FXML
+    void onUndoPressed(ActionEvent event) {
+        //Creazione del comando
+        invoker.setCommand(new UndoCommand(forme, history));
+
+        //Esecuzione del comando
+        invoker.executeCommand();
+
+        //Update dello stato
+        updateState(false);
+
+        //Disabilitazione della ToolBar e abilitazione del bottone di Undo
+        toolBarFX.setDisable(true);
+        if(history.isEmpty()){
+            undoButton.setDisable(true);
+        }
+        canvas.requestFocus();
+    }
+
+    /*
+     * Handler per la Grid
+     */
+
+    /**
+     * Gestisce la visione della griglia e del {@code gridSlider}
+     * @param event è l'evento che ha causato la chiamata alla funzione
+     */
+    @FXML
+    public void onGridPressed(ActionEvent event) {
+        //Cambio di visibilità della griglia
+        gridVisible = !gridVisible;
+
+        //Cambio di visibilità dello slider
+        gridSlider.setVisible(gridVisible);
+        gridSlider.setManaged(gridVisible);
+
+        //Update dello stato
+        updateState(false);
+    }
+
+    /*
+     * Metodi ausiliari
+     */
+
+    /**
+     * Gestisce il salvataggio dello stato corrente nel {@code DrawSnapHistory}
+     * in seguito ad un cambiamento di stato
+     * @param stateChanged è il booleano uguale a {@code true} se lo stato è cambiato
+     *                     e deve avvenuire il salvataggio, altrimenti {@code false}
+     */
+    void updateState(boolean stateChanged){
+        //Controllo sul boolean
+        if(stateChanged){
+            //Salvataggio dello stato corrente
+            history.saveState(forme.saveToMemento());
+
+            //Abilitazione dell'undo
+            undoButton.setDisable(false);
+        }
+        //Ridisegno del Canvas
+        redrawAll();
+    }
+
+    /**
+     * Gestisce il ridisegno di tutte le forme contenute nel {@code DrawSnapModel} all'interno
+     * del {@link GraphicsContext} del {@link Canvas}
+     * Viene chiamato dopo una modifica nel {@link Canvas} per aggiornarne la visualizzazione.
+     */
+    void redrawAll() {
+        //Pulizia del canvas
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        //Salvataggio del Canvas corrente
+        gc.save();
+
+        //Settaggio dello Zoom
+        gc.scale(zoomLevels[currentZoomIndex], zoomLevels[currentZoomIndex]);
+
+        //Disegno della griglia
+        if(gridVisible){
+            drawGrid();
+        }
+
+        //Disegno delle forme
+        Iterator<Forma> it = forme.getIteratorForme();
+        while (it.hasNext()) {
+            Forma f = it.next();
+            f.disegna(gc);
+        }
+
+        //Disegno dinamico delle figure
+        dinamicDraw();
+
+        //Ripristino dello stato precedente del Canvas
+        gc.restore();
+    }
+
+    /**
+     * Gestisce il disegno dinamico di una nuova forma all'interno del
+     * {@link GraphicsContext} del {@link Canvas}
+     */
+    private void dinamicDraw(){
+        //Controllo sullo stato di disegno
+        if(drawingContext.getCurrentState() instanceof  DrawState) {
+            DrawState drawState = (DrawState) drawingContext.getCurrentState();
+
+            //Ottenimento della preview
+            Forma previewShape = drawState.getCurrentDrawingShapePreview();
+
+            //Disegno della preview
+            if(previewShape != null){
+                gc.setStroke(Color.DODGERBLUE);
+                gc.setLineWidth(2.0 / zoomLevels[currentZoomIndex]);
+                gc.setLineDashes(5, 5);
+                previewShape.disegna(gc);
+                gc.setStroke(Color.BLACK);
+                gc.setLineWidth(1.0);
+            }
+
+            //Caso Poligono
+            if (drawState.getFormaCorrente() == Forme.POLIGONO && drawState.getCreazionePoligono()){
+                List<Double> puntiX = drawState.getPuntiX();
+                List<Double> puntiY = drawState.getPuntiY();
+
+                double[] xArray = puntiX.stream().mapToDouble(Double::doubleValue).toArray();
+                double[] yArray = puntiY.stream().mapToDouble(Double::doubleValue).toArray();
+
+                gc.setLineDashes(5, 5);
+                gc.setStroke(Color.DODGERBLUE);
+                gc.setLineWidth(1);
+
+                gc.strokePolygon(xArray, yArray, xArray.length);
+
+                //Disegno dei punti
+                for(int i =0; i < xArray.length; i++){
+                    gc.setFill(Color.RED);
+                    gc.fillOval(xArray[i] -3, yArray[i] -3, 6, 6);
+                }
+
+            }
+            gc.setLineDashes(0);
+        }
+    }
+
+    /**
+     * Gestisce il disegno della griglia sul {@link GraphicsContext} del {@link Canvas}
+     */
+    private void drawGrid() {
+        gc.setStroke(Color.LIGHTGRAY);
+
+        gc.setLineWidth(1.0 / zoomLevels[currentZoomIndex]);
+
+        double maxLogicalX = canvas.getWidth() / zoomLevels[currentZoomIndex];
+        double maxLogicalY = canvas.getHeight() / zoomLevels[currentZoomIndex];
+
+        //Disegno delle linee verticali
+        for (double x = 0; x <= maxLogicalX; x += currentGridSize) {
+            gc.strokeLine(x, 0, x, maxLogicalY);
+        }
+
+        //Disegno delle linee orizzontali
+        for (double y = 0; y <= maxLogicalY; y += currentGridSize) {
+            gc.strokeLine(0, y, maxLogicalX, y);
+        }
     }
 }
