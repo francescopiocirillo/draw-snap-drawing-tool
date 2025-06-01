@@ -333,25 +333,6 @@ public class Poligono extends Forma2D {
     }
 
     /**
-     * Crea e restituisce una copia profonda di questo oggetto Poligono.
-     * @return Un nuovo oggetto Poligono che è una copia esatta di questo.
-     */
-    @Override
-    public Poligono clone() {
-        Poligono cloned = (Poligono) super.clone();
-
-        // Copia profonda delle liste di punti (sono i punti intrinseci)
-        cloned.puntiX = new ArrayList<>(this.puntiX);
-        cloned.puntiY = new ArrayList<>(this.puntiY);
-
-        cloned.getColoreInterno() = getColoreInterno();
-        cloned.intrinsicLarghezza = this.intrinsicLarghezza;
-        cloned.intrinsicAltezza = this.intrinsicAltezza;
-
-        return cloned;
-    }
-
-    /**
      * Scala i punti intrinseci del poligono rispetto al suo centro (0,0).
      * Questo metodo modifica le coordinate dei vertici, ridimensionando la forma.
      *
