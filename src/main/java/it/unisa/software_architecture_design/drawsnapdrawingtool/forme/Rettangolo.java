@@ -30,6 +30,15 @@ public class Rettangolo extends Forma2D{
         updateVertici();
     }
 
+    /**
+     * Aggiorna i vertici secondo le informazioni:
+     * - coordinataX del centro;
+     * - coordinataY del centro;
+     * - larghezza;
+     * - altezza;
+     * - angolo di inclinazione.
+     * Il metodo va invocato ogni volta che avviene una modifica agli attributi sopra elencati.
+     */
     private void updateVertici() {
         double centroX = getCoordinataX();
         double centroY = getCoordinataY();
@@ -85,30 +94,50 @@ public class Rettangolo extends Forma2D{
         return verticeAX;
     }
 
+    /**
+     * Imposta l'altezza al nuovo valore e aggiorna i vertici.
+     * @param altezza -> nuovo valore dell'altezza.
+     */
     @Override
     public void setAltezza(double altezza) {
         super.setAltezza(altezza);
         updateVertici();
     }
 
+    /**
+     * Imposta la larghezza al nuovo valore e aggiorna i vertici.
+     * @param larghezza -> nuovo valore della larghezza
+     */
     @Override
     public void setLarghezza(double larghezza) {
         super.setLarghezza(larghezza);
         updateVertici();
     }
 
+    /**
+     * Imposta l'angolo di inclinazione al nuovo valore e aggiorna i vertici.
+     * @param angoloInclinazione -> nuovo valore dell'angolo di inclinazione.
+     */
     @Override
     public void setAngoloInclinazione( double angoloInclinazione ) {
         super.setAngoloInclinazione( angoloInclinazione );
         updateVertici();
     }
 
+    /**
+     * Imposta la coordinata Y del centro al nuovo valore e aggiorna i vertici.
+     * @param coordinataY -> nuovo valore della coordinata Y del centro.
+     */
     @Override
     public void setCoordinataY(double coordinataY) {
         super.setCoordinataY(coordinataY);
         updateVertici();
     }
 
+    /**
+     * Imposta la coordinata X del centro al nuovo valore e aggiorna i vertici.
+     * @param coordinataX -> nuovo valore della coordinata X del centro.
+     */
     @Override
     public void setCoordinataX(double coordinataX) {
         super.setCoordinataX(coordinataX);
@@ -231,12 +260,7 @@ public class Rettangolo extends Forma2D{
 
     /**
      * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
-     * cetro della figura stessa
-     */
-
-    /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
-     * cetro della figura stessa
+     * centro della figura stessa
      */
     @Override
     public void specchiaInVerticale() {
@@ -257,7 +281,7 @@ public class Rettangolo extends Forma2D{
 
     /**
      * Ridistribuisce i valori della figura per specchiarla lungo l'asse orizzontale che passa per il
-     * cetro della figura stessa
+     * centro della figura stessa
      */
     @Override
     public void specchiaInOrizzontale() {

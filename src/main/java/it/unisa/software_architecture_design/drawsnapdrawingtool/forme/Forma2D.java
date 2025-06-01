@@ -40,6 +40,11 @@ public abstract class Forma2D extends Forma{
         this.altezza = altezza;
     }
 
+    /**
+     * Esegue il resize proporzionale.
+     * Il resize avviene impostando la larghezza e l'altezza al proporzione% del loro valore attuale.
+     * @param proporzione -> la proporzione per realizzare la modifica.
+     */
     @Override
     public void proportionalResize(double proporzione){
         setLarghezza(getLarghezza()*proporzione/100);

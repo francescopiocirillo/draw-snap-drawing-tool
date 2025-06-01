@@ -79,7 +79,7 @@ public abstract class Forma1D extends Forma{
     /**
      * Imposta la larghezza della Forma. L'override è necessario in quanto le Forme 1D necessitano
      * di aggiornare le coordinate di inizio e fine lungo i due assi quando avviene una modifica della larghezza.
-     * @param larghezza
+     * @param larghezza -> nuova larghezza della forma.
      */
     @Override
     public void setLarghezza(double larghezza) {
@@ -103,7 +103,7 @@ public abstract class Forma1D extends Forma{
 
     /**
      * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
-     * centro della figura stessa
+     * centro della figura stessa.
      */
     @Override
     public void specchiaInVerticale(){
@@ -117,7 +117,7 @@ public abstract class Forma1D extends Forma{
 
     /**
      * Ridistribuisce i valori della figura per specchiarla lungo l'asse orizzontale che passa per il
-     * centro della figura stessa
+     * centro della figura stessa.
      */
     @Override
     public void specchiaInOrizzontale(){
@@ -149,6 +149,5 @@ public abstract class Forma1D extends Forma{
         Line2D line = new Line2D.Double(xInizio, yInizio, xFine, yFine);
         return line.ptSegDist(puntoDaValutareX, puntoDaValutareY) <= TOLLERANZA;
     }
-
 
 }

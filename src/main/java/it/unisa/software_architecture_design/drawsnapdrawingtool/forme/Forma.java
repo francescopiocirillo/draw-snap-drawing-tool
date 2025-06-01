@@ -121,6 +121,38 @@ public abstract class Forma implements Serializable, Cloneable{
         setLarghezza(getLarghezza()*proporzione/100);
     }
 
+    /**
+     * Metodo per clonare l'oggetto creandone una nuova istanza
+     * Permette di modificare l'elemento clonato senza intaccare quello originale
+     * @return la forma clonata.
+     */
+    @Override
+    public Forma clone(){
+        try{
+            return (Forma) super.clone();
+        }catch(CloneNotSupportedException ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Metodo per il controllare se due forme sono uguali
+     * @param forma -> forma con cui fare il confronto
+     * @return {@code true} se gli attributi sono uguali, altrimenti {@code false}
+     */
+    public boolean confrontaAttributi(Forma forma){
+        if (forma instanceof FormaDecorator){
+            FormaDecorator decorator = (FormaDecorator) forma;
+            forma = decorator.getForma();
+        }
+        return this.angoloInclinazione == forma.getAngoloInclinazione() &&
+                this.colore == forma.getColore() &&
+                this.coordinataX == forma.getCoordinataX() &&
+                this.coordinataY == forma.getCoordinataY() &&
+                this.larghezza == forma.getLarghezza();
+    }
+
     /*
      * Logica della classe
      */
@@ -185,37 +217,5 @@ public abstract class Forma implements Serializable, Cloneable{
         // ricostruisci il colore da stringa HEX
         String colorHex = in.readUTF();
         colore = Color.web(colorHex);
-    }
-
-    /**
-     * Metodo per clonare l'oggetto creandone una nuova istanza
-     * Permette di modificare l'elemento clonato senza intaccare quello originale
-     * @return la forma clonata.
-     */
-    @Override
-    public Forma clone(){
-        try{
-            return (Forma) super.clone();
-        }catch(CloneNotSupportedException ex){
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * Metodo per il controllare se due forme sono uguali
-     * @param forma -> forma con cui fare il confronto
-     * @return {@code true} se gli attributi sono uguali, altrimenti {@code false}
-     */
-    public boolean confrontaAttributi(Forma forma){
-        if (forma instanceof FormaDecorator){
-            FormaDecorator decorator = (FormaDecorator) forma;
-            forma = decorator.getForma();
-        }
-        return this.angoloInclinazione == forma.getAngoloInclinazione() &&
-                this.colore == forma.getColore() &&
-                this.coordinataX == forma.getCoordinataX() &&
-                this.coordinataY == forma.getCoordinataY() &&
-                this.larghezza == forma.getLarghezza();
     }
 }

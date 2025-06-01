@@ -97,7 +97,7 @@ public class Ellisse extends Forma2D {
 
     /**
      * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
-     * cetro della figura stessa
+     * centro della figura stessa.
      */
     @Override
     public void specchiaInVerticale(){
@@ -108,6 +108,10 @@ public class Ellisse extends Forma2D {
         setAngoloInclinazione(nuovoAngolo);
     }
 
+    /**
+     * Ridistribuisce i valori della figura per specchiarla lungo l'asse orizzontale che passa per il
+     * centro della figura stessa.
+     */
     @Override
     public void specchiaInOrizzontale(){
         // Inverti l'angolo rispetto all'asse orizzontale
