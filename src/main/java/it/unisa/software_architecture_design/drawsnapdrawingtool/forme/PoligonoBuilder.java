@@ -10,6 +10,7 @@ import java.util.List;
  * Facilita la creazione di oggetti Poligono complessi passo dopo passo.
  */
 public class PoligonoBuilder {
+
     private List<Double> puntiX;
     private List<Double> puntiY;
     private double angoloInclinazione;
