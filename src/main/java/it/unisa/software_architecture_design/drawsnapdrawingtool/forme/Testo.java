@@ -19,7 +19,8 @@ public class Testo extends Forma {
     private transient String testo;
     private final String FONT_NAME = "Arial";
     private double currentFontSize = 12.0;
-    private boolean specchiata = false;
+    private boolean specchiataVerticale = false;
+    private boolean specchiataOrizzontale = false;
     private double verticeAX;
     private double verticeAY;
     private double verticeBX;
@@ -40,7 +41,9 @@ public class Testo extends Forma {
         this.altezza = altezza;
         this.coloreInterno = coloreInterno;
         this.testo = testo;
+        System.out.println("colore interno" + coloreInterno + "\n colore Bordo" + super.getColore());
         calculateFontSize();
+        updateVertici();
     }
 
     /**
@@ -224,6 +227,10 @@ public class Testo extends Forma {
         gc.rotate(getAngoloInclinazione());
         gc.scale(this.scaleX, this.scaleY);
 
+        if(this.specchiataOrizzontale){
+            gc.scale(1, -1);
+        }
+
 
         gc.setFont(Font.font(FONT_NAME, currentFontSize));
         gc.setFill(getColoreInterno());
@@ -258,7 +265,7 @@ public class Testo extends Forma {
 
             gc.translate(currentX + charWidth / 2, charOffsetY);
 
-            if(specchiata) {
+            if(specchiataVerticale) {
                 gc.scale(-1, 1);
             }
             gc.fillText(currentChar, -charWidth / 2, 0);
@@ -272,14 +279,14 @@ public class Testo extends Forma {
         gc.restore();
     }
 
-        /**
-         * Determina se il rettangolo contiene un punto specifico nello spazio.
-         *
-         * @param puntoDaValutareX La coordinata X del punto da verificare.
-         * @param puntoDaValutareY La coordinata Y del punto da verificare.
-         * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si trova all'interno del rettangolo,
-         * altrimenti {@code false}.
-         */
+    /**
+     * Determina se il rettangolo contiene un punto specifico nello spazio.
+     *
+     * @param puntoDaValutareX La coordinata X del punto da verificare.
+     * @param puntoDaValutareY La coordinata Y del punto da verificare.
+     * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si trova all'interno del rettangolo,
+     * altrimenti {@code false}.
+     */
     @Override
     public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
         // Vertici del rettangolo
@@ -299,7 +306,6 @@ public class Testo extends Forma {
                 isToTheLeft(puntoDaValutareX, puntoDaValutareY, verticeCX, verticeCY, verticeDX, verticeDY) &&
                 isToTheLeft(puntoDaValutareX, puntoDaValutareY, verticeDX, verticeDY, verticeAX, verticeAY);
     }
-
     /**
      * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
      * cetro della figura stessa
@@ -313,7 +319,7 @@ public class Testo extends Forma {
             setTesto(testoSpecchiato);
             setAngoloInclinazione(-getAngoloInclinazione());
         }
-        specchiata = !specchiata;
+        specchiataVerticale = !specchiataVerticale;
     }
 
     /**
@@ -322,7 +328,8 @@ public class Testo extends Forma {
      */
     @Override
     public void specchiaInOrizzontale() {
-        //wip
+        setAngoloInclinazione(-getAngoloInclinazione());
+        this.specchiataOrizzontale = !specchiataOrizzontale;
     }
 
     /**
@@ -353,12 +360,13 @@ public class Testo extends Forma {
     @Serial
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
-        out.writeUTF(ColorUtils.toHexString(getColore()));
+        out.writeUTF(ColorUtils.toHexString(super.getColore()));
         // Serializza il colore interno specifico della sottoclasse
         out.writeUTF(ColorUtils.toHexString(coloreInterno));
         out.writeUTF(testo);
         out.writeDouble(currentFontSize);
-        out.writeBoolean(specchiata);
+        out.writeBoolean(specchiataVerticale);
+        out.writeBoolean(specchiataOrizzontale);
     }
 
     /**
@@ -378,6 +386,7 @@ public class Testo extends Forma {
         String testo = in.readUTF();
         this.setTesto(testo);
         this.currentFontSize = in.readDouble();
-        specchiata = in.readBoolean();
+        specchiataVerticale = in.readBoolean();
+        specchiataOrizzontale = in.readBoolean();
     }
 }

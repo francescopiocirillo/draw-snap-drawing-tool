@@ -412,20 +412,20 @@ public class DrawSnapController {
             if (drawState.getFormaCorrente() == Forme.POLIGONO && drawState.getCreazionePoligono()){
                 List<Double> puntiX = drawState.getPuntiX();
                 List<Double> puntiY = drawState.getPuntiY();
-                if(puntiX.size() >= 2){
-                    double[] xArray = puntiX.stream().mapToDouble(Double::doubleValue).toArray();
-                    double[] yArray = puntiY.stream().mapToDouble(Double::doubleValue).toArray();
 
-                    gc.setStroke(Color.DODGERBLUE);
-                    gc.setLineWidth(1);
-                    gc.setLineDashes(5, 5);
-                    gc.strokePolygon(xArray, yArray, xArray.length);
+                double[] xArray = puntiX.stream().mapToDouble(Double::doubleValue).toArray();
+                double[] yArray = puntiY.stream().mapToDouble(Double::doubleValue).toArray();
 
-                    for(int i =0; i < xArray.length; i++){
-                        gc.setFill(Color.RED);
-                        gc.fillOval(xArray[i] -3, yArray[i] -3, 6, 6);
-                    }
+                gc.setStroke(Color.DODGERBLUE);
+                gc.setLineWidth(1);
+                gc.setLineDashes(5, 5);
+                gc.strokePolygon(xArray, yArray, xArray.length);
+
+                for(int i =0; i < xArray.length; i++){
+                    gc.setFill(Color.RED);
+                    gc.fillOval(xArray[i] -3, yArray[i] -3, 6, 6);
                 }
+
             }
             gc.setLineDashes(0);
         }
