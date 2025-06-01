@@ -318,6 +318,17 @@ public class DrawSnapController {
         // di drag la flag viene asserita
         dragged = false;
         double scale = canvas.getScaleX();
+        Forma formaSelezionata = forme.getFormaSelezionata();
+        if(formaSelezionata != null && forme.countFormeSelezionate() == 1) {
+            formaSelezionata = ((FormaSelezionataDecorator)formaSelezionata).getForma();
+            if(formaSelezionata instanceof FormaComposta) {
+                decomposeButton.setDisable(false);
+            }else{
+                decomposeButton.setDisable(true);
+            }
+        }else{
+            decomposeButton.setDisable(true);
+        }
 
         if (contextMenu.isShowing()) {
             contextMenu.hide();
@@ -341,7 +352,6 @@ public class DrawSnapController {
 
             //Se c'è una forma selezionata controlla se il click è avvenuto all'interno di essa
             if(hasSelection){
-                Forma formaSelezionata = forme.getFormaSelezionata();
                 if(formaSelezionata!= null){
                     clickInterno = formaSelezionata.contiene(lastClickX, lastClickY);
                 }
