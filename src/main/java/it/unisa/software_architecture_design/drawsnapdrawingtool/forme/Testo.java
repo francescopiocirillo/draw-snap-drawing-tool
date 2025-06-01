@@ -12,8 +12,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
 
-public class Testo extends Forma2D {
+public class Testo extends Forma {
 
+    private double altezza;
+    private transient Color coloreInterno;
     private transient String testo;
     private final String FONT_NAME = "Arial";
     private double currentFontSize = 12.0;
@@ -35,7 +37,9 @@ public class Testo extends Forma2D {
      * Costruttore, Getter e Setter
      */
     public Testo(double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore, double altezza, Color coloreInterno, String testo) {
-        super(coordinataX, coordinataY, larghezza, angoloInclinazione, colore, altezza, coloreInterno);
+        super(coordinataX, coordinataY, larghezza, angoloInclinazione, colore);
+        this.altezza = altezza;
+        this.coloreInterno = coloreInterno;
         this.testo = testo;
         System.out.println("colore interno" + coloreInterno + "\n colore Bordo" + super.getColore());
         calculateFontSize();
@@ -53,7 +57,7 @@ public class Testo extends Forma2D {
         double centroX = getCoordinataX();
         double centroY = getCoordinataY();
         double mezzaLarghezza = getLarghezza() / 2;
-        double mezzaAltezza = getAltezza() / 2;
+        double mezzaAltezza = this.altezza / 2;
 
         double angoloRadianti = Math.toRadians(getAngoloInclinazione());
         double cosAngolo = Math.cos(angoloRadianti);
@@ -75,14 +79,12 @@ public class Testo extends Forma2D {
         this.verticeDY = centroY - mezzaLarghezza * sinAngolo + mezzaAltezza * cosAngolo;
     }
 
-    @Override
     public double getAltezza() {
-        return super.getAltezza();
+        return altezza;
     }
 
-    @Override
     public void setAltezza(double altezza) {
-        super.setAltezza(altezza);
+        this.altezza = altezza;
         System.out.println("Altezza: " + altezza);
         calculateFontSize();
         updateVertici();
@@ -100,14 +102,12 @@ public class Testo extends Forma2D {
         updateVertici();
     }
 
-    @Override
     public Color getColoreInterno() {
-        return super.getColoreInterno();
+        return coloreInterno;
     }
 
-    @Override
     public void setColoreInterno(Color coloreInterno) {
-        super.setColoreInterno(coloreInterno);
+        this.coloreInterno = coloreInterno;
     }
 
     public String getTesto() {
@@ -362,7 +362,7 @@ public class Testo extends Forma2D {
         out.defaultWriteObject();
         out.writeUTF(ColorUtils.toHexString(super.getColore()));
         // Serializza il colore interno specifico della sottoclasse
-        out.writeUTF(ColorUtils.toHexString(getColoreInterno()));
+        out.writeUTF(ColorUtils.toHexString(coloreInterno));
         out.writeUTF(testo);
         out.writeDouble(currentFontSize);
         out.writeBoolean(specchiataVerticale);

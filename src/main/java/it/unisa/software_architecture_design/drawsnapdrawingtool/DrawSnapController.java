@@ -556,7 +556,6 @@ public class DrawSnapController {
         double logicalCurrentX = mouseEvent.getX() / zoomLevels[currentZoomIndex];
         double logicalCurrentY = mouseEvent.getY() / zoomLevels[currentZoomIndex];
         if(drawingContext.getCurrentState() instanceof DrawState) canvas.setCursor(Cursor.CROSSHAIR);
-        if(drawingContext.getCurrentState() instanceof SelectState) canvas.setCursor(Cursor.MOVE);
         dragged = drawingContext.handleMouseDragged(mouseEvent, forme, logicalCurrentX, logicalCurrentY);
         updateState(false);
     }
@@ -570,7 +569,7 @@ public class DrawSnapController {
     private void handleMouseReleased(MouseEvent mouseEvent) {
         double logicalCurrentX = mouseEvent.getX() / zoomLevels[currentZoomIndex];
         double logicalCurrentY = mouseEvent.getY() / zoomLevels[currentZoomIndex];
-        if(drawingContext.getCurrentState() instanceof SelectState) canvas.setCursor(Cursor.DEFAULT);
+        if(drawingContext.getCurrentState() instanceof DrawState) canvas.setCursor(Cursor.DEFAULT);
         boolean stateChanged = drawingContext.handleMouseReleased(mouseEvent, forme, logicalCurrentX, logicalCurrentY);
         if(dragged || stateChanged){
             updateState(true);

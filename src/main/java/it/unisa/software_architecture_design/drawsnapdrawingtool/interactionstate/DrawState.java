@@ -158,7 +158,6 @@ public class DrawState implements DrawingState{
      */
     @Override
     public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
-        if(formaCorrente == Forme.POLIGONO) return false;
         this.currentDrawingShapePreview = createShapePreview(coordinataX, coordinataY);
         return true;
     }
@@ -300,6 +299,9 @@ public class DrawState implements DrawingState{
                     attributi.setAngoloInclinazione(finalAngoloPicker.getValue());
                 }else{
                     attributi.setAngoloInclinazione(0.0);
+                }
+                if(tipoForma == Forme.TEXT){
+                    attributi.setTesto(finalTextField.getText());
                 }
                 attributi.setLarghezza(100.0);
                 attributi.setAltezza(100.0);

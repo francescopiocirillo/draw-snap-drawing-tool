@@ -344,7 +344,7 @@ public class Poligono extends Forma2D {
         cloned.puntiX = new ArrayList<>(this.puntiX);
         cloned.puntiY = new ArrayList<>(this.puntiY);
 
-        cloned.getColoreInterno() = getColoreInterno();
+
         cloned.intrinsicLarghezza = this.intrinsicLarghezza;
         cloned.intrinsicAltezza = this.intrinsicAltezza;
 
