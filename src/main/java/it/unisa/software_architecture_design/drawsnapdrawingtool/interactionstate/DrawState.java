@@ -246,13 +246,23 @@ public class DrawState implements DrawingState{
             textBox = new VBox(5, testoLabel, textField);
             textBox.setAlignment(Pos.CENTER);
         }
+        // Suggerimento per il doppio click per il poligono
+        Label suggerimentoPoligonoLabel = null;
+        if (tipoForma == Forme.POLIGONO) {
+            suggerimentoPoligonoLabel = new Label("Clicca per inserire i vertici del poligono. Doppio click per terminare.");
+            suggerimentoPoligonoLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: gray;");
+        }
 
         //Composizione VBox
         VBox contentBox = new VBox(15);
         contentBox.setPadding(new Insets(20));
+        contentBox.setAlignment(Pos.TOP_CENTER);
         contentBox.getChildren().addAll(bordoBox);
         if (internoBox != null) contentBox.getChildren().add(internoBox);
         if(textBox != null) contentBox.getChildren().add(textBox);
+        if (suggerimentoPoligonoLabel != null) {
+            contentBox.getChildren().add(suggerimentoPoligonoLabel);
+        }
         dialog.getDialogPane().setContent(contentBox);
         dialog.getDialogPane().setMinWidth(400);
 
