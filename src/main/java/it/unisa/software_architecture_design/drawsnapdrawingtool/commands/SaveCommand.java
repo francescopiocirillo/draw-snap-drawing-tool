@@ -63,6 +63,7 @@ public class SaveCommand implements Command {
      */
     void salvaFormeSuFile(File file) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+            forme.deselezionaEccetto(null);
             oos.writeObject(forme);
         } catch (IOException e) {
             e.printStackTrace();
