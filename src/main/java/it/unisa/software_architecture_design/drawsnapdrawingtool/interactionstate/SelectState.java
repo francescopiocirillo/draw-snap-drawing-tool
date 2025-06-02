@@ -44,7 +44,8 @@ public class SelectState implements DrawingState{
      * @param forme è la lista delle forme presenti sul foglio di disegno
      * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
      * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
-     * @return
+     * @return false poiché l'evento di pressione del mouse, inclusa la logica di selezione e gestione delle forme,
+     *  * è completamente gestito da questo metodo e non necessita di ulteriori elaborazioni da parte di altre componenti.
      */
     @Override
     public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme, double coordinataX , double coordinataY) {
@@ -139,6 +140,10 @@ public class SelectState implements DrawingState{
         }
     }
 
+    /**
+     * Metodo di utilità per abilitare o disabilitare il pulsante di cambio colore di riempimento
+     * in base alla forma selezionata.
+     */
     public void disattivaChangeFillColorButton(Forma formaSelezionata) {
         if(formaSelezionata != null) {
             Forma formaDecorata = ((FormaSelezionataDecorator)formaSelezionata).getForma();
@@ -150,6 +155,10 @@ public class SelectState implements DrawingState{
         }
     }
 
+    /**
+     * Metodo di utilità per abilitare o disabilitare il pulsante di cambio colore di riempimento.
+     * @param disable true per disabilitare il pulsante, false per abilitarlo.
+     */
     private void changeFillColorButtonDisable(boolean disable) {
         if(changeFillColorButton != null) {
             changeFillColorButton.setDisable(disable);
@@ -162,7 +171,8 @@ public class SelectState implements DrawingState{
      * @param forme è la lista di forme presenti sul canvas
      * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
      * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
-     * @return
+     * @return true se una forma selezionata è stata spostata con successo, false se non ci sono forme
+     * selezionate o se ci sono più forme selezionate (il metodo non gestisce lo spostamento in questi casi).
      */
     @Override
     public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
@@ -189,7 +199,7 @@ public class SelectState implements DrawingState{
      * @param event è l'evento di rilascio del mouse
      * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
      * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
-     * @return
+     * @return false poiché il metodo non implementa alcuna funzionalità al momento ed è marcato come non necessario.
      */
     @Override
     public boolean handleMouseReleased(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
