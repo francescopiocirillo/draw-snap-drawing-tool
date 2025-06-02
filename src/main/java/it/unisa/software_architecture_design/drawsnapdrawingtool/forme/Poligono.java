@@ -19,8 +19,8 @@ public class Poligono extends Forma2D {
     private List<Double> puntiY; // Punti intrinseci, relativi al centro del poligono
     private double intrinsicAltezza; // Altezza della bounding box del poligono.
     private double intrinsicLarghezza; // Larghezza della bounding box del poligono.
-    private double intrinsicCenterX; // Centro X della bounding box, relativo all'origine interna (0,0)
-    private double intrinsicCenterY; // Centro Y della bounding box, relativo all'origine interna (0,0)
+    private double intrinsicCenterX; // Centro X della bounding box
+    private double intrinsicCenterY; // Centro Y della bounding box
 
     /**
      * Costruttore, getter e setter
