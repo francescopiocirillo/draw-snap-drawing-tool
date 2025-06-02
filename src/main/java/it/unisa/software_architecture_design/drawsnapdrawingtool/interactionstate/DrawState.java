@@ -94,7 +94,7 @@ public class DrawState implements DrawingState{
         //Caso Poligono
         if(formaCorrente == Forme.POLIGONO){
 
-            //Se il poligono non è stato ancora creato lo si inizia a creare definendo il factory (da correggere in Builder mi sa)
+            //Se il poligono non è stato ancora creato lo si inizia a creare definendo il Builder
             if(!creazionePoligono){
 
                 //Visione della finestra di dialogo
@@ -233,6 +233,8 @@ public class DrawState implements DrawingState{
         Spinner<Double> spinnerAngolo = new Spinner<>(-360, 360.0, 0.0, 1.0);
         spinnerAngolo.setEditable(true);
         spinnerAngolo.setTooltip(new Tooltip("Angolo di rotazione in gradi (0-360)"));
+        VBox angoloBox = new VBox(5, angoloLabel, spinnerAngolo);
+        angoloBox.setAlignment(Pos.CENTER);
 
         //TextField per la stringa di testo
         TextField textField = null;
@@ -260,6 +262,7 @@ public class DrawState implements DrawingState{
         contentBox.getChildren().addAll(bordoBox);
         if (internoBox != null) contentBox.getChildren().add(internoBox);
         if(textBox != null) contentBox.getChildren().add(textBox);
+        if(tipoForma != Forme.LINEA) { contentBox.getChildren().add(angoloBox); }
         if (suggerimentoPoligonoLabel != null) {
             contentBox.getChildren().add(suggerimentoPoligonoLabel);
         }
@@ -342,16 +345,23 @@ public class DrawState implements DrawingState{
             return null;
         }
 
-        double finalLarghezza, finalAltezza, finalAngle;
+        double finalLarghezza, finalAltezza, finalAngolo;
         double finalCentroX, finalCentroY;
 
         //Calcolo delle dimensioni in seguito al drag
         if(formaCorrente == Forme.LINEA){
-            finalLarghezza = Math.sqrt(Math.pow(coordinataX - startX, 2) + Math.pow(coordinataY - startY, 2));
-            finalAngle = Math.toDegrees(Math.atan2(coordinataY- startY, coordinataX - startX));
+            finalCentroX = (startX + coordinataX) / 2.0;
+            finalCentroY = (startY + coordinataY) / 2.0;
+
+            finalLarghezza = Math.sqrt(
+                    Math.pow(coordinataX - startX, 2) +
+                    Math.pow(coordinataY - startY, 2)
+            );
+
+            finalAngolo = Math.toDegrees(Math.atan2(coordinataY - startY, coordinataX - startX));
             finalAltezza = 0.0;
-            finalCentroX = startX;
-            finalCentroY = startY;
+
+            if(finalLarghezza < 1) finalLarghezza = 100.0;
         }else if (formaCorrente == Forme.POLIGONO) {
             if (poligonoBuilder != null && (poligonoBuilder.getNumeroPunti() > 0 || currentDrawingShapePreview != null) ) {
                 PoligonoBuilder previewBuilder = new PoligonoBuilder()
@@ -379,7 +389,7 @@ public class DrawState implements DrawingState{
             finalCentroY = (startY + coordinataY) / 2.0;
             if(finalLarghezza < 1) finalLarghezza = 100;
             if(finalAltezza < 1) finalAltezza = 100;
-            finalAngle = attributiForma.getAngoloInclinazione();
+            finalAngolo = attributiForma.getAngoloInclinazione();
         }
 
         //Creazione della preview corrispondente
@@ -393,8 +403,8 @@ public class DrawState implements DrawingState{
                         finalLarghezza, attributiForma.getAngoloInclinazione(), attributiForma.getColore(),
                         attributiForma.getColoreInterno());
             case LINEA:
-                return new FactoryLinea().creaForma(startX, startY, 0, finalLarghezza,
-                        finalAngle, attributiForma.getColore(), null);
+                return new FactoryLinea().creaForma(finalCentroX, finalCentroY, finalAltezza, finalLarghezza,
+                        finalAngolo, attributiForma.getColore(), null);
             case TEXT:
                 FactoryTesto factoryTesto = new FactoryTesto();
                 if(attributiForma.getTesto() == null || attributiForma.getTesto().equals("")) {
