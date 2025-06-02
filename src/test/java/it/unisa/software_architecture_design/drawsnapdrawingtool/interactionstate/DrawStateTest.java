@@ -3,7 +3,6 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionsta
 import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.*;
-
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -22,7 +21,7 @@ class DrawStateTest {
 
     @BeforeEach
     void setUp() {
-        // Inizializza un set di attributi predefiniti per i mock
+        // Attributi predefiniti per i mock
         defaultAttributi = new AttributiForma();
         defaultAttributi.setAltezza(1);
         defaultAttributi.setLarghezza(1);
@@ -32,10 +31,21 @@ class DrawStateTest {
     }
 
     /**
-     * Verifica la corretta creazione dell'Ellisse quando avviene la pressione del mouse.
+     * Simula il comportamento del metodo `helpUIHandleMousePressed` dello spy `DrawState` fornito.
+     * @param state Lo spy dell'oggetto `DrawState` il cui metodo `helpUIHandleMousePressed` viene simulato.
+     * @param attributiToReturn L'oggetto `AttributiForma` che il metodo simulato dovrebbe restituire,
+     * simulando l'input dell'utente da una finestra di dialogo.
+     */
+    private void stubUiInteractions(DrawState state, AttributiForma attributiToReturn) {
+        doReturn(attributiToReturn).when(state).helpUIHandleMousePressed(any(Forme.class));
+    }
+
+    /**
+     * Verifica la corretta creazione dell'Ellisse quando avviene la pressione
+     * e successivamente il rilascio del mouse.
      */
     @Test
-    void testHandleMousePressed_CreaEllisse() {
+    void testShapeCreation_CreaEllisse() {
         AttributiForma attributi = new AttributiForma();
         attributi.setAltezza(100);
         attributi.setLarghezza(200);
@@ -43,101 +53,169 @@ class DrawStateTest {
         attributi.setColore(Color.color(0, 0, 0));
         attributi.setColoreInterno(Color.color(1, 1, 1));
 
-        // Creiamo uno spy della DrawState reale
+        //Spy della DrawState reale
         DrawState state = spy(new DrawState(Forme.ELLISSE));
-        // Stubbiamo il metodo helpUIHandleMousePressed per restituire gli attributi desiderati
-        doReturn(attributi).when(state).helpUIHandleMousePressed(Forme.ELLISSE);
+        // Stub delle interazioni UI
+        stubUiInteractions(state, attributi);
 
-        MouseEvent mouseEvent = mock(MouseEvent.class);
-        when(mouseEvent.getX()).thenReturn(50.0);
-        when(mouseEvent.getY()).thenReturn(75.0);
-        when(mouseEvent.getClickCount()).thenReturn(1);
-        when(mouseEvent.getButton()).thenReturn(MouseButton.PRIMARY);
+        // Mock degli eventi Mouse
+        MouseEvent mousePressedEvent = mock(MouseEvent.class);
+        MouseEvent mouseReleasedEvent = mock(MouseEvent.class);
 
         DrawSnapModel forme = new DrawSnapModel();
 
-        state.handleMousePressed(mouseEvent, forme, 50.0, 75.0);
+        double startX = 50.0;
+        double startY = 75.0;
 
-        assertEquals(1, forme.size());
-        Ellisse forma = (Ellisse)forme.get(0);
+        // Le coordinate di rilascio determinano le dimensioni finali
+        double endX = startX + attributi.getLarghezza();
+        double endY = startY + attributi.getAltezza();
+
+        // Simulazione pressing del mouse
+        boolean pressResult = state.handleMousePressed(mousePressedEvent, forme, startX, startY);
+
+        assertFalse(pressResult, "handleMousePressed dovrebbe restituire false per Ellisse");
+        assertEquals(0, forme.size(), "Nessuna forma dovrebbe essere aggiunta solo con mousePressed");
+        verify(state).helpUIHandleMousePressed(Forme.ELLISSE);
+
+        // Simulazione rilascio del mouse
+        boolean releaseResult = state.handleMouseReleased(mouseReleasedEvent, forme, endX, endY);
+
+        assertTrue(releaseResult, "handleMouseReleased dovrebbe restituire true per Ellisse");
+        assertEquals(1, forme.size(), "Ellisse dovrebbe essere stata aggiunta dopo mouseReleased");
+
+        Ellisse forma = (Ellisse) forme.get(0);
         assertNotNull(forma);
         assertEquals("Ellisse", forma.getClass().getSimpleName());
-        assertEquals(50.0, forma.getCoordinataX(), 0.001);
-        assertEquals(75.0, forma.getCoordinataY(), 0.001);
-        assertEquals(200.0, forma.getLarghezza(), 0.001);
-        assertEquals(100.0, forma.getAltezza(), 0.001);
-        assertEquals(Color.color(0, 0, 0), forma.getColore());
-        assertEquals(Color.color(1, 1, 1), forma.getColoreInterno());
+
+        double expectedCenterX = (startX + endX) / 2.0;
+        double expectedCenterY = (startY + endY) / 2.0;
+
+        assertEquals(expectedCenterX, forma.getCoordinataX(), 0.001);
+        assertEquals(expectedCenterY, forma.getCoordinataY(), 0.001);
+        assertEquals(attributi.getLarghezza(), forma.getLarghezza(), 0.001);
+        assertEquals(attributi.getAltezza(), forma.getAltezza(), 0.001);
+        assertEquals(attributi.getColore(), forma.getColore());
+        assertEquals(attributi.getColoreInterno(), forma.getColoreInterno());
+        assertEquals(attributi.getAngoloInclinazione(), forma.getAngoloInclinazione(), 0.001);
     }
 
     /**
-     * Verifica la corretta creazione del Rettangolo quando avviene la pressione del mouse.
+     * Verifica la corretta creazione del Rettangolo quando avviene la pressione
+     * e successivamente il rilascio del mouse.
      */
     @Test
-    void testHandleMousePressed_CreaRettangolo() {
+    void testShapeCreation_CreaRettangolo() {
         AttributiForma attributi = new AttributiForma();
         attributi.setAltezza(50);
         attributi.setLarghezza(80);
         attributi.setColore(Color.BLUE);
         attributi.setColoreInterno(Color.RED);
+        attributi.setAngoloInclinazione(0);
 
         DrawState state = spy(new DrawState(Forme.RETTANGOLO));
-        doReturn(attributi).when(state).helpUIHandleMousePressed(Forme.RETTANGOLO);
+        // Stubbiamo delle interazioni UI
+        stubUiInteractions(state, attributi);
 
-        MouseEvent mouseEvent = mock(MouseEvent.class);
-        when(mouseEvent.getX()).thenReturn(10.0);
-        when(mouseEvent.getY()).thenReturn(20.0);
-        when(mouseEvent.getClickCount()).thenReturn(1);
-        when(mouseEvent.getButton()).thenReturn(MouseButton.PRIMARY);
+        MouseEvent mousePressedEvent = mock(MouseEvent.class);
+        MouseEvent mouseReleasedEvent = mock(MouseEvent.class);
 
         DrawSnapModel forme = new DrawSnapModel();
 
-        state.handleMousePressed(mouseEvent, forme, 10.0, 20.0);
+        double startX = 10.0;
+        double startY = 20.0;
 
-        assertEquals(1, forme.size());
-        Rettangolo forma = (Rettangolo)forme.get(0);
+        double endX = startX + attributi.getLarghezza();
+        double endY = startY + attributi.getAltezza();
+
+        // Simulazione pressione del mouse
+        boolean pressResult = state.handleMousePressed(mousePressedEvent, forme, startX, startY);
+
+        assertFalse(pressResult, "handleMousePressed dovrebbe restituire false per Rettangolo");
+        assertEquals(0, forme.size(), "Nessuna forma dovrebbe essere aggiunta solo con mousePressed");
+        verify(state).helpUIHandleMousePressed(Forme.RETTANGOLO);
+
+        // Simulazione rilascio del mouse
+        boolean releaseResult = state.handleMouseReleased(mouseReleasedEvent, forme, endX, endY);
+
+        assertTrue(releaseResult, "handleMouseReleased dovrebbe restituire true per Rettangolo");
+        assertEquals(1, forme.size(), "Rettangolo dovrebbe essere stato aggiunto dopo mouseReleased");
+
+        Rettangolo forma = (Rettangolo) forme.get(0);
+        assertNotNull(forma);
         assertEquals("Rettangolo", forma.getClass().getSimpleName());
-        assertEquals(10.0, forma.getCoordinataX(), 0.001);
-        assertEquals(20.0, forma.getCoordinataY(), 0.001);
-        assertEquals(80.0, forma.getLarghezza(), 0.001);
-        assertEquals(50.0, forma.getAltezza(), 0.001);
-        assertEquals(Color.BLUE, forma.getColore());
-        assertEquals(Color.RED, forma.getColoreInterno());
+
+        double expectedCenterX = (startX + endX) / 2.0;
+        double expectedCenterY = (startY + endY) / 2.0;
+
+        assertEquals(expectedCenterX, forma.getCoordinataX(), 0.001);
+        assertEquals(expectedCenterY, forma.getCoordinataY(), 0.001);
+        assertEquals(attributi.getLarghezza(), forma.getLarghezza(), 0.001);
+        assertEquals(attributi.getAltezza(), forma.getAltezza(), 0.001);
+        assertEquals(attributi.getColore(), forma.getColore());
+        assertEquals(attributi.getColoreInterno(), forma.getColoreInterno());
+        assertEquals(attributi.getAngoloInclinazione(), forma.getAngoloInclinazione(), 0.001);
     }
 
     /**
-     * Verifica la corretta creazione della Linea quando avviene la pressione del mouse.
+     * Verifica la corretta creazione della Linea quando avviene la pressione
+     * e successivamente il rilascio del mouse.
      */
     @Test
-    void testHandleMousePressed_CreaLinea() {
+    void testShapeCreation_CreaLinea() {
         AttributiForma attributi = new AttributiForma();
-        attributi.setAltezza(0);
-        attributi.setLarghezza(0);
-        attributi.setColore(Color.BLACK);
-        attributi.setAngoloInclinazione(0); // Le linee spesso hanno un angolo
-        attributi.setColoreInterno(Color.BLACK); // Non usato per linea, ma per coerenza
+        attributi.setColore(Color.GREEN);
+        attributi.setAngoloInclinazione(45.0);
 
         DrawState state = spy(new DrawState(Forme.LINEA));
-        doReturn(attributi).when(state).helpUIHandleMousePressed(Forme.LINEA);
+        stubUiInteractions(state, attributi);
 
-        MouseEvent mouseEvent = mock(MouseEvent.class);
-        when(mouseEvent.getX()).thenReturn(0.0);
-        when(mouseEvent.getY()).thenReturn(0.0);
-        when(mouseEvent.getClickCount()).thenReturn(1);
-        when(mouseEvent.getButton()).thenReturn(MouseButton.PRIMARY);
+        // Mock degli eventi mouse
+        MouseEvent mousePressedEvent = mock(MouseEvent.class);
+        MouseEvent mouseReleasedEvent = mock(MouseEvent.class);
+        double startX = 10.0;
+        double startY = 10.0;
+        double endX = 110.0;
+        double endY = 110.0;
 
         DrawSnapModel forme = new DrawSnapModel();
 
-        state.handleMousePressed(mouseEvent, forme, 0.0, 0.0);
+        // Simulazione pressione del mouse
+        boolean pressResult = state.handleMousePressed(mousePressedEvent, forme, startX, startY);
 
-        assertEquals(1, forme.size());
-        Forma forma = forme.get(0);
-        assertEquals("Linea", forma.getClass().getSimpleName());
-        assertEquals(0.0, forma.getCoordinataX(), 0.001);
-        assertEquals(0.0, forma.getCoordinataY(), 0.001);
-        // Per una linea, larghezza e altezza potrebbero rappresentare lunghezza e spessore
-        // o semplicemente essere 0 in base all'implementazione.
-        // Se la linea è disegnata da (x1, y1) a (x2, y2), getLarghezza() potrebbe essere la lunghezza.
+        assertFalse(pressResult, "handleMousePressed dovrebbe restituire false per Linea");
+        assertEquals(0, forme.size(), "Nessuna forma dovrebbe essere aggiunta solo con mousePressed per Linea");
+        verify(state).helpUIHandleMousePressed(Forme.LINEA);
+
+
+        // Simulazione rilascio del mouse
+        boolean releaseResult = state.handleMouseReleased(mouseReleasedEvent, forme, endX, endY);
+
+        assertTrue(releaseResult, "handleMouseReleased dovrebbe restituire true per Linea");
+        assertEquals(1, forme.size(), "La Linea dovrebbe essere stata aggiunta dopo mouseReleased");
+
+        Linea lineaCreata = (Linea) forme.get(0);
+        assertNotNull(lineaCreata);
+        assertEquals("Linea", lineaCreata.getClass().getSimpleName());
+
+        assertEquals(attributi.getColore(), lineaCreata.getColore());
+        // Calcolo della lunghezza e dell'angolo della linea (logica di createShapePreview per LINEA)
+        double expectedLength = Math.sqrt(
+                Math.pow(endX - startX, 2) +
+                        Math.pow(endY - startY, 2)
+        );
+        double expectedAngle = Math.toDegrees(Math.atan2(endY - startY, endX - startX));
+
+        // Le coordinate centrali per la linea
+        double expectedCenterX = (startX + endX) / 2.0;
+        double expectedCenterY = (startY + endY) / 2.0;
+
+        assertEquals(expectedCenterX, lineaCreata.getCoordinataX(), 0.001);
+        assertEquals(expectedCenterY, lineaCreata.getCoordinataY(), 0.001);
+        assertEquals(expectedLength, lineaCreata.getLarghezza(), 0.001);
+        assertEquals(expectedAngle, lineaCreata.getAngoloInclinazione(), 0.001);
+
+        assertNull(state.getCurrentDrawingShapePreview(), "La preview dovrebbe essere null dopo il rilascio");
     }
 
     /**
@@ -145,7 +223,7 @@ class DrawStateTest {
      * non provochi comportamenti inattesi.
      */
     @Test
-    void testHandleMousePressed_CoordinateNegative() {
+    void testShapeCreation_CoordinateNegative() {
         AttributiForma attributi = new AttributiForma();
         attributi.setAltezza(30);
         attributi.setLarghezza(40);
@@ -156,31 +234,62 @@ class DrawStateTest {
         DrawState state = spy(new DrawState(Forme.ELLISSE));
         doReturn(attributi).when(state).helpUIHandleMousePressed(Forme.ELLISSE);
 
-        MouseEvent mouseEvent = mock(MouseEvent.class);
-        when(mouseEvent.getX()).thenReturn(-10.0);
-        when(mouseEvent.getY()).thenReturn(-20.0);
-        when(mouseEvent.getClickCount()).thenReturn(1);
-        when(mouseEvent.getButton()).thenReturn(MouseButton.PRIMARY);
+        MouseEvent mousePressedEvent = mock(MouseEvent.class);
+        MouseEvent mouseReleasedEvent = mock(MouseEvent.class);
 
         DrawSnapModel forme = new DrawSnapModel();
 
-        state.handleMousePressed(mouseEvent, forme, -10.0, -20.0);
+        // Coordinate di inizio negative
+        double startX = -10.0;
+        double startY = -20.0;
 
-        assertEquals(1, forme.size());
-        Forma forma = forme.get(0);
+        // Coordinate di fine
+        // Ad esempio, una ellisse di larghezza 40 e altezza 30 che inizia a (-10, -20)
+        double endX = startX + attributi.getLarghezza();
+        double endY = startY + attributi.getAltezza();
+
+
+        boolean pressResult = state.handleMousePressed(mousePressedEvent, forme, startX, startY);
+
+        assertFalse(pressResult, "handleMousePressed dovrebbe restituire false per Ellisse");
+        assertEquals(0, forme.size(), "Nessuna forma dovrebbe essere aggiunta solo con mousePressed");
+        verify(state).helpUIHandleMousePressed(Forme.ELLISSE);
+
+        boolean releaseResult = state.handleMouseReleased(mouseReleasedEvent, forme, endX, endY);
+
+        assertTrue(releaseResult, "handleMouseReleased dovrebbe restituire true per Ellisse");
+        assertEquals(1, forme.size(), "L'Ellisse dovrebbe essere stata aggiunta dopo mouseReleased");
+
+        Ellisse forma = (Ellisse) forme.get(0);
         assertNotNull(forma);
-        assertEquals(-10.0, forma.getCoordinataX(), 0.001);
-        assertEquals(-20.0, forma.getCoordinataY(), 0.001);
+        assertEquals("Ellisse", forma.getClass().getSimpleName());
+
+        // Verifica delle coordinate e le dimensioni della forma creata
+        double expectedCenterX = (startX + endX) / 2.0;
+        double expectedCenterY = (startY + endY) / 2.0;
+
+        assertEquals(expectedCenterX, forma.getCoordinataX(), 0.001, "La coordinata X del centro dovrebbe essere corretta");
+        assertEquals(expectedCenterY, forma.getCoordinataY(), 0.001, "La coordinata Y del centro dovrebbe essere corretta");
+
+        // Larghezza e altezza sono calcolate come Math.abs(coordinata_finale - coordinata_iniziale)
+        assertEquals(attributi.getLarghezza(), forma.getLarghezza(), 0.001, "La larghezza dovrebbe essere corretta");
+        assertEquals(attributi.getAltezza(), forma.getAltezza(), 0.001, "L'altezza dovrebbe essere corretta");
+
+        assertEquals(attributi.getColore(), forma.getColore());
+        assertEquals(attributi.getColoreInterno(), forma.getColoreInterno());
+        assertEquals(attributi.getAngoloInclinazione(), forma.getAngoloInclinazione(), 0.001);
+
+        assertNull(state.getCurrentDrawingShapePreview(), "La preview dovrebbe essere null dopo il rilascio");
     }
 
     /**
      * Verifica che anche se l'oggetto contenente gli attributi della Forma è null
-     * il comportamento resta controllato, senza eccezioni ma invece con parametri di default.
+     * il comportamento resta controllato, senza eccezioni.
      */
     @Test
     void testHandleMousePressed_AttributiNull_DefaultFallback() {
         DrawState state = spy(new DrawState(Forme.RETTANGOLO));
-        // Stubbiamo helpUIHandleMousePressed per restituire null, simulando il caso in cui non ci sono attributi
+        // Stub di helpUIHandleMousePressed per restituire null, simulando il caso in cui non ci sono attributi
         doReturn(null).when(state).helpUIHandleMousePressed(Forme.RETTANGOLO);
 
         MouseEvent mouseEvent = mock(MouseEvent.class);
@@ -194,48 +303,6 @@ class DrawStateTest {
         assertDoesNotThrow(() -> state.handleMousePressed(mouseEvent, forme, 10.0, 20.0));
 
         assertTrue(forme.isEmpty());
-    }
-    /**
-     * Verifica che un poligono non venga creato se si effettua un doppio click
-     * dopo aver definito meno di tre punti.
-     */
-    @Test
-    void testHandleMouseEvents_NonCreaPoligonoConMenoDiTrePunti() {
-        AttributiForma attributiPoligono = new AttributiForma();
-        attributiPoligono.setColore(Color.BLACK);
-        attributiPoligono.setColoreInterno(Color.WHITE);
-        attributiPoligono.setAngoloInclinazione(0);
-
-        DrawState state = spy(new DrawState(Forme.POLIGONO));
-        doReturn(attributiPoligono).when(state).helpUIHandleMousePressed(Forme.POLIGONO);
-
-        DrawSnapModel forme = new DrawSnapModel();
-
-        // Simula il primo click
-        MouseEvent click1 = mock(MouseEvent.class);
-        when(click1.getX()).thenReturn(10.0);
-        when(click1.getY()).thenReturn(20.0);
-        when(click1.getClickCount()).thenReturn(1);
-        when(click1.getButton()).thenReturn(MouseButton.PRIMARY);
-        state.handleMousePressed(click1, forme, 10.0, 20.0);
-
-        // Simula il secondo click
-        MouseEvent click2 = mock(MouseEvent.class);
-        when(click2.getX()).thenReturn(50.0);
-        when(click2.getY()).thenReturn(20.0);
-        when(click2.getClickCount()).thenReturn(1);
-        when(click2.getButton()).thenReturn(MouseButton.PRIMARY);
-        state.handleMousePressed(click2, forme, 50.0, 20.0);
-
-        // Simula un doppio click (con solo 2 punti aggiunti)
-        MouseEvent doubleClick = mock(MouseEvent.class);
-        when(doubleClick.getX()).thenReturn(50.0);
-        when(doubleClick.getY()).thenReturn(20.0);
-        when(doubleClick.getClickCount()).thenReturn(2);
-        when(doubleClick.getButton()).thenReturn(MouseButton.PRIMARY);
-        state.handleMousePressed(doubleClick, forme, 50.0, 20.0);
-
-        assertEquals(0, forme.size());
     }
 
 
@@ -260,7 +327,7 @@ class DrawStateTest {
         double x1 = 30.0, y1 = 20.0; // Primo punto del poligono
         double x2 = 50.0, y2 = 50.0; // Secondo punto del poligono
         double x3 = 10.0, y3 = 50.0; // Terzo punto del poligono
-        double x_double_click = x3, y_double_click = y3; // Coordinate per il doppio click (non usate per aggiungere punto)
+        double x_double_click = x3, y_double_click = y3; // Coordinate per il doppio click
 
         MouseEvent mouseEvent1_dialog = mock(MouseEvent.class);
         when(mouseEvent1_dialog.getButton()).thenReturn(MouseButton.PRIMARY);
@@ -283,7 +350,7 @@ class DrawStateTest {
         when(mouseEvent5_finalize.getClickCount()).thenReturn(2); // Doppio click
 
 
-        // Primo click: apre il dialogo mockato e inizializza la factory
+        // Primo click: apre il dialogo mockato
         boolean result1 = state.handleMousePressed(mouseEvent1_dialog, forme, x_dialog_coord, y_dialog_coord);
         assertFalse(result1, "handleMousePressed dovrebbe restituire false dopo il dialogo iniziale per il poligono.");
         assertEquals(0, forme.size(), "Nessuna forma dovrebbe essere creata dopo il dialogo.");
@@ -366,73 +433,11 @@ class DrawStateTest {
     }
 
     /**
-     * Verifica che il poligono non venga creato se si fa un doppio click con meno di tre punti definiti.
+     * Verifica la corretta creazione di un Testo quando avviene la pressione
+     * e successivamente il rilascio del mouse.
      */
     @Test
-    void testHandleMousePressed_CreaPoligono_DoppioClickConMenoDiTrePunti() {
-        AttributiForma attributiPoligono = new AttributiForma();
-        attributiPoligono.setColore(Color.ORANGE);
-        attributiPoligono.setColoreInterno(Color.YELLOW);
-        attributiPoligono.setAngoloInclinazione(0);
-        attributiPoligono.setAltezza(0);
-        attributiPoligono.setLarghezza(0);
-
-
-        DrawState state = spy(new DrawState(Forme.POLIGONO));
-        doReturn(attributiPoligono).when(state).helpUIHandleMousePressed(Forme.POLIGONO);
-
-        DrawSnapModel forme = new DrawSnapModel();
-
-        double x_dialog = 0, y_dialog = 0;
-        double x1 = 10, y1 = 10; // Punto 1
-        double x2 = 20, y2 = 10; // Punto 2
-        double x_double_click = 30, y_double_click = 30; // Coordinate per il doppio click
-
-        MouseEvent mouseEventDialog = mock(MouseEvent.class);
-        when(mouseEventDialog.getButton()).thenReturn(MouseButton.PRIMARY);
-        when(mouseEventDialog.getClickCount()).thenReturn(1);
-
-        MouseEvent mouseEventP1 = mock(MouseEvent.class);
-        when(mouseEventP1.getButton()).thenReturn(MouseButton.PRIMARY);
-        when(mouseEventP1.getClickCount()).thenReturn(1);
-
-        MouseEvent mouseEventP2 = mock(MouseEvent.class);
-        when(mouseEventP2.getButton()).thenReturn(MouseButton.PRIMARY);
-        when(mouseEventP2.getClickCount()).thenReturn(1);
-
-        MouseEvent mouseEventDoubleClick = mock(MouseEvent.class);
-        when(mouseEventDoubleClick.getButton()).thenReturn(MouseButton.PRIMARY);
-        when(mouseEventDoubleClick.getClickCount()).thenReturn(2);
-
-        // Primo click (dialogo)
-        state.handleMousePressed(mouseEventDialog, forme, x_dialog, y_dialog);
-        assertTrue(state.getCreazionePoligono(), "Modalità aggiunta punti dovrebbe essere attiva dopo il dialogo."); // creazionePoligono = false
-
-        // Secondo click
-        state.handleMousePressed(mouseEventP1, forme, x1, y1);
-        assertEquals(1, state.getPuntiX().size());
-        assertTrue(state.getCreazionePoligono(), "Modalità aggiunta punti dovrebbe rimanere attiva.");
-
-
-        // Terzo click
-        state.handleMousePressed(mouseEventP2, forme, x2, y2);
-        assertEquals(2, state.getPuntiX().size()); // Ora ci sono 2 punti
-        assertTrue(state.getCreazionePoligono(), "Modalità aggiunta punti dovrebbe rimanere attiva.");
-
-        // Doppio click
-        boolean result = state.handleMousePressed(mouseEventDoubleClick, forme, x_double_click, y_double_click);
-
-        assertFalse(result, "handleMousePressed dovrebbe restituire false se si fa doppio click con meno di 3 punti.");
-        assertEquals(0, forme.size(), "Nessun poligono dovrebbe essere creato.");
-        // Lo stato di creazionePoligono (interno) rimane false, quindi getCreazionePoligono() è true.
-        assertTrue(state.getCreazionePoligono(), "Lo stato di aggiunta punti dovrebbe rimanere attivo.");
-    }
-
-    /**
-     * Verifica la corretta creazione di un Testo quando avviene la pressione del mouse.
-     */
-    @Test
-    void testHandleMousePressed_CreaTesto() {
+    void testShapeCreation_CreaTesto() {
         AttributiForma attributi = new AttributiForma();
         attributi.setAltezza(50);
         attributi.setLarghezza(150);
@@ -442,31 +447,54 @@ class DrawStateTest {
         attributi.setTesto("Hello World");
 
         DrawState state = spy(new DrawState(Forme.TEXT));
-        doReturn(attributi).when(state).helpUIHandleMousePressed(Forme.TEXT);
+        stubUiInteractions(state, attributi);
 
-        MouseEvent mouseEvent = mock(MouseEvent.class);
-        when(mouseEvent.getX()).thenReturn(100.0);
-        when(mouseEvent.getY()).thenReturn(100.0);
-        when(mouseEvent.getClickCount()).thenReturn(1);
-        when(mouseEvent.getButton()).thenReturn(MouseButton.PRIMARY);
+        // Mock degli eventi mouse
+        MouseEvent mousePressedEvent = mock(MouseEvent.class);
+        MouseEvent mouseReleasedEvent = mock(MouseEvent.class);
 
         DrawSnapModel forme = new DrawSnapModel();
 
-        state.handleMousePressed(mouseEvent, forme, 100.0, 100.0);
+        // Coordinate di inizio per il drag
+        double startX = 100.0;
+        double startY = 100.0;
 
-        assertEquals(1, forme.size());
+        // Coordinate di fine per il drag
+        double endX = startX + attributi.getLarghezza();
+        double endY = startY + attributi.getAltezza();
+
+        boolean pressResult = state.handleMousePressed(mousePressedEvent, forme, startX, startY);
+
+        assertFalse(pressResult, "handleMousePressed dovrebbe restituire false per Testo");
+        assertEquals(0, forme.size(), "Nessuna forma dovrebbe essere aggiunta solo con mousePressed per Testo");
+        verify(state).helpUIHandleMousePressed(Forme.TEXT);
+
+        boolean releaseResult = state.handleMouseReleased(mouseReleasedEvent, forme, endX, endY);
+
+        assertTrue(releaseResult, "handleMouseReleased dovrebbe restituire true per Testo");
+        assertEquals(1, forme.size(), "Il Testo dovrebbe essere stato aggiunto dopo mouseReleased");
+
         Testo forma = (Testo) forme.get(0);
         assertNotNull(forma);
         assertEquals("Testo", forma.getClass().getSimpleName());
-        assertEquals(100.0, forma.getCoordinataX(), 0.001);
-        assertEquals(100.0, forma.getCoordinataY(), 0.001);
-        assertEquals(150.0, forma.getLarghezza(), 0.001);
-        assertEquals(50.0, forma.getAltezza(), 0.001);
-        assertEquals(Color.RED, forma.getColore());
-        assertEquals(Color.BLACK, forma.getColoreInterno());
-        assertEquals("Hello World", forma.getTesto());
-    }
 
+        double expectedCenterX = (startX + endX) / 2.0;
+        double expectedCenterY = (startY + endY) / 2.0;
+
+        assertEquals(expectedCenterX, forma.getCoordinataX(), 0.001, "La coordinata X del centro dovrebbe essere corretta");
+        assertEquals(expectedCenterY, forma.getCoordinataY(), 0.001, "La coordinata Y del centro dovrebbe essere corretta");
+
+        // Larghezza e altezza sono calcolate come Math.abs(coordinata_finale - coordinata_iniziale)
+        assertEquals(attributi.getLarghezza(), forma.getLarghezza(), 0.001, "La larghezza dovrebbe essere corretta");
+        assertEquals(attributi.getAltezza(), forma.getAltezza(), 0.001, "L'altezza dovrebbe essere corretta");
+
+        assertEquals(attributi.getColore(), forma.getColore());
+        assertEquals(attributi.getColoreInterno(), forma.getColoreInterno());
+        assertEquals(attributi.getAngoloInclinazione(), forma.getAngoloInclinazione(), 0.001);
+        assertEquals(attributi.getTesto(), forma.getTesto(), "Il testo dovrebbe corrispondere");
+
+        assertNull(state.getCurrentDrawingShapePreview(), "La preview dovrebbe essere null dopo il rilascio");
+    }
     /**
      * Verifica che il Testo non venga creato se la stringa di testo è vuota.
      */
@@ -478,7 +506,7 @@ class DrawStateTest {
         attributi.setAngoloInclinazione(0);
         attributi.setColore(Color.RED);
         attributi.setColoreInterno(Color.BLACK);
-        attributi.setTesto(""); // Testo vuoto
+        attributi.setTesto("");
 
         DrawState state = spy(new DrawState(Forme.TEXT));
         doReturn(attributi).when(state).helpUIHandleMousePressed(Forme.TEXT);
