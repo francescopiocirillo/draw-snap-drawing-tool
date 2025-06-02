@@ -52,7 +52,7 @@ public class DrawingContext {
     }
 
     /**
-     * DrawingContext delega la gestione dell'evento di trascinamento del mouse allo stato corrente
+     * {@link DrawingContext} delega la gestione del {@link MouseEvent} di trascinamento allo stato corrente
      * @param event è il {@link MouseEvent} di trascinamento che ha causato la chiamata al metodo
      * @param forme è il {@link DrawSnapModel}  presente nel {@link javafx.scene.canvas.Canvas}
      * @param x è la coordinata logica per l'asse x del {@link MouseEvent}
@@ -64,7 +64,7 @@ public class DrawingContext {
     }
 
     /**
-     * DrawingContext delega la gestione dell'evento di rilascio del mouse allo stato corrente
+     * {@link DrawingContext} delega la gestione del {@link MouseEvent} di rilascio allo stato corrente
      * @param event è il {@link MouseEvent} di rilascio che ha causato la chiamata al metodo
      * @param forme è il {@link DrawSnapModel}  presente nel {@link javafx.scene.canvas.Canvas}
      * @param x è la coordinata logica per l'asse x del {@link MouseEvent}

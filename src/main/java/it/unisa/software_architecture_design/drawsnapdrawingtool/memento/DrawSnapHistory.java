@@ -18,7 +18,7 @@ public class DrawSnapHistory {
     }
 
     /**
-     * Gestisce il salvataggio del {@link DrawSnapMemento} fornito come @param nella
+     * Gestisce il salvataggio del {@link DrawSnapMemento} fornito come @param
      * @param memento è il {@link DrawSnapMemento} da salvare
      */
     public void saveState(DrawSnapMemento memento) {

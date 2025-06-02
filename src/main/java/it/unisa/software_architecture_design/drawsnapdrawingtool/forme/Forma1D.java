@@ -4,6 +4,11 @@ import javafx.scene.paint.Color;
 
 import java.awt.geom.Line2D;
 
+/**
+ * La classe {@link Forma1D} eredita le caratteristiche della classe {@link Forma}
+ * e viene usata per distinguere le {@link Forma} ad 1 Dimensione. Si tratta di una
+ * classe astratta che verrà estesa da delle classi concrete.
+ */
 public abstract class Forma1D extends Forma{
     /*
      * Attributi
@@ -38,49 +43,18 @@ public abstract class Forma1D extends Forma{
         return yFine;
     }
 
-    /**
-     * Aggiornamento delle coordinate di inizio e fine lungo l'asse Y.
-     */
-    private void updateCoordinateYInizioFine() {
-        this.yInizio = this.getCoordinataY() - (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
-        this.yFine = this.getCoordinataY() + (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
-    }
-
-    /**
-     * Aggiornamento delle coordinate di inizio e fine lungo l'asse X.
-     */
-    private void updateCoordinateXInizioFine() {
-        this.xInizio = this.getCoordinataX() - (this.getLarghezza() / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
-        this.xFine = this.getCoordinataX() + (this.getLarghezza() / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
-    }
-
-    /**
-     * Imposta la Coordinata Y della Forma. L'override è necessario in quanto le Forme 1D necessitano
-     * di aggiornare le coordinate di inizio e fine lungo l'asse Y quando avviene una modifica della Coordinata Y.
-     * @param coordinataY -> la nuova coordinata Y.
-     */
     @Override
     public void setCoordinataY(double coordinataY) {
         super.setCoordinataY(coordinataY);
         updateCoordinateYInizioFine();
     }
 
-    /**
-     * Imposta la Coordinata X della Forma. L'override è necessario in quanto le Forme 1D necessitano
-     * di aggiornare le coordinate di inizio e fine lungo l'asse X quando avviene una modifica della Coordinata X.
-     * @param coordinataX -> la nuova coordinata X.
-     */
     @Override
     public void setCoordinataX(double coordinataX) {
         super.setCoordinataX(coordinataX);
         updateCoordinateXInizioFine();
     }
 
-    /**
-     * Imposta la larghezza della Forma. L'override è necessario in quanto le Forme 1D necessitano
-     * di aggiornare le coordinate di inizio e fine lungo i due assi quando avviene una modifica della larghezza.
-     * @param larghezza -> nuova larghezza della forma.
-     */
     @Override
     public void setLarghezza(double larghezza) {
         super.setLarghezza(larghezza);
@@ -88,12 +62,6 @@ public abstract class Forma1D extends Forma{
         updateCoordinateXInizioFine();
     }
 
-    /**
-     * Modifica l'attributo {@code angoloDiInclinazione}, l'override è necessario
-     * in quanto le Forme 1D necessitano di aggiornare le coordinate di inizio e fine
-     * lungo i due assi quando avviene una modifica dell'angolo di inclinazione.
-     * @param angoloInclinazione -> il valore del nuovo angolo di inclinazione.
-     */
     @Override
     public void setAngoloInclinazione(double angoloInclinazione) {
         super.setAngoloInclinazione(angoloInclinazione);
@@ -101,9 +69,13 @@ public abstract class Forma1D extends Forma{
         updateCoordinateXInizioFine();
     }
 
+    /*
+     * Logica della Classe
+     */
+
     /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
-     * centro della figura stessa.
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse verticale che passa per il centro della {@link Forma} stessa
      */
     @Override
     public void specchiaInVerticale(){
@@ -116,8 +88,8 @@ public abstract class Forma1D extends Forma{
     }
 
     /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse orizzontale che passa per il
-     * centro della figura stessa.
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse orizzontale che passa per il centro della {@link Forma} stessa
      */
     @Override
     public void specchiaInOrizzontale(){
@@ -130,7 +102,7 @@ public abstract class Forma1D extends Forma{
     }
 
     /**
-     * Determina se la linea contiene un punto specifico nello spazio.
+     * Verifica se la {@link Linea} contiene un punto specifico nello spazio.
      *
      * @param puntoDaValutareX La coordinata X del punto da verificare.
      * @param puntoDaValutareY La coordinata Y del punto da verificare.
@@ -150,4 +122,23 @@ public abstract class Forma1D extends Forma{
         return line.ptSegDist(puntoDaValutareX, puntoDaValutareY) <= TOLLERANZA;
     }
 
+    /*
+     * Metodi Ausiliari
+     */
+
+    /**
+     * Gestisce l'aggiornamento delle coordinate di inizio e fine lungo l'asse Y.
+     */
+    private void updateCoordinateYInizioFine() {
+        this.yInizio = this.getCoordinataY() - (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
+        this.yFine = this.getCoordinataY() + (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
+    }
+
+    /**
+     * Gestisce l'aggiornamento delle coordinate di inizio e fine lungo l'asse X.
+     */
+    private void updateCoordinateXInizioFine() {
+        this.xInizio = this.getCoordinataX() - (this.getLarghezza() / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
+        this.xFine = this.getCoordinataX() + (this.getLarghezza() / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
+    }
 }

@@ -83,7 +83,7 @@ public class DrawState implements DrawingState{
      * Gestisce il {@link MouseEvent} di pressione sul {@link javafx.scene.canvas.Canvas}
      * in modo da iniziare il processo di creazione della {@code formaCorrente}
      * @param event è {@link MouseEvent} di pressione che ha causato la chiamata al metodo
-     * @param forme è la {@link List} di tutte le {@link Forma} presenti sul {@link javafx.scene.canvas.Canvas}
+     * @param forme è il {@link DrawSnapModel}  presente nel {@link javafx.scene.canvas.Canvas}
      * @param coordinataX è la coordinata logica per l'asse x del {@link MouseEvent}
      * @param coordinataY è la coordinata logica per l'asse y del {@link MouseEvent}
      * @return {@code true} se gli attributi sono stati ottenuti correttemante e il processo
@@ -166,7 +166,7 @@ public class DrawState implements DrawingState{
      * Gestisce il {@link MouseEvent} trascinamento sul {@link javafx.scene.canvas.Canvas}
      * in modo da continuare il processo di creazione della {@code formaCorrente}
      * @param event è {@link MouseEvent} di trascinamento che ha causato la chiamata al metodo
-     * @param forme è la {@link List} di tutte le {@link Forma} presenti sul {@link javafx.scene.canvas.Canvas}
+     * @param forme è il {@link DrawSnapModel}  presente nel {@link javafx.scene.canvas.Canvas}
      * @param coordinataX è la coordinata logica per l'asse x del {@link MouseEvent}
      * @param coordinataY è la coordinata logica per l'asse y del {@link MouseEvent}
      * @return {@code true} nel caso in cui la creazione della preview è andata a buon fine,
@@ -182,6 +182,7 @@ public class DrawState implements DrawingState{
      * Gestisce il {@link MouseEvent} di rilascio sul {@link javafx.scene.canvas.Canvas}
      * in modo da terminare il processo di creazione della {@code formaCorrente}
      * @param event è {@link MouseEvent} di trascinamento che ha causato la chiamata al metodo
+     * @param forme è il {@link DrawSnapModel}  presente nel {@link javafx.scene.canvas.Canvas}
      * @param coordinataX è la coordinata logica per l'asse x del {@link MouseEvent}
      * @param coordinataY è la coordinata logica per l'asse y del {@link MouseEvent}
      * @return {@code false} nel caso in cui si sta creando un {@link Poligono} (la cui creazione
