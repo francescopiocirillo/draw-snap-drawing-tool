@@ -16,6 +16,7 @@ public class PoligonoBuilder {
     private double angoloInclinazione;
     private Color colore;
     private Color coloreInterno;
+    private boolean pointAddedSucces = true;
 
     public PoligonoBuilder() {
         this.puntiX = new ArrayList<>();
@@ -26,10 +27,27 @@ public class PoligonoBuilder {
     }
 
     public PoligonoBuilder addPunto(double x, double y) {
+
+        for(int i = 0; i< puntiX.size(); i++) {
+            double existingX = puntiX.get(i);
+            double existingY = puntiY.get(i);
+
+            double distanza = Math.sqrt(
+                    Math.pow(existingX - x, 2) + Math.pow(existingY - y, 2)
+            );
+
+            if(distanza < 5){
+                pointAddedSucces = false;
+                return this;
+            }
+            pointAddedSucces = true;
+        }
         this.puntiX.add(x);
         this.puntiY.add(y);
         return this;
     }
+
+    public boolean wasPointAddedSuccess(){return pointAddedSucces;}
 
     public PoligonoBuilder setAngoloInclinazione(double angoloInclinazione) {
         this.angoloInclinazione = angoloInclinazione;

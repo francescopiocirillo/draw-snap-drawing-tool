@@ -36,7 +36,6 @@ public class DrawState implements DrawingState{
     private PoligonoBuilder poligonoBuilder; //Il builder da usare per la creazione del poligono
     private Forme formaCorrente; //Enum della figura corrente che si intende creare
     private boolean creazionePoligono=false; //Booleano che indica che vi è un poligono in creazione
-    //private FactoryPoligono factoryPoligono; //Il factory da usare per la creazione del poligono
     private AttributiForma attributiForma; //Gli attributi per la creazione della figura
     private Forma currentDrawingShapePreview = null; //Preview dellac forma da disegnare
     private double startX; //Punto di inizio (coordinata X) per il drag & drop
@@ -116,6 +115,13 @@ public class DrawState implements DrawingState{
                 //Distinzione tra aggiunta di un punto e fine creazione tramite il numero di click
                 if (event.getClickCount() == 1) { //1 click: aggiunta punto
                     poligonoBuilder.addPunto(coordinataX, coordinataY);
+                    if(!poligonoBuilder.wasPointAddedSuccess()){
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Attenzione");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Il punto è troppo vicino ad un vertice già esistente");
+                        alert.showAndWait();
+                    }
                     return false;
                 } else if (event.getClickCount() == 2 && poligonoBuilder.getNumeroPunti() > 2) { //2 click: fine creazione
                     Forma formaCreata = createShapePreview(coordinataX, coordinataY);
@@ -128,8 +134,14 @@ public class DrawState implements DrawingState{
                         currentDrawingShapePreview = null;
                         return true;
                     } else return false;
+                }else{
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Attenzione");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Non puoi creare il poligono con due punti");
+                    alert.showAndWait();
+                    return false;
                 }
-                return false;
             }
             return false;
         }else{//Caso alternativo al Poligono
@@ -138,7 +150,7 @@ public class DrawState implements DrawingState{
             if(!dialogShown) {
                 attributiForma = helpUIHandleMousePressed(formaCorrente);
                 if (attributiForma == null) return false;
-                dialogShown = true;
+                dialogShown = formaCorrente != Forme.TEXT || !attributiForma.getTesto().equals("");
             }
 
             //Assegnazione delle coordinate di inizio per il drag & drop
@@ -290,7 +302,7 @@ public class DrawState implements DrawingState{
                 //Se la stringa è vuota mostrare un warning
                 if(finalTextField.getText().trim().isEmpty()){
                     event.consume();
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
                     alert.setHeaderText(null);
                     alert.setContentText("Il campo testo ha bisogno di non essere una stringa vuota");
