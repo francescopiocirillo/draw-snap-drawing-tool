@@ -87,7 +87,15 @@ public class DrawSnapController {
     @FXML
     private ToolBar toolBarFX;
     @FXML
+    private Button deleteButton;
+    @FXML
+    private Button frontToBackButton;
+    @FXML
+    private Button backToFrontButton;
+    @FXML
     private Button changeFillColorButton;
+    @FXML
+    private Button changeOutlineColorButton;
     @FXML
     private Button proportionalResizePressed;
 
@@ -150,6 +158,7 @@ public class DrawSnapController {
         initializeZoom(); //Inizializzazione zoom
         initializeGridSlider(); //Inizializzazione griglia
         undoButton.setDisable(true); //Disabilitamento pulsante undo
+        initializeTooltip();
     }
 
     /**
@@ -357,6 +366,26 @@ public class DrawSnapController {
         //Visibilità
         gridSlider.setVisible(false);
         gridSlider.setManaged(false);
+    }
+
+    /**
+     * Gestisce la visione di suggerimenti per l'uso dei bottoni
+     */
+    private void initializeTooltip(){
+        handButton.setTooltip(new Tooltip("Movimento nel Canvas"));
+        selectButton.setTooltip(new Tooltip("Selezione della figura"));
+        ellipseButton.setTooltip(new Tooltip("Inserimento Ellisse"));
+        rectangleButton.setTooltip(new Tooltip("Inserimento Rettangolo"));
+        lineButton.setTooltip(new Tooltip("Inserimento Linea"));
+        polygonButton.setTooltip(new Tooltip("Inserimento Poligono"));
+        textButton.setTooltip(new Tooltip("Inserimento Testo"));
+        deleteButton.setTooltip(new Tooltip("Elimina forma"));
+        frontToBackButton.setTooltip(new Tooltip("Metti in secondo piano"));
+        backToFrontButton.setTooltip(new Tooltip("Metti in primo piano"));
+        changeFillColorButton.setTooltip(new Tooltip("Cambio colore Interno"));
+        changeOutlineColorButton.setTooltip(new Tooltip("Cambio colore Bordo"));
+
+
     }
 
     /*
