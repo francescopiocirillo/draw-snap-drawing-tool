@@ -36,7 +36,6 @@ public class DrawState implements DrawingState{
     private PoligonoBuilder poligonoBuilder; //Il builder da usare per la creazione del poligono
     private Forme formaCorrente; //Enum della figura corrente che si intende creare
     private boolean creazionePoligono=false; //Booleano che indica che vi è un poligono in creazione
-    //private FactoryPoligono factoryPoligono; //Il factory da usare per la creazione del poligono
     private AttributiForma attributiForma; //Gli attributi per la creazione della figura
     private Forma currentDrawingShapePreview = null; //Preview dellac forma da disegnare
     private double startX; //Punto di inizio (coordinata X) per il drag & drop
@@ -94,7 +93,7 @@ public class DrawState implements DrawingState{
         //Caso Poligono
         if(formaCorrente == Forme.POLIGONO){
 
-            //Se il poligono non è stato ancora creato lo si inizia a creare definendo il factory (da correggere in Builder mi sa)
+            //Se il poligono non è stato ancora creato lo si inizia a creare definendo il Builder
             if(!creazionePoligono){
 
                 //Visione della finestra di dialogo
@@ -116,6 +115,13 @@ public class DrawState implements DrawingState{
                 //Distinzione tra aggiunta di un punto e fine creazione tramite il numero di click
                 if (event.getClickCount() == 1) { //1 click: aggiunta punto
                     poligonoBuilder.addPunto(coordinataX, coordinataY);
+                    if(!poligonoBuilder.wasPointAddedSuccess()){
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Attenzione");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Il punto è troppo vicino ad un vertice già esistente");
+                        alert.showAndWait();
+                    }
                     return false;
                 } else if (event.getClickCount() == 2 && poligonoBuilder.getNumeroPunti() > 2) { //2 click: fine creazione
                     Forma formaCreata = createShapePreview(coordinataX, coordinataY);
@@ -128,8 +134,14 @@ public class DrawState implements DrawingState{
                         currentDrawingShapePreview = null;
                         return true;
                     } else return false;
+                }else{
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Attenzione");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Non puoi creare il poligono con due punti");
+                    alert.showAndWait();
+                    return false;
                 }
-                return false;
             }
             return false;
         }else{//Caso alternativo al Poligono
@@ -138,7 +150,7 @@ public class DrawState implements DrawingState{
             if(!dialogShown) {
                 attributiForma = helpUIHandleMousePressed(formaCorrente);
                 if (attributiForma == null) return false;
-                dialogShown = true;
+                dialogShown = formaCorrente != Forme.TEXT || !attributiForma.getTesto().equals("");
             }
 
             //Assegnazione delle coordinate di inizio per il drag & drop
@@ -232,7 +244,9 @@ public class DrawState implements DrawingState{
         angoloLabel.setStyle("-fx-font-size: 18px;");
         Spinner<Double> spinnerAngolo = new Spinner<>(-360, 360.0, 0.0, 1.0);
         spinnerAngolo.setEditable(true);
-        spinnerAngolo.setTooltip(new Tooltip("Angolo di rotazione in gradi (0-360)"));
+        spinnerAngolo.setTooltip(new Tooltip("Angolo di rotazione in gradi (0-360, anche angoli negativi)"));
+        VBox angoloBox = new VBox(5, angoloLabel, spinnerAngolo);
+        angoloBox.setAlignment(Pos.CENTER);
 
         //TextField per la stringa di testo
         TextField textField = null;
@@ -260,6 +274,7 @@ public class DrawState implements DrawingState{
         contentBox.getChildren().addAll(bordoBox);
         if (internoBox != null) contentBox.getChildren().add(internoBox);
         if(textBox != null) contentBox.getChildren().add(textBox);
+        if(tipoForma != Forme.LINEA) { contentBox.getChildren().add(angoloBox); }
         if (suggerimentoPoligonoLabel != null) {
             contentBox.getChildren().add(suggerimentoPoligonoLabel);
         }
@@ -287,7 +302,7 @@ public class DrawState implements DrawingState{
                 //Se la stringa è vuota mostrare un warning
                 if(finalTextField.getText().trim().isEmpty()){
                     event.consume();
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
                     alert.setHeaderText(null);
                     alert.setContentText("Il campo testo ha bisogno di non essere una stringa vuota");
@@ -342,16 +357,23 @@ public class DrawState implements DrawingState{
             return null;
         }
 
-        double finalLarghezza, finalAltezza, finalAngle;
+        double finalLarghezza, finalAltezza, finalAngolo;
         double finalCentroX, finalCentroY;
 
         //Calcolo delle dimensioni in seguito al drag
         if(formaCorrente == Forme.LINEA){
-            finalLarghezza = Math.sqrt(Math.pow(coordinataX - startX, 2) + Math.pow(coordinataY - startY, 2));
-            finalAngle = Math.toDegrees(Math.atan2(coordinataY- startY, coordinataX - startX));
+            finalCentroX = (startX + coordinataX) / 2.0;
+            finalCentroY = (startY + coordinataY) / 2.0;
+
+            finalLarghezza = Math.sqrt(
+                    Math.pow(coordinataX - startX, 2) +
+                    Math.pow(coordinataY - startY, 2)
+            );
+
+            finalAngolo = Math.toDegrees(Math.atan2(coordinataY - startY, coordinataX - startX));
             finalAltezza = 0.0;
-            finalCentroX = startX;
-            finalCentroY = startY;
+
+            if(finalLarghezza < 1) finalLarghezza = 100.0;
         }else if (formaCorrente == Forme.POLIGONO) {
             if (poligonoBuilder != null && (poligonoBuilder.getNumeroPunti() > 0 || currentDrawingShapePreview != null) ) {
                 PoligonoBuilder previewBuilder = new PoligonoBuilder()
@@ -379,7 +401,7 @@ public class DrawState implements DrawingState{
             finalCentroY = (startY + coordinataY) / 2.0;
             if(finalLarghezza < 1) finalLarghezza = 100;
             if(finalAltezza < 1) finalAltezza = 100;
-            finalAngle = attributiForma.getAngoloInclinazione();
+            finalAngolo = attributiForma.getAngoloInclinazione();
         }
 
         //Creazione della preview corrispondente
@@ -393,8 +415,8 @@ public class DrawState implements DrawingState{
                         finalLarghezza, attributiForma.getAngoloInclinazione(), attributiForma.getColore(),
                         attributiForma.getColoreInterno());
             case LINEA:
-                return new FactoryLinea().creaForma(startX, startY, 0, finalLarghezza,
-                        finalAngle, attributiForma.getColore(), null);
+                return new FactoryLinea().creaForma(finalCentroX, finalCentroY, finalAltezza, finalLarghezza,
+                        finalAngolo, attributiForma.getColore(), null);
             case TEXT:
                 FactoryTesto factoryTesto = new FactoryTesto();
                 if(attributiForma.getTesto() == null || attributiForma.getTesto().equals("")) {

@@ -35,7 +35,7 @@
             </MenuBar>
             <ToolBar id="toolBar" fx:id="toolBarFX" disable="true">
                <items>
-                  <Button id="button" alignment="TOP_CENTER" minWidth="107.0" mnemonicParsing="false" onAction="#onDeletePressed" prefHeight="35.0" prefWidth="110.0">
+                  <Button id="button" fx:id="deleteButton" alignment="TOP_CENTER" minWidth="107.0" mnemonicParsing="false" onAction="#onDeletePressed" prefHeight="35.0" prefWidth="110.0">
                      <graphic>
                         <ImageView fitHeight="31.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -43,7 +43,7 @@
                            </image>
                         </ImageView>
                      </graphic></Button>
-                  <Button id="button" alignment="TOP_CENTER" minWidth="107.0" mnemonicParsing="false" onAction="#onBackToFrontPressed" prefHeight="35.0" prefWidth="110.0">
+                  <Button id="button" fx:id="backToFrontButton" alignment="TOP_CENTER" minWidth="107.0" mnemonicParsing="false" onAction="#onBackToFrontPressed" prefHeight="35.0" prefWidth="110.0">
                      <graphic>
                         <ImageView fitHeight="31.0" fitWidth="51.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -52,7 +52,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button id="button" alignment="TOP_CENTER" minWidth="107.0" mnemonicParsing="false" onAction="#onFrontToBackPressed" prefHeight="35.0" prefWidth="110.0">
+                  <Button id="button" fx:id="frontToBackButton" alignment="TOP_CENTER" minWidth="107.0" mnemonicParsing="false" onAction="#onFrontToBackPressed" prefHeight="35.0" prefWidth="110.0">
                      <graphic>
                         <ImageView fitHeight="31.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -70,7 +70,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button id="button" alignment="TOP_CENTER" layoutX="353.0" layoutY="6.0" minWidth="107.0" mnemonicParsing="false" onAction="#onChangeOutlineColorPressed" prefHeight="35.0" prefWidth="110.0">
+                  <Button id="button" fx:id="changeOutlineColorButton" alignment="TOP_CENTER" layoutX="353.0" layoutY="6.0" minWidth="107.0" mnemonicParsing="false" onAction="#onChangeOutlineColorPressed" prefHeight="35.0" prefWidth="110.0">
                      <graphic>
                         <ImageView fitHeight="36.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
