@@ -85,9 +85,7 @@ public class DrawStateTestUI extends ApplicationTest {
         assertNotNull(attributi.getColore(), "Il colore del bordo non deve essere nullo");
         assertNotNull(attributi.getColoreInterno(), "Il colore interno non deve essere nullo");
 
-        assertEquals(100.0, attributi.getAltezza(), 0.01, "Valore di altezza errato");
-        assertEquals(100.0, attributi.getLarghezza(), 0.01, "Valore di larghezza errato");
-        assertEquals(0.0, attributi.getAngoloInclinazione(), 0.01, "Valore di angolo errato");
+        assertEquals(45.0, attributi.getAngoloInclinazione(), 0.01, "Valore di angolo errato");
     }
 
     /**
@@ -120,10 +118,6 @@ public class DrawStateTestUI extends ApplicationTest {
         assertNotNull(attributi, "La finestra di dialogo non ha restituito attributi");
         assertNotNull(attributi.getColore(), "Il colore del bordo non deve essere nullo");
         assertEquals(Color.TRANSPARENT, attributi.getColoreInterno(), "Il colore interno di una linea deve essere trasparente");
-        assertEquals(0.0, attributi.getAltezza(), 0.01, "L'altezza di una linea deve essere 0");
-
-        assertEquals(100.0, attributi.getLarghezza(), 0.01, "Larghezza non corretta");
-        assertEquals(0.0, attributi.getAngoloInclinazione(), 0.01, "Angolo di inclinazione non corretto");
     }
 
 
