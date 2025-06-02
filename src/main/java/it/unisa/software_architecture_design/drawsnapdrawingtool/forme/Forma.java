@@ -99,6 +99,8 @@ public abstract class Forma implements Serializable, Cloneable{
      * @param coordinataXMouseDragged -> Coordinata X dell'evento mouse dragged
      */
     public void setCoordinataXForDrag(double coordinataXMouseDragged){
+        System.out.println(coordinataXMouseDragged);
+        System.out.println(getOffsetX());
         setCoordinataX(coordinataXMouseDragged-getOffsetX());
     }
 
