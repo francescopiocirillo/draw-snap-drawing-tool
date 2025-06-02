@@ -27,6 +27,7 @@
                <menus>
                   <Menu mnemonicParsing="false" text="File">
                      <items>
+                        <MenuItem fx:id="clearButton" mnemonicParsing="false" onAction="#onClearPressed" text="Nuovo File" />
                         <MenuItem mnemonicParsing="false" onAction="#onSavePressed" text="Salva" />
                         <MenuItem mnemonicParsing="false" onAction="#onLoadPressed" text="Carica" />
                      </items>
@@ -79,7 +80,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button id="button" alignment="TOP_CENTER" layoutX="468.0" layoutY="10.0" minWidth="107.0" mnemonicParsing="false" onAction="#onResizePressed" prefHeight="35.0" prefWidth="110.0">
+                  <Button id="button" fx:id="stretchButton" alignment="TOP_CENTER" layoutX="468.0" layoutY="10.0" minWidth="107.0" mnemonicParsing="false" onAction="#onStretchPressed" prefHeight="35.0" prefWidth="110.0">
                      <graphic>
                         <ImageView fitHeight="36.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -88,7 +89,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button id="button" fx:id="proportionalResizePressed" alignment="TOP_CENTER" layoutX="582.0" layoutY="6.0" minWidth="107.0" mnemonicParsing="false" onAction="#onProportionalResizePressed" prefHeight="35.0" prefWidth="110.0">
+                  <Button id="button" fx:id="proportionalResizeButton" alignment="TOP_CENTER" layoutX="582.0" layoutY="6.0" minWidth="107.0" mnemonicParsing="false" onAction="#onProportionalResizePressed" prefHeight="35.0" prefWidth="110.0">
                      <graphic>
                         <ImageView fitHeight="36.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -97,7 +98,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button id="button" alignment="TOP_CENTER" layoutX="582.0" layoutY="6.0" minWidth="107.0" mnemonicParsing="false" onAction="#onRotationPressed" prefHeight="35.0" prefWidth="110.0">
+                  <Button id="button" fx:id="rotationButton" alignment="TOP_CENTER" layoutX="582.0" layoutY="6.0" minWidth="107.0" mnemonicParsing="false" onAction="#onRotationPressed" prefHeight="35.0" prefWidth="110.0">
                      <graphic>
                         <ImageView fitHeight="36.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -106,7 +107,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button id="button" alignment="TOP_CENTER" layoutX="696.0" layoutY="6.0" minWidth="107.0" mnemonicParsing="false" onAction="#onVerticalReflectionPressed" prefHeight="35.0" prefWidth="110.0">
+                  <Button id="button" fx:id="verticalReflectButton" alignment="TOP_CENTER" layoutX="696.0" layoutY="6.0" minWidth="107.0" mnemonicParsing="false" onAction="#onVerticalReflectionPressed" prefHeight="35.0" prefWidth="110.0">
                      <graphic>
                         <ImageView fitHeight="36.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -115,7 +116,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button id="button" alignment="TOP_CENTER" layoutX="925.0" layoutY="10.0" minWidth="107.0" mnemonicParsing="false" onAction="#onHorizontalReflectionPressed" prefHeight="35.0" prefWidth="110.0">
+                  <Button id="button" fx:id="horizontalReflectButton" alignment="TOP_CENTER" layoutX="925.0" layoutY="10.0" minWidth="107.0" mnemonicParsing="false" onAction="#onHorizontalReflectionPressed" prefHeight="35.0" prefWidth="110.0">
                      <graphic>
                         <ImageView fitHeight="36.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -248,7 +249,7 @@
                         </HBox>
                         <HBox id="barra" alignment="CENTER" prefWidth="200.0" spacing="10.0">
                            <children>
-                              <Button id="button" alignment="CENTER" mnemonicParsing="false" onAction="#onZoomInPressed" text="+" textAlignment="CENTER">
+                              <Button id="button" fx:id="zoomInButton" alignment="CENTER" mnemonicParsing="false" onAction="#onZoomInPressed" text="+" textAlignment="CENTER">
                                  <font>
                                     <Font name="System Bold" size="20.0" />
                                  </font>
@@ -256,12 +257,12 @@
                                     <Insets left="20.0" right="5.0" />
                                  </HBox.margin>
                               </Button>
-                              <ComboBox id="button" fx:id="zoom" onAction="#onZoomChangePressed">
+                              <ComboBox id="button" fx:id="zoomChangeButton" onAction="#onZoomChangePressed">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
                               </ComboBox>
-                              <Button id="button" alignment="CENTER" mnemonicParsing="false" onAction="#onZoomOutPressed" text="-" textAlignment="CENTER">
+                              <Button id="button" fx:id="zoomOutButton" alignment="CENTER" mnemonicParsing="false" onAction="#onZoomOutPressed" text="-" textAlignment="CENTER">
                                  <HBox.margin>
                                     <Insets left="5.0" right="10.0" />
                                  </HBox.margin>
@@ -269,7 +270,7 @@
                                     <Font name="System Bold" size="20.0" />
                                  </font>
                               </Button>
-                              <ToggleButton id="toggle" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onGridPressed">
+                              <ToggleButton id="toggle" fx:id="gridButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onGridPressed">
                                  <graphic>
                                     <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                        <image>

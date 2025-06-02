@@ -54,11 +54,17 @@ public class DrawSnapController {
      * Attributi grafici per lo zoom
      */
     @FXML
-    private ComboBox<Double> zoom;
+    private ComboBox<Double> zoomChangeButton;
+    @FXML
+    private Button zoomInButton;
+    @FXML
+    private Button zoomOutButton;
 
     /*
      * Attributi grafici per la griglia
      */
+    @FXML
+    private ToggleButton gridButton;
     @FXML
     private Slider gridSlider;
 
@@ -97,7 +103,15 @@ public class DrawSnapController {
     @FXML
     private Button changeOutlineColorButton;
     @FXML
-    private Button proportionalResizePressed;
+    private Button stretchButton;
+    @FXML
+    private Button proportionalResizeButton;
+    @FXML
+    private Button rotationButton;
+    @FXML
+    private Button verticalReflectButton;
+    @FXML
+    private Button horizontalReflectButton;
 
     /*
      * Attributi grafici per l'undo
@@ -311,11 +325,11 @@ public class DrawSnapController {
      */
     private void initializeZoom(){
         //Definizione menu a tendina
-        zoom.getItems().addAll(zoomLevels);
-        zoom.setValue(zoomLevels[currentZoomIndex]);
+        zoomChangeButton.getItems().addAll(zoomLevels);
+        zoomChangeButton.setValue(zoomLevels[currentZoomIndex]);
 
         //Aggiunta dell'ImageView
-        zoom.setButtonCell(new ListCell<>(){
+        zoomChangeButton.setButtonCell(new ListCell<>(){
             private final ImageView zoomImage = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/zoom.png")));
             {
                 zoomImage.setFitWidth(24);
@@ -336,7 +350,7 @@ public class DrawSnapController {
         });
 
         //Aggiunta dei testi
-        zoom.setCellFactory(lv -> new ListCell<Double>(){
+        zoomChangeButton.setCellFactory(lv -> new ListCell<Double>(){
             @Override
             protected void updateItem(Double item, boolean empty) {
                 super.updateItem(item, empty);
@@ -384,8 +398,17 @@ public class DrawSnapController {
         backToFrontButton.setTooltip(new Tooltip("Metti in primo piano"));
         changeFillColorButton.setTooltip(new Tooltip("Cambio colore Interno"));
         changeOutlineColorButton.setTooltip(new Tooltip("Cambio colore Bordo"));
-
-
+        stretchButton.setTooltip(new Tooltip("Stiramento della figura"));
+        proportionalResizeButton.setTooltip(new Tooltip("Ridimensionamento della figura"));
+        rotationButton.setTooltip(new Tooltip("Rotazione della figura"));
+        verticalReflectButton.setTooltip(new Tooltip("Specchiamento verticale della figura"));
+        horizontalReflectButton.setTooltip(new Tooltip("Specchiamento orizzontale della figura"));
+        undoButton.setTooltip(new Tooltip("Annulla ultima modifica"));
+        zoomChangeButton.setTooltip(new Tooltip("Cambio dello zoom tramite livelli"));
+        zoomInButton.setTooltip(new Tooltip("Aumento dello zoom"));
+        zoomOutButton.setTooltip(new Tooltip("Riduzione dello zoom"));
+        gridButton.setTooltip(new Tooltip("Inserimento griglia"));
+        gridSlider.setTooltip(new Tooltip("Cambio dimensione griglia"));
     }
 
     /*
@@ -590,6 +613,25 @@ public class DrawSnapController {
      */
 
     /**
+     * Gestisce la pulizia del {@link GraphicsContext} corrente
+     * all'interno del {@link Canvas} per averne uno nuovo vuoto
+     */
+    @FXML
+    void onClearPressed(){
+        //Creazione del comando
+        invoker.setCommand(new ClearCommand(gc, forme, history));
+
+        //Esecuzione del comando
+        invoker.executeCommand();
+
+        //Disabilitazione del pulsante Undo
+        undoButton.setDisable(true);
+
+        //Update dello stato
+        updateState(false);
+    }
+
+    /**
      * Gestisce il salvataggio del {@link Canvas} corrente all'interno di
      * un {@link java.io.File} attraverso l'esecuzione del {@code SaveCommand}
      * @param event è l'evento che ha causato la chiamata alla funzione
@@ -623,26 +665,6 @@ public class DrawSnapController {
     /*
      * Handler del Context Menu
      */
-
-    /**
-     * Gestisce l'esecuzione del {@code DeleteCommand} sulla
-     * {@code FormaSelezionataDecorator} corrente
-     * @param event è l'evento che ha causato la chiamata alla funzione
-     */
-    @FXML
-    void onDeletePressed(ActionEvent event) {
-        //Creazione del comando
-        invoker.setCommand(new DeleteCommand(forme));
-
-        //Esecuzione del comando
-        invoker.executeCommand();
-
-        //Disabilitazione della toolbar
-        toolBarFX.setDisable(true);
-
-        //Update dello stato
-        updateState(true);
-    }
 
     /**
      * Gestisce l'eseguzione del {@code CutCommand}
@@ -738,6 +760,26 @@ public class DrawSnapController {
     /*
      * Handler della ToolBar
      */
+
+    /**
+     * Gestisce l'esecuzione del {@code DeleteCommand} sulla
+     * {@code FormaSelezionataDecorator} corrente
+     * @param event è l'evento che ha causato la chiamata alla funzione
+     */
+    @FXML
+    void onDeletePressed(ActionEvent event) {
+        //Creazione del comando
+        invoker.setCommand(new DeleteCommand(forme));
+
+        //Esecuzione del comando
+        invoker.executeCommand();
+
+        //Disabilitazione della toolbar
+        toolBarFX.setDisable(true);
+
+        //Update dello stato
+        updateState(true);
+    }
 
     /**
      * Gestisce l'esecuzione del {@code BackToFrontCommand}
@@ -893,12 +935,12 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'esecuzione del {@code ResizeCommand}
+     * Gestisce l'esecuzione del {@code StretchCommand}
      * sulla {@code FormaSelezionataDecorator}
      * @param event è l'evento che ha causato la chiamata alla funzione
      */
     @FXML
-    public void onResizePressed(ActionEvent event) {
+    public void onStretchPressed(ActionEvent event) {
         Forma tipoForma = forme.getFormaSelezionata();
         Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
 
@@ -912,7 +954,7 @@ public class DrawSnapController {
 
             // Controlla se l'utente ha premuto OK
             if (risultato.isPresent() && risultato.get() == ButtonType.OK) {
-                proportionalResizePressed.fire();
+                proportionalResizeButton.fire();
             }
         }else{
             Dialog<Map<String, Double>> dialog = new Dialog<>();
@@ -988,11 +1030,11 @@ public class DrawSnapController {
             Optional<Map<String, Double>> result = dialog.showAndWait();
             result.ifPresent(nuoveDimensioni -> {
                 if (( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea) {
-                    invoker.setCommand(new ResizeCommand(forme, nuoveDimensioni.get("Lunghezza"), 0));
+                    invoker.setCommand(new StretchCommand(forme, nuoveDimensioni.get("Lunghezza"), 0));
                     invoker.executeCommand();
                     updateState(true);
                 } else {
-                    invoker.setCommand(new ResizeCommand(forme, nuoveDimensioni.get("Larghezza"), nuoveDimensioni.get("Altezza")));
+                    invoker.setCommand(new StretchCommand(forme, nuoveDimensioni.get("Larghezza"), nuoveDimensioni.get("Altezza")));
                     invoker.executeCommand();
                     updateState(true);
                 }
@@ -1161,7 +1203,7 @@ public class DrawSnapController {
     @FXML
     void onZoomChangePressed(ActionEvent event) {
         //Ottenimento del livello selezionato
-        int selectedIndex = zoom.getSelectionModel().getSelectedIndex();
+        int selectedIndex = zoomChangeButton.getSelectionModel().getSelectedIndex();
         if(selectedIndex >= 0){
             //Cambio del livello corrente
             currentZoomIndex = selectedIndex;
@@ -1196,7 +1238,7 @@ public class DrawSnapController {
             invoker.executeCommand();
 
             //Cambio di livello nel menu a tendina
-            zoom.getSelectionModel().select(currentZoomIndex);
+            zoomChangeButton.getSelectionModel().select(currentZoomIndex);
 
             //Update dello stato
             updateState(false);
@@ -1222,7 +1264,7 @@ public class DrawSnapController {
             invoker.executeCommand();
 
             //Cambio di livello nel menu a tendina
-            zoom.getSelectionModel().select(currentZoomIndex);
+            zoomChangeButton.getSelectionModel().select(currentZoomIndex);
 
             //Update dello stato
             updateState(false);

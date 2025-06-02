@@ -12,7 +12,7 @@ import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
-class ProportionalResizeCommandTest {
+class ProportionalStretchCommandTest {
     private DrawSnapModel drawSnapModel;
     private Ellisse ellisse;
     private Rettangolo rettangolo;

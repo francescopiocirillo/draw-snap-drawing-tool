@@ -80,3 +80,7 @@
 #fileBar {
 	-fx-background-color: #7099b3;
 }
+
+.tooltip {
+	-fx-font-size: 13px;
+}

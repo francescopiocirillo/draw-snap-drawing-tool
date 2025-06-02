@@ -374,7 +374,7 @@ public class DrawSnapModel implements Serializable {
     }
 
     /**
-     * Ridimensiona la forma attualmente selezionata.
+     * Stira la forma attualmente selezionata.
      * @param larghezza La larghezza desiderata per la forma. Per i poligoni,
      * questo valore viene utilizzato come riferimento per il calcolo
      * del fattore di scala sull'asse X della bounding box.
@@ -382,7 +382,7 @@ public class DrawSnapModel implements Serializable {
      * viene utilizzato come riferimento per il calcolo del fattore di scala
      * sull'asse Y della bounding box.
      */
-    public void resize(double larghezza, double altezza) {
+    public void stretch(double larghezza, double altezza) {
         // Itera attraverso le forme per trovare quella selezionata
         System.out.println("model");
         Forma formaDaRidimensionare = null;

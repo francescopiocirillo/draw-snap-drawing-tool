@@ -52,4 +52,8 @@ public class DrawSnapHistory {
     public boolean isEmpty(){
         return history.isEmpty();
     }
+
+    public void clear(){
+        history.clear();
+    }
 }
