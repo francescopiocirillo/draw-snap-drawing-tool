@@ -194,7 +194,7 @@ public class Testo extends Forma2D {
     /**
      * Calcola i fattori di scala (scaleX, scaleY) necessari per stirare il testo
      * in modo che riempia la larghezza e l'altezza della bounding box.
-     * Imposta anche un `currentFontSize` di base per la misurazione del testo.
+     * Imposta anche un currentFontSize di base per la misurazione del testo.
      */
     private void calculateFontSize() {
         if (getLarghezza() <= 0 || getAltezza() <= 0 || testo == null || testo.isEmpty()) {

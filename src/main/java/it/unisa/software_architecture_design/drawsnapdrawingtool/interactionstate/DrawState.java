@@ -244,7 +244,7 @@ public class DrawState implements DrawingState{
         angoloLabel.setStyle("-fx-font-size: 18px;");
         Spinner<Double> spinnerAngolo = new Spinner<>(-360, 360.0, 0.0, 1.0);
         spinnerAngolo.setEditable(true);
-        spinnerAngolo.setTooltip(new Tooltip("Angolo di rotazione in gradi (0-360)"));
+        spinnerAngolo.setTooltip(new Tooltip("Angolo di rotazione in gradi (0-360, anche angoli negativi)"));
         VBox angoloBox = new VBox(5, angoloLabel, spinnerAngolo);
         angoloBox.setAlignment(Pos.CENTER);
 
