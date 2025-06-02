@@ -1,18 +1,15 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.forme;
 
-import it.unisa.software_architecture_design.drawsnapdrawingtool.utils.ColorUtils;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serial;
-
+/**
+ * La classe {@link Ellisse} rappresenta la {@link Forma} Ellisse e presenta
+ * tutte le caratteristiche ereditate da {@link Forma2D}.
+ */
 public class Ellisse extends Forma2D {
-
     /*
-     * Costruttore, Getter e Setter
+     * Costruttore
      */
     public Ellisse(double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore, double altezza, Color coloreInterno) {
         super(coordinataX, coordinataY, larghezza, angoloInclinazione, colore, altezza, coloreInterno);
@@ -23,10 +20,9 @@ public class Ellisse extends Forma2D {
      */
     
     /**
-     * Disegna l'Ellisse sul {@link GraphicsContext} specificato.
-     *
-     * @param gc il {@code GraphicsContext} su cui disegnare l'Ellisse.
-     *           Deve essere già inizializzato e associato a un {@code Canvas} valido.
+     * Gestisce il disegno  di una {@link Ellisse} sul {@link GraphicsContext} specificato.
+     * @param gc il {@link GraphicsContext} su cui disegnare l'{@link Ellisse}.
+     *           Deve essere già inizializzato e associato a un {@link javafx.scene.canvas.Canvas} valido.
      */
     @Override
     public void disegna(GraphicsContext gc) {
@@ -53,15 +49,14 @@ public class Ellisse extends Forma2D {
     }
 
     /**
-     * Determina se l'Ellisse contiene un punto specifico nello spazio.
+     * Verifica se l'{@link Ellisse} contiene un punto specifico nello spazio.
      * L'equazione per verificare se un punto si trova all'interno dell'ellisse è
      * \frac{(puntoDaValutareX-coordinataX)^2}{mezzaLarghezza^2}+\frac{(puntoDaValutareY-coordinataY)^2}{mezzaAltezza^2}<=1
      *
-     *
      * @param puntoDaValutareX la coordinata X del punto da valutare
      * @param puntoDaValutareY la coordinata Y del punto da valutare
-     * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si trova all'interno dell'Ellisse,
-     *          altrimenti {@code false}.
+     * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si
+     * trova all'interno dell'{@link Ellisse}, altrimenti {@code false}.
      */
     @Override
     public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
@@ -83,21 +78,8 @@ public class Ellisse extends Forma2D {
     }
 
     /**
-     * Metodo per il controllare se due forme sono uguali
-     * @param forma -> forma con cui fare il confronto
-     * @return {@code true} se gli attributi sono uguali, altrimenti {@code false}
-     */
-    @Override
-    public boolean confrontaAttributi(Forma forma){
-        Ellisse ellisse = (Ellisse) forma;
-        return super.confrontaAttributi(ellisse) &&
-                this.getAltezza() == ellisse.getAltezza() &&
-                this.getColoreInterno() == ellisse.getColoreInterno();
-    }
-
-    /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
-     * centro della figura stessa.
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse verticale che passa per il centro della {@link Forma} stessa
      */
     @Override
     public void specchiaInVerticale(){
@@ -109,8 +91,8 @@ public class Ellisse extends Forma2D {
     }
 
     /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse orizzontale che passa per il
-     * centro della figura stessa.
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse orizzontale che passa per il centro della {@link Forma} stessa
      */
     @Override
     public void specchiaInOrizzontale(){
@@ -119,5 +101,18 @@ public class Ellisse extends Forma2D {
 
         // Imposta il nuovo angolo
         setAngoloInclinazione(nuovoAngolo);
+    }
+
+    /**
+     * Verifica se l' {@link Ellisse} corrente è uguale ad un altra {@link Forma}
+     * @param forma è la {@link Forma} con cui fare il confronto
+     * @return {@code true} se gli attributi sono uguali, altrimenti {@code false}
+     */
+    @Override
+    public boolean confrontaAttributi(Forma forma){
+        if(!(forma instanceof Ellisse ellisse))return false;
+        return super.confrontaAttributi(ellisse) &&
+                this.getAltezza() == ellisse.getAltezza() &&
+                this.getColoreInterno() == ellisse.getColoreInterno();
     }
 }

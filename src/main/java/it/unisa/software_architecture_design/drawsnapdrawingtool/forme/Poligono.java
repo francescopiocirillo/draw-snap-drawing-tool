@@ -11,6 +11,10 @@ import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * La classe {@link Poligono} rappresenta la {@link Forma} Poligono e presenta
+ * tutte le caratteristiche ereditate da {@link Forma2D}.
+ */
 public class Poligono extends Forma2D {
     /*
      * Attributi
@@ -22,7 +26,7 @@ public class Poligono extends Forma2D {
     private double intrinsicCenterX; // Centro X della bounding box
     private double intrinsicCenterY; // Centro Y della bounding box
 
-    /**
+    /*
      * Costruttore, getter e setter
      */
     public Poligono(double initialRefX, double initialRefY, double larghezza, double altezza, double angoloInclinazione, Color colore, List<Double> rawPuntiX, List<Double> rawPuntiY, Color coloreInterno) {
@@ -92,11 +96,10 @@ public class Poligono extends Forma2D {
     */
 
     /**
-     * Disegna il poligono sul contesto grafico specificato.
-     * Applica le trasformazioni (traslazione e rotazione) e poi disegna il poligono
+     * Gestisce il disegno di un {@link Poligono} sul {@link GraphicsContext} specificato.
+     * Applica le trasformazioni (traslazione e rotazione) e poi disegna il {@link Poligono}
      * utilizzando i suoi punti relativi.
-     *
-     * @param gc Il contesto grafico su cui disegnare il poligono.
+     * @param gc è il {@link GraphicsContext} su cui disegnare il {@link Poligono}.
      */
     @Override
     public void disegna(GraphicsContext gc) {
@@ -132,79 +135,13 @@ public class Poligono extends Forma2D {
     }
 
     /**
-     * Metodo helper per calcolare la distanza euclidea al quadrato tra due punti.
-     *
-     * @param x1 Coordinata X del primo punto.
-     * @param y1 Coordinata Y del primo punto.
-     * @param x2 Coordinata X del secondo punto.
-     * @param y2 Coordinata Y del secondo punto.
-     * @return La distanza al quadrato tra i due punti.
-     */
-    private double distanzaQuadrata(double x1, double y1, double x2, double y2) {
-        double dx = x1 - x2;
-        double dy = y1 - y2;
-        return dx * dx + dy * dy;
-    }
-
-    /**
-     * Verifica se un punto (px, py) è sufficientemente vicino al contorno del poligono.
-     *
-     * @param px La coordinata X del punto da verificare.
-     * @param py La coordinata Y del punto da verificare.
-     * @param tolleranza La distanza massima per considerare il punto "vicino" al contorno.
-     * @return {@code true} se il punto è vicino al contorno, altrimenti {@code false}.
-     */
-    private boolean puntoVicinoAlContorno(double px, double py, double tolleranza) {
-        int n = puntiX.size();
-        if (n < 3) return false; // Non c'è poligono con meno di 3 punti
-
-        double tolleranzaQuadrata = tolleranza * tolleranza;
-        //iterazione sui segmenti del poligono
-        for (int i = 0, j = n - 1; i < n; j = i++) {
-            double ax = puntiX.get(j); //coordinate punto di inizio del segmento corrente
-            double ay = puntiY.get(j);
-            double bx = puntiX.get(i); //coordinate punto di fine del segmento corrente
-            double by = puntiY.get(i);
-
-            // Calcola la distanza dal punto (px, py) al segmento (ax, ay) - (bx, by)
-            double lunghezzaSegmentoQuadrata = distanzaQuadrata(ax, ay, bx, by);
-
-            if (lunghezzaSegmentoQuadrata == 0.0) { //il segmento è un punto
-                if (distanzaQuadrata(px, py, ax, ay) <= tolleranzaQuadrata) {
-                    return true;
-                }
-                continue;
-            }
-
-            // Proiezione del punto P sul segmento AB. t = dot((P-A), (B-A)) / |B-A|^2
-            double t = ((px - ax) * (bx - ax) + (py - ay) * (by - ay)) / lunghezzaSegmentoQuadrata;
-
-            double distanzaPuntoSegmentoQuadrata;
-            if (t < 0.0) { // Proiezione fuori dal segmento, il punto più vicino è A
-                distanzaPuntoSegmentoQuadrata = distanzaQuadrata(px, py, ax, ay);
-            } else if (t > 1.0) { // Proiezione fuori dal segmento, il punto più vicino è B
-                distanzaPuntoSegmentoQuadrata = distanzaQuadrata(px, py, bx, by);
-            } else { // Proiezione cade sul segmento
-                // Calcola il punto di proiezione (qx, qy)
-                double qx = ax + t * (bx - ax);
-                double qy = ay + t * (by - ay);
-                distanzaPuntoSegmentoQuadrata = distanzaQuadrata(px, py, qx, qy);
-            }
-
-            if (distanzaPuntoSegmentoQuadrata <= tolleranzaQuadrata) {
-                return true; // Il punto è abbastanza vicino a questo segmento
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Determina se un punto specificato si trova all'interno del poligono.
+     * Verifica se un punto specificato si trova all'interno del {@link Poligono}.
      * Considera anche una piccola tolleranza per la selezione del bordo.
      *
      * @param x La coordinata X del punto da valutare.
      * @param y La coordinata Y del punto da valutare.
-     * @return {@code true} se il punto si trova all'interno o sul bordo del poligono, altrimenti {@code false}.
+     * @return {@code true} se il punto si trova all'interno o sul bordo del {@link Poligono},
+     * altrimenti {@code false}.
      */
     @Override
     public boolean contiene(double x, double y) {
@@ -255,8 +192,8 @@ public class Poligono extends Forma2D {
     }
 
     /**
-     * Specchia il poligono lungo l'asse Y del suo sistema di coordinate intrinseco.
-     * Questo viene fatto negando le coordinate X di tutti i punti.
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse verticale che passa per il centro della {@link Forma} stessa
      */
     @Override
     public void specchiaInVerticale() {
@@ -275,8 +212,8 @@ public class Poligono extends Forma2D {
     }
 
     /**
-     * Specchia il poligono lungo l'asse X del suo sistema di coordinate intrinseco.
-     * Questo viene fatto negando le coordinate Y di tutti i punti.
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse orizzontale che passa per il centro della {@link Forma} stessa
      */
     @Override
     public void specchiaInOrizzontale() {
@@ -295,8 +232,89 @@ public class Poligono extends Forma2D {
     }
 
     /**
-     * Calcola la bounding box del poligono (min/max X/Y) e il suo centro
-     * basandosi sui punti intrinseci (non ruotati) del poligono.
+     * Gestisce il ridimensionamento del {@link Poligono} in modo proporzionale applicando un
+     * fattore di scala uniforme a tutti i suoi punti intrinseci.
+     *
+     * @param proporzione La percentuale di ridimensionamento (es. 100 per nessuna modifica, 50 per metà dimensione).
+     */
+    @Override
+    public void proportionalResize(double proporzione) {
+        double fattoreScala = proporzione / 100.0;
+        // Applica il fattore di scala sia sull'asse X che sull'asse Y
+        scala(fattoreScala, fattoreScala);
+
+    }
+
+    /**
+     * Gestisce la scala dei punti intrinseci del {@link Poligono} rispetto al suo centro locale (0,0).
+     * Questo metodo modifica le coordinate dei vertici, ridimensionando la {@link Forma}.
+     *
+     * @param scalaX Il fattore di scala sull'asse X.
+     * @param scalaY Il fattore di scala sull'asse Y.
+     */
+    public void scala(double scalaX, double scalaY) {
+        if (puntiX.isEmpty()) return;
+
+        List<Double> nuoviPuntiX = new ArrayList<>();
+        List<Double> nuoviPuntiY = new ArrayList<>();
+
+        // Itera su ogni punto e applica i fattori di scala.
+        for (int i = 0; i < puntiX.size(); i++) {
+            double oldX = puntiX.get(i);
+            double oldY = puntiY.get(i);
+
+            // Scala il punto
+            nuoviPuntiX.add(oldX * scalaX);
+            nuoviPuntiY.add(oldY * scalaY);
+        }
+        this.puntiX = nuoviPuntiX;
+        this.puntiY = nuoviPuntiY;
+        calcolaBoundingBox(); // Ricalcola le dimensioni intrinseche dopo la scala
+    }
+
+    /*
+     * Logica di serializzazione e deserializzazione
+     */
+
+    /**
+     * Gestisce la serializzazione dell'oggetto nel complesso con il metodo della superclasse e
+     * poi salva anche il {@link Color} di riempimento che non è {@link java.io.Serializable}.
+     * @param out è l' {@link ObjectOutputStream} sul quale salvare le informazioni, sarà il
+     *            {@link java.io.File} scelto dall'utente
+     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
+     */
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeUTF(ColorUtils.toHexString(getColore()));
+        // Serializza il colore interno specifico della sottoclasse
+        out.writeUTF(ColorUtils.toHexString(getColoreInterno()));
+    }
+
+    /**
+     * Gestisce la deserializzazione dell'oggetto nel complesso con il metodo della superclasse e
+     * poi ricava anche il {@link Color} di riempimento che non è {@link java.io.Serializable}
+     * @param in è l' {@link ObjectInputStream} dal quale caricare le informazioni, sarà il
+     *           {@link java.io.File} scelto dall'utente
+     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
+     * @throws ClassNotFoundException se si verifica un errore nel caricare una classe
+     */
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        String colore = in.readUTF();
+        this.setColore(Color.web(colore));
+        String coloreInterno = in.readUTF();
+        this.setColoreInterno(ColorUtils.fromHexString(coloreInterno));
+    }
+
+    /*
+     * Metodi Ausiliari
+     */
+
+    /**
+     * Metodo helper che calcola la bounding box del {@link Poligono} (min/max X/Y) e il suo centro
+     * basandosi sui punti intrinseci (non ruotati) del {@link Poligono}.
      * Aggiorna le proprietà `intrinsicLarghezza`, `intrinsicAltezza`, `intrinsicCenterX`, `intrinsicCenterY`
      * e le dimensioni della superclasse
      */
@@ -337,73 +355,69 @@ public class Poligono extends Forma2D {
     }
 
     /**
-     * Scala i punti intrinseci del poligono rispetto al suo centro locale (0,0).
-     * Questo metodo modifica le coordinate dei vertici, ridimensionando la forma.
+     * Metodo helper per calcolare la distanza euclidea al quadrato tra due punti.
      *
-     * @param scalaX Il fattore di scala sull'asse X.
-     * @param scalaY Il fattore di scala sull'asse Y.
+     * @param x1 Coordinata X del primo punto.
+     * @param y1 Coordinata Y del primo punto.
+     * @param x2 Coordinata X del secondo punto.
+     * @param y2 Coordinata Y del secondo punto.
+     * @return La distanza al quadrato tra i due punti.
      */
-    public void scala(double scalaX, double scalaY) {
-        if (puntiX.isEmpty()) return;
+    private double distanzaQuadrata(double x1, double y1, double x2, double y2) {
+        double dx = x1 - x2;
+        double dy = y1 - y2;
+        return dx * dx + dy * dy;
+    }
 
-        List<Double> nuoviPuntiX = new ArrayList<>();
-        List<Double> nuoviPuntiY = new ArrayList<>();
+    /**
+     * Verifica se un punto (px, py) è sufficientemente vicino al contorno del {@link Poligono}.
+     *
+     * @param px La coordinata X del punto da verificare.
+     * @param py La coordinata Y del punto da verificare.
+     * @param tolleranza La distanza massima per considerare il punto "vicino" al contorno.
+     * @return {@code true} se il punto è vicino al contorno, altrimenti {@code false}.
+     */
+    private boolean puntoVicinoAlContorno(double px, double py, double tolleranza) {
+        int n = puntiX.size();
+        if (n < 3) return false; // Non c'è poligono con meno di 3 punti
 
-        // Itera su ogni punto e applica i fattori di scala.
-        for (int i = 0; i < puntiX.size(); i++) {
-            double oldX = puntiX.get(i);
-            double oldY = puntiY.get(i);
+        double tolleranzaQuadrata = tolleranza * tolleranza;
+        //iterazione sui segmenti del poligono
+        for (int i = 0, j = n - 1; i < n; j = i++) {
+            double ax = puntiX.get(j); //coordinate punto di inizio del segmento corrente
+            double ay = puntiY.get(j);
+            double bx = puntiX.get(i); //coordinate punto di fine del segmento corrente
+            double by = puntiY.get(i);
 
-            // Scala il punto
-            nuoviPuntiX.add(oldX * scalaX);
-            nuoviPuntiY.add(oldY * scalaY);
+            // Calcola la distanza dal punto (px, py) al segmento (ax, ay) - (bx, by)
+            double lunghezzaSegmentoQuadrata = distanzaQuadrata(ax, ay, bx, by);
+
+            if (lunghezzaSegmentoQuadrata == 0.0) { //il segmento è un punto
+                if (distanzaQuadrata(px, py, ax, ay) <= tolleranzaQuadrata) {
+                    return true;
+                }
+                continue;
+            }
+
+            // Proiezione del punto P sul segmento AB. t = dot((P-A), (B-A)) / |B-A|^2
+            double t = ((px - ax) * (bx - ax) + (py - ay) * (by - ay)) / lunghezzaSegmentoQuadrata;
+
+            double distanzaPuntoSegmentoQuadrata;
+            if (t < 0.0) { // Proiezione fuori dal segmento, il punto più vicino è A
+                distanzaPuntoSegmentoQuadrata = distanzaQuadrata(px, py, ax, ay);
+            } else if (t > 1.0) { // Proiezione fuori dal segmento, il punto più vicino è B
+                distanzaPuntoSegmentoQuadrata = distanzaQuadrata(px, py, bx, by);
+            } else { // Proiezione cade sul segmento
+                // Calcola il punto di proiezione (qx, qy)
+                double qx = ax + t * (bx - ax);
+                double qy = ay + t * (by - ay);
+                distanzaPuntoSegmentoQuadrata = distanzaQuadrata(px, py, qx, qy);
+            }
+
+            if (distanzaPuntoSegmentoQuadrata <= tolleranzaQuadrata) {
+                return true; // Il punto è abbastanza vicino a questo segmento
+            }
         }
-        this.puntiX = nuoviPuntiX;
-        this.puntiY = nuoviPuntiY;
-        calcolaBoundingBox(); // Ricalcola le dimensioni intrinseche dopo la scala
-    }
-
-    /**
-     * Serializza l'oggetto nel complesso con il metodo della superclasse e poi salva
-     * anche il colore di riempimento che non è serializzabile.
-     * @param out è lo stream sul quale salvare le informazioni, sarà il File scelto dall'utente
-     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
-     */
-    @Serial
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        out.writeUTF(ColorUtils.toHexString(getColore()));
-        // Serializza il colore interno specifico della sottoclasse
-        out.writeUTF(ColorUtils.toHexString(getColoreInterno()));
-    }
-
-    /**
-     * Deserializza l'oggetto nel complesso con il metodo della superclasse e poi ricava
-     * anche il colore di riempimento che non è serializzabile.
-     * @param in è lo stream dal quale caricare le informazioni, sarà il File scelto dall'utente
-     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
-     * @throws ClassNotFoundException se si verifica un errore nel caricare una classe
-     */
-    @Serial
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        String colore = in.readUTF();
-        this.setColore(Color.web(colore));
-        String coloreInterno = in.readUTF();
-        this.setColoreInterno(ColorUtils.fromHexString(coloreInterno));
-    }
-
-    /**
-     * Ridimensiona il poligono in modo proporzionale applicando un fattore di scala uniforme
-     * a tutti i suoi punti intrinseci.
-     *
-     * @param proporzione La percentuale di ridimensionamento (es. 100 per nessuna modifica, 50 per metà dimensione).
-     */
-    @Override
-    public void proportionalResize(double proporzione) {
-        double fattoreScala = proporzione / 100.0;
-        // Applica il fattore di scala sia sull'asse X che sull'asse Y
-        scala(fattoreScala, fattoreScala);
-
+        return false;
     }
 }
