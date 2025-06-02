@@ -3,6 +3,7 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -18,6 +19,10 @@ public class DrawSnapApplication extends Application {
         DrawSnapController controller = fxmlLoader.getController();
         controller.setStage(stage);
         controller.setModel(model);
+
+        // Imposta l'icona
+        Image icon = new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/iconaApp.png"));
+        stage.getIcons().add(icon);
 
         stage.setTitle("DrawSnap - Drawing Tool");
         stage.setResizable(true); // finestra ridimensionabile
