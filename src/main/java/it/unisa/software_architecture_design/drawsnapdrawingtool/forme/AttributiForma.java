@@ -3,6 +3,9 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.forme;
 import javafx.scene.paint.Color;
 
 public class AttributiForma {
+    /*
+     * Attributi
+     */
     private double coordinataX;
     private double coordinataY;
     private double altezza;
@@ -12,6 +15,9 @@ public class AttributiForma {
     private Color coloreInterno;
     private String testo;
 
+    /*
+     * Costruttore, getter e setter
+     */
     // Costruttore con valori di default
     public AttributiForma() {
         this.coordinataX = 0.0;

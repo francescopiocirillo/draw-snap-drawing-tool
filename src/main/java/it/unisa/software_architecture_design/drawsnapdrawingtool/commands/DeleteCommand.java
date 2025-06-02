@@ -28,7 +28,7 @@ public class DeleteCommand implements Command{
      */
 
     /**
-     * Esegue il comando di elimina della lista di Forme
+     * Esegue il comando di elimina dalla lista di Forme
      */
     @Override
     public void execute() {

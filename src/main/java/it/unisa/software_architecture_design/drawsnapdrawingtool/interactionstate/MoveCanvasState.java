@@ -28,13 +28,17 @@ public class MoveCanvasState implements DrawingState {
         this.scrollPane = scrollPane;
     }
 
+    /*
+     * Logica della classe
+     */
     /**
      * Gestisce l'evento di pressione del mouse sul canvas per permettere lo spostamento
      * @param event è l'evento di pressione del mouse
      * @param forme è la lista di forme presenti sul canvas (non utilizzato in questo metodo)
      * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
      * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
-     * @return
+     * @return false poiché l'evento di pressione del mouse è completamente gestito da questo metodo
+     *  * e non richiede ulteriori elaborazioni da parte di altre componenti.
      */
     @Override
     public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
@@ -52,7 +56,8 @@ public class MoveCanvasState implements DrawingState {
      * @param forme è la lista di forme presenti sul canvas (non utilizzato in questo metodo)
      * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
      * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
-     * @return
+     * @return false poiché l'evento di trascinamento del mouse è completamente gestito da questo metodo
+     *  * e non richiede ulteriori elaborazioni da parte di altre componenti.
      */
     @Override
     public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
@@ -86,7 +91,7 @@ public class MoveCanvasState implements DrawingState {
      * @param event è l'evento di rilascio del mouse
      * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
      * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
-     * @return
+     * @return false poiché l'evento di rilascio del mouse non richiede un'ulteriore gestione da parte del sistema.
      */
     @Override
     public boolean handleMouseReleased(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
