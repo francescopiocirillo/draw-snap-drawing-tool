@@ -966,7 +966,7 @@ public class DrawSnapController {
             contentBox.setPadding(new Insets(20));
 
             // Spinner per dimensioni
-            Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, forma.getLarghezza(), 1.0); //imposta dimensioni attuali
+            Spinner<Double> spinnerLarghezza = new Spinner<>(5.0, 500.0, forma.getLarghezza(), 1.0); //imposta dimensioni attuali
             double altezzaDefault = 0;
             if ( forma instanceof Rettangolo ) {
                 altezzaDefault = ((Rettangolo)forma).getAltezza();
@@ -977,7 +977,7 @@ public class DrawSnapController {
             }else if(forma instanceof Testo){
                 altezzaDefault = ((Testo) forma).getAltezza();
             }
-            Spinner<Double>  spinnerAltezza = new Spinner<>(10.0, 500.0, altezzaDefault, 1.0); //imposta dimensioni attuali
+            Spinner<Double>  spinnerAltezza = new Spinner<>(5.0, 500.0, altezzaDefault, 1.0); //imposta dimensioni attuali
 
             spinnerAltezza.setEditable(true);
             spinnerLarghezza.setEditable(true);
