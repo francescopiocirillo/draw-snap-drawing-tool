@@ -46,15 +46,12 @@ public class FormaComposta extends Forma{
             if(formaCorrente instanceof Forma2D){
                 Forma2D f2d = (Forma2D) formaCorrente;
                 f2d.setColoreInterno(color);
-                System.out.println("cambio colore della forma2d in " + color);
             }else if (formaCorrente instanceof Poligono) {
                 Poligono poligono = (Poligono) formaCorrente;
                 poligono.setColoreInterno(color);
-                System.out.println("cambio colore del poligono in " + color);
             } else if (formaCorrente instanceof FormaComposta){
                 FormaComposta fc = (FormaComposta) formaCorrente;
                 fc.setColoreInterno(color);
-                System.out.println("cambio colore della forma composta in " + color);
             }else if (formaCorrente instanceof Testo) {
                 Testo testo = (Testo) formaCorrente;
                 testo.setColoreInterno(color);

@@ -29,8 +29,6 @@ public class ChangeOutlineColorCommand implements Command {
      */
     @Override
     public void execute() {
-        System.out.println("command" + coloreSelezionato);
-
         forme.changeOutlineColor(coloreSelezionato);
     }
 }

@@ -63,7 +63,6 @@ public class SelectState implements DrawingState{
                 // offset utili per lo spostamento della figura in caso di MouseDragged
                 f.setOffsetX(coordinataX);
                 f.setOffsetY(coordinataY);
-                System.out.println("è contenuta");
             }
         }
         if(!event.isControlDown()){
@@ -89,7 +88,6 @@ public class SelectState implements DrawingState{
                 if(formaSelezionata != formaSelezionataOld){
                     disattivaToolBar();
                     attivaComposeButton();
-                    System.out.println("più di una Forma selezionata, attivo il compose button");
                 }
             }else{
                 forme.deselezionaEccetto(null);

@@ -38,8 +38,6 @@ public class ChangeFillColorCommand implements Command {
      */
     @Override
     public void execute() {
-        System.out.println("command" + coloreSelezionato);
-
         forme.changeFillColor(coloreSelezionato);
     }
 }

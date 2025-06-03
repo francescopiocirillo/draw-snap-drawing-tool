@@ -37,7 +37,7 @@ public class DrawState implements DrawingState{
     private PoligonoBuilder poligonoBuilder; //Il builder da usare per la creazione del poligono
     private Forme formaCorrente; //Enum della figura corrente che si intende creare
     private boolean creazionePoligono=false; //Booleano che indica che vi è un poligono in creazione
-    private AttributiForma attributiForma; //Gli attributi per la creazione della figura
+    private AttributiFormaDTO attributiFormaDTO; //Gli attributi per la creazione della figura
     private Forma currentDrawingShapePreview = null; //Preview dellac forma da disegnare
     private double startX; //Punto di inizio (coordinata X) per il drag & drop
     private double startY; //Punto di inizio (coordinata Y) per il drag & drop
@@ -48,7 +48,6 @@ public class DrawState implements DrawingState{
      */
     public DrawState(Forme formaCorrente) {
         this.formaCorrente = formaCorrente;
-        System.out.println(formaCorrente);
     }
 
     public Forme getFormaCorrente() {
@@ -91,7 +90,6 @@ public class DrawState implements DrawingState{
      */
     @Override
     public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
-        //Caso Poligono
         if(formaCorrente == Forme.POLIGONO){
 
             //Se il poligono non è stato ancora creato lo si inizia a creare definendo il Builder
@@ -99,17 +97,17 @@ public class DrawState implements DrawingState{
 
                 //Visione della finestra di dialogo
                 if(!dialogShown) {
-                    attributiForma = helpUIHandleMousePressed(formaCorrente);
-                    if (attributiForma == null) {
+                    attributiFormaDTO = helpUIHandleMousePressed(formaCorrente);
+                    if (attributiFormaDTO == null) {
                         return false;
                     }
                     dialogShown = true;
                 }
 
                 poligonoBuilder = new PoligonoBuilder()
-                        .setColore(attributiForma.getColore())
-                        .setColoreInterno(attributiForma.getColoreInterno())
-                        .setAngoloInclinazione(attributiForma.getAngoloInclinazione());
+                        .setColore(attributiFormaDTO.getColore())
+                        .setColoreInterno(attributiFormaDTO.getColoreInterno())
+                        .setAngoloInclinazione(attributiFormaDTO.getAngoloInclinazione());
                 creazionePoligono=true;
             }else {
 
@@ -149,9 +147,9 @@ public class DrawState implements DrawingState{
 
             //Visione della finestra di dialogo
             if(!dialogShown) {
-                attributiForma = helpUIHandleMousePressed(formaCorrente);
-                if (attributiForma == null) return false;
-                dialogShown = formaCorrente != Forme.TEXT || !attributiForma.getTesto().equals("");
+                attributiFormaDTO = helpUIHandleMousePressed(formaCorrente);
+                if (attributiFormaDTO == null) return false;
+                dialogShown = formaCorrente != Forme.TESTO || !attributiFormaDTO.getTesto().equals("");
             }
 
             //Assegnazione delle coordinate di inizio per il drag & drop
@@ -210,12 +208,12 @@ public class DrawState implements DrawingState{
      * -    specificare la {@link String} (solo se la {@link Forma} è un {@link Testo})
      *      , tramite un {@link TextField}
      * @param tipoForma è il tipo di {@link Forme} selezionata
-     * @return un oggetto {@link AttributiForma} contenente i {@link Color} selezionati se l'utente conferma,
+     * @return un oggetto {@link AttributiFormaDTO} contenente i {@link Color} selezionati se l'utente conferma,
      * oppure {@code null} se l'utente annulla l'operazione
      */
-    protected AttributiForma helpUIHandleMousePressed(Forme tipoForma) {
+    protected AttributiFormaDTO helpUIHandleMousePressed(Forme tipoForma) {
         //Setting della finestra di dialogo
-        Dialog<AttributiForma> dialog = new Dialog<>();
+        Dialog<AttributiFormaDTO> dialog = new Dialog<>();
         dialog.setTitle("Conferma Disegno");
         Locale.setDefault(new Locale("it", "IT"));
         Label headerLabel = new Label("Inserisci i parametri della figura");
@@ -257,7 +255,7 @@ public class DrawState implements DrawingState{
         //TextField per la stringa di testo
         TextField textField = null;
         VBox textBox = null;
-        if(tipoForma == Forme.TEXT){
+        if(tipoForma == Forme.TESTO){
             Label testoLabel = new Label("Testo:");
             testoLabel.setStyle("-fx-font-size: 18px;");
             textField = new TextField();
@@ -302,8 +300,8 @@ public class DrawState implements DrawingState{
         //Handler per quando si clicca su conferma
         final Button okButton = (Button) dialog.getDialogPane().lookupButton(confirmButton);
 
-        //Se si tratta di un TEXT ottenere la stringa
-        if(tipoForma == Forme.TEXT){
+        //Se si tratta di un TESTO ottenere la stringa
+        if(tipoForma == Forme.TESTO){
             okButton.addEventHandler(ActionEvent.ACTION, event -> {
 
                 //Se la stringa è vuota mostrare un warning
@@ -324,8 +322,8 @@ public class DrawState implements DrawingState{
             //Caso in cui si clicca il bottone di conferma
             if (dialogButton == confirmButton) {
 
-                //Creazione di AttributiForma e assegnazione parametri
-                AttributiForma attributi = new AttributiForma();
+                //Creazione di AttributiFormaDTO e assegnazione parametri
+                AttributiFormaDTO attributi = new AttributiFormaDTO();
                 attributi.setColore(finalBordoPicker.getValue());
                 attributi.setColoreInterno(finalInternoPicker != null
                         ? finalInternoPicker.getValue()
@@ -335,7 +333,7 @@ public class DrawState implements DrawingState{
                 }else{
                     attributi.setAngoloInclinazione(0.0);
                 }
-                if(tipoForma == Forme.TEXT){
+                if(tipoForma == Forme.TESTO){
                     attributi.setTesto(finalTextField.getText());
                 }
                 attributi.setLarghezza(100.0);
@@ -345,7 +343,7 @@ public class DrawState implements DrawingState{
         });
 
         //Aspetta l'interazione dell'utente con la finestra
-        Optional<AttributiForma> result = dialog.showAndWait();
+        Optional<AttributiFormaDTO> result = dialog.showAndWait();
         return result.orElse(null);
     }
 
@@ -359,8 +357,7 @@ public class DrawState implements DrawingState{
     private Forma createShapePreview(double coordinataX, double coordinataY){
 
         //Se attributi è null non viene creata alcuna preview
-        if (attributiForma == null){
-            System.out.println("ERROR");
+        if (attributiFormaDTO == null){
             return null;
         }
 
@@ -380,16 +377,13 @@ public class DrawState implements DrawingState{
             finalAngolo = Math.toDegrees(Math.atan2(coordinataY - startY, coordinataX - startX));
             finalAltezza = 0.0;
 
-            if(finalLarghezza > 1000) finalLarghezza = 1000.0;
-            if(finalLarghezza < 5) {
-                if(finalLarghezza < 1) finalLarghezza = 100.0; else finalLarghezza = 5.0;
-            }
+            if(finalLarghezza < 1) finalLarghezza = 100.0;
         }else if (formaCorrente == Forme.POLIGONO) {
             if (poligonoBuilder != null && (poligonoBuilder.getNumeroPunti() > 0 || currentDrawingShapePreview != null) ) {
                 PoligonoBuilder previewBuilder = new PoligonoBuilder()
-                        .setColore(attributiForma.getColore())
-                        .setColoreInterno(attributiForma.getColoreInterno())
-                        .setAngoloInclinazione(attributiForma.getAngoloInclinazione());
+                        .setColore(attributiFormaDTO.getColore())
+                        .setColoreInterno(attributiFormaDTO.getColoreInterno())
+                        .setAngoloInclinazione(attributiFormaDTO.getAngoloInclinazione());
 
                 if (poligonoBuilder.getNumeroPunti() > 0) {
                     previewBuilder.setPuntiX(poligonoBuilder.getPuntiX());
@@ -409,39 +403,35 @@ public class DrawState implements DrawingState{
             finalAltezza = Math.abs(coordinataY-startY);
             finalCentroX = (startX + coordinataX) /2.0;
             finalCentroY = (startY + coordinataY) / 2.0;
+            if(finalLarghezza < 1) finalLarghezza = 100;
+            if(finalAltezza < 1) finalAltezza = 100;
             if(finalLarghezza > 1000) finalLarghezza = 1000;
             if(finalAltezza > 1000) finalAltezza = 1000;
-            if(finalLarghezza < 5) {
-                if(finalLarghezza < 1) finalLarghezza = 100;else finalLarghezza = 5;
-            }
-            if(finalAltezza < 5) {
-                if(finalAltezza < 1) finalAltezza = 100; else finalAltezza = 5;
-            }
-            finalAngolo = attributiForma.getAngoloInclinazione();
+            finalAngolo = attributiFormaDTO.getAngoloInclinazione();
         }
 
         //Creazione della preview corrispondente
         switch(formaCorrente){
             case ELLISSE:
                 return new FactoryEllisse().creaForma(finalCentroX, finalCentroY, finalAltezza,
-                        finalLarghezza, attributiForma.getAngoloInclinazione(), attributiForma.getColore(),
-                        attributiForma.getColoreInterno());
+                        finalLarghezza, attributiFormaDTO.getAngoloInclinazione(), attributiFormaDTO.getColore(),
+                        attributiFormaDTO.getColoreInterno());
             case RETTANGOLO:
                 return new FactoryRettangolo().creaForma(finalCentroX, finalCentroY, finalAltezza,
-                        finalLarghezza, attributiForma.getAngoloInclinazione(), attributiForma.getColore(),
-                        attributiForma.getColoreInterno());
+                        finalLarghezza, attributiFormaDTO.getAngoloInclinazione(), attributiFormaDTO.getColore(),
+                        attributiFormaDTO.getColoreInterno());
             case LINEA:
                 return new FactoryLinea().creaForma(finalCentroX, finalCentroY, finalAltezza, finalLarghezza,
-                        finalAngolo, attributiForma.getColore(), null);
-            case TEXT:
+                        finalAngolo, attributiFormaDTO.getColore(), null);
+            case TESTO:
                 FactoryTesto factoryTesto = new FactoryTesto();
-                if(attributiForma.getTesto() == null || attributiForma.getTesto().equals("")) {
+                if(attributiFormaDTO.getTesto() == null || attributiFormaDTO.getTesto().equals("")) {
                     return null;
                 }
-                factoryTesto.setTesto(attributiForma.getTesto());
+                factoryTesto.setTesto(attributiFormaDTO.getTesto());
                 return factoryTesto.creaForma(finalCentroX, finalCentroY, finalAltezza,
-                        finalLarghezza, attributiForma.getAngoloInclinazione(), attributiForma.getColore(),
-                        attributiForma.getColoreInterno());
+                        finalLarghezza, attributiFormaDTO.getAngoloInclinazione(), attributiFormaDTO.getColore(),
+                        attributiFormaDTO.getColoreInterno());
             default:
                 return null;
         }
@@ -453,7 +443,7 @@ public class DrawState implements DrawingState{
     public void resetDialogShown() {
         this.dialogShown = false;
         this.currentDrawingShapePreview = null;
-        this.attributiForma = null;
+        this.attributiFormaDTO = null;
         this.creazionePoligono = false;
     }
 

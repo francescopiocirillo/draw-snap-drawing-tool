@@ -17,12 +17,12 @@ import static org.mockito.Mockito.*;
  */
 class DrawStateTest {
 
-    private AttributiForma defaultAttributi;
+    private AttributiFormaDTO defaultAttributi;
 
     @BeforeEach
     void setUp() {
         // Attributi predefiniti per i mock
-        defaultAttributi = new AttributiForma();
+        defaultAttributi = new AttributiFormaDTO();
         defaultAttributi.setAltezza(1);
         defaultAttributi.setLarghezza(1);
         defaultAttributi.setAngoloInclinazione(0);
@@ -33,10 +33,10 @@ class DrawStateTest {
     /**
      * Simula il comportamento del metodo `helpUIHandleMousePressed` dello spy `DrawState` fornito.
      * @param state Lo spy dell'oggetto `DrawState` il cui metodo `helpUIHandleMousePressed` viene simulato.
-     * @param attributiToReturn L'oggetto `AttributiForma` che il metodo simulato dovrebbe restituire,
+     * @param attributiToReturn L'oggetto `AttributiFormaDTO` che il metodo simulato dovrebbe restituire,
      * simulando l'input dell'utente da una finestra di dialogo.
      */
-    private void stubUiInteractions(DrawState state, AttributiForma attributiToReturn) {
+    private void stubUiInteractions(DrawState state, AttributiFormaDTO attributiToReturn) {
         doReturn(attributiToReturn).when(state).helpUIHandleMousePressed(any(Forme.class));
     }
 
@@ -46,7 +46,7 @@ class DrawStateTest {
      */
     @Test
     void testShapeCreation_CreaEllisse() {
-        AttributiForma attributi = new AttributiForma();
+        AttributiFormaDTO attributi = new AttributiFormaDTO();
         attributi.setAltezza(100);
         attributi.setLarghezza(200);
         attributi.setAngoloInclinazione(0);
@@ -106,7 +106,7 @@ class DrawStateTest {
      */
     @Test
     void testShapeCreation_CreaRettangolo() {
-        AttributiForma attributi = new AttributiForma();
+        AttributiFormaDTO attributi = new AttributiFormaDTO();
         attributi.setAltezza(50);
         attributi.setLarghezza(80);
         attributi.setColore(Color.BLUE);
@@ -163,7 +163,7 @@ class DrawStateTest {
      */
     @Test
     void testShapeCreation_CreaLinea() {
-        AttributiForma attributi = new AttributiForma();
+        AttributiFormaDTO attributi = new AttributiFormaDTO();
         attributi.setColore(Color.GREEN);
         attributi.setAngoloInclinazione(45.0);
 
@@ -224,7 +224,7 @@ class DrawStateTest {
      */
     @Test
     void testShapeCreation_CoordinateNegative() {
-        AttributiForma attributi = new AttributiForma();
+        AttributiFormaDTO attributi = new AttributiFormaDTO();
         attributi.setAltezza(30);
         attributi.setLarghezza(40);
         attributi.setColore(Color.GREEN);
@@ -311,7 +311,7 @@ class DrawStateTest {
      */
     @Test
     void testHandleMousePressed_CreaPoligono() {
-        AttributiForma attributiPoligono = new AttributiForma();
+        AttributiFormaDTO attributiPoligono = new AttributiFormaDTO();
         attributiPoligono.setColore(Color.GREEN);
         attributiPoligono.setColoreInterno(Color.LIGHTGREEN);
         attributiPoligono.setAngoloInclinazione(15.0);
@@ -438,7 +438,7 @@ class DrawStateTest {
      */
     @Test
     void testShapeCreation_CreaTesto() {
-        AttributiForma attributi = new AttributiForma();
+        AttributiFormaDTO attributi = new AttributiFormaDTO();
         attributi.setAltezza(50);
         attributi.setLarghezza(150);
         attributi.setAngoloInclinazione(0);
@@ -446,7 +446,7 @@ class DrawStateTest {
         attributi.setColoreInterno(Color.BLACK);
         attributi.setTesto("Hello World");
 
-        DrawState state = spy(new DrawState(Forme.TEXT));
+        DrawState state = spy(new DrawState(Forme.TESTO));
         stubUiInteractions(state, attributi);
 
         // Mock degli eventi mouse
@@ -467,7 +467,7 @@ class DrawStateTest {
 
         assertFalse(pressResult, "handleMousePressed dovrebbe restituire false per Testo");
         assertEquals(0, forme.size(), "Nessuna forma dovrebbe essere aggiunta solo con mousePressed per Testo");
-        verify(state).helpUIHandleMousePressed(Forme.TEXT);
+        verify(state).helpUIHandleMousePressed(Forme.TESTO);
 
         boolean releaseResult = state.handleMouseReleased(mouseReleasedEvent, forme, endX, endY);
 
@@ -500,7 +500,7 @@ class DrawStateTest {
      */
     @Test
     void testHandleMousePressed_CreaTesto_TestoVuoto() {
-        AttributiForma attributi = new AttributiForma();
+        AttributiFormaDTO attributi = new AttributiFormaDTO();
         attributi.setAltezza(50);
         attributi.setLarghezza(150);
         attributi.setAngoloInclinazione(0);
@@ -508,8 +508,8 @@ class DrawStateTest {
         attributi.setColoreInterno(Color.BLACK);
         attributi.setTesto("");
 
-        DrawState state = spy(new DrawState(Forme.TEXT));
-        doReturn(attributi).when(state).helpUIHandleMousePressed(Forme.TEXT);
+        DrawState state = spy(new DrawState(Forme.TESTO));
+        doReturn(attributi).when(state).helpUIHandleMousePressed(Forme.TESTO);
 
         MouseEvent mouseEvent = mock(MouseEvent.class);
         when(mouseEvent.getX()).thenReturn(100.0);
@@ -529,8 +529,8 @@ class DrawStateTest {
      */
     @Test
     void testHandleMousePressed_CreaTesto_AnnullatoDaDialogo() {
-        DrawState state = spy(new DrawState(Forme.TEXT));
-        doReturn(null).when(state).helpUIHandleMousePressed(Forme.TEXT); // Simula l'annullamento del dialogo
+        DrawState state = spy(new DrawState(Forme.TESTO));
+        doReturn(null).when(state).helpUIHandleMousePressed(Forme.TESTO); // Simula l'annullamento del dialogo
 
         MouseEvent mouseEvent = mock(MouseEvent.class);
         when(mouseEvent.getX()).thenReturn(100.0);

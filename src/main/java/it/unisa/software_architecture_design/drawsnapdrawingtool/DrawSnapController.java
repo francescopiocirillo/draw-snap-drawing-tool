@@ -261,7 +261,7 @@ public class DrawSnapController {
         });
         textButton.setOnAction(event -> {
             bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
-            setDrawMode(event, Forme.TEXT);
+            setDrawMode(event, Forme.TESTO);
             textButton.getStyleClass().add("selected");
         });
         selectButton.setOnAction(event -> {
@@ -679,7 +679,7 @@ public class DrawSnapController {
     @FXML
     void onHelpPressed(ActionEvent event) {
         try{
-            File manuale = new File("docs/1 - First sprint/1 - Documentazione_2.0 _1st_Sprint_Release_gruppo07.pdf");
+            File manuale = new File("docs/Manuale d'uso/Manuale Utente.pdf");
             if(manuale.exists()){
                 if(Desktop.isDesktopSupported()){
                     Desktop.getDesktop().open(manuale);
@@ -906,21 +906,17 @@ public class DrawSnapController {
         // Impostazione del comportamento alla conferma
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButton) {
-                System.out.println("colore scelto: " + colorPicker.getValue());
                 return colorPicker.getValue(); // Restituisce il colore scelto
             }
-            System.out.println("colore non scelto");
             return null; // Nessun colore scelto
         });
 
         // Mostra il dialog e gestisce il risultato
         Optional<Color> result = dialog.showAndWait();
         result.ifPresent(coloreSelezionato -> {
-            System.out.println("azione colore scelto");
             invoker.setCommand(new ChangeFillColorCommand(forme, coloreSelezionato));
             invoker.executeCommand();
             updateState(true);
-            System.out.println("Colore selezionato: " + coloreSelezionato.toString());
         });
     }
 
@@ -962,21 +958,17 @@ public class DrawSnapController {
         // Impostazione del comportamento alla conferma
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButton) {
-                System.out.println("colore scelto: " + colorPicker.getValue());
                 return colorPicker.getValue(); // Restituisce il colore scelto
             }
-            System.out.println("colore non scelto");
             return null; // Nessun colore scelto
         });
 
         // Mostra il dialog e gestisce il risultato
         Optional<Color> result = dialog.showAndWait();
         result.ifPresent(coloreSelezionato -> {
-            System.out.println("azione colore scelto");
             invoker.setCommand(new ChangeOutlineColorCommand(forme, coloreSelezionato));
             invoker.executeCommand();
             updateState(true);
-            System.out.println("Colore selezionato: " + coloreSelezionato.toString());
         });
     }
 
@@ -1035,7 +1027,6 @@ public class DrawSnapController {
             dimensioniBox.setAlignment(Pos.CENTER);
 
             if ( ( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea ) {
-                System.out.println("tipoForma: " + tipoForma);
                 dimensioniBox.getChildren().addAll(
                         new Label("Lunghezza:"), spinnerLarghezza
                 );
@@ -1062,14 +1053,11 @@ public class DrawSnapController {
                     if (( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea) {
                         double lunghezza = spinnerLarghezza.getValue();
                         map.put("Lunghezza", lunghezza);
-                        System.out.println("Nuova Lunghezza: " + lunghezza);
                     } else {
                         double altezza = spinnerAltezza.getValue();
                         double larghezza = spinnerLarghezza.getValue();
                         map.put("Larghezza", larghezza);
                         map.put("Altezza", altezza);
-                        System.out.println("Nuova Altezza: " + altezza);
-                        System.out.println("Nuova Larghezza: " + larghezza);
                     }
                     return map;
                 }
@@ -1193,10 +1181,8 @@ public class DrawSnapController {
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == confirmButton) {
                 double angoloAggiornato = angleSpinner.getValue();
-                System.out.println("Angolo scelto: " + angoloAggiornato);
                 return angoloAggiornato; // Restituisce l'angolo scelto
             }
-            System.out.println("Angolo non scelto");
             return null; // Nessun angolo scelto
         });
 

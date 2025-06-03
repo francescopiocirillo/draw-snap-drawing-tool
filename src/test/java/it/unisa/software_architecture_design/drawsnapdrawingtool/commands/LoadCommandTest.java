@@ -1,7 +1,7 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.commands;
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiForma;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiFormaDTO;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Rettangolo;
 import javafx.collections.FXCollections;
@@ -51,7 +51,7 @@ class LoadCommandTest {
     void caricaFormeDaFile_DovrebbeCaricareCorrettamenteLeForme() {
         List formeOriginali = new ArrayList<>(); //forme presenti nel file salvato
 
-        AttributiForma attr = new AttributiForma();
+        AttributiFormaDTO attr = new AttributiFormaDTO();
         Forma forma = new Rettangolo(attr.getCoordinataX(), attr.getCoordinataY(), attr.getLarghezza(),
                 attr.getAngoloInclinazione(), attr.getColore(), attr.getAltezza(), attr.getColoreInterno());
 
@@ -103,7 +103,7 @@ class LoadCommandTest {
         //Definisco le forme presenti nel file salvato
         List formeOriginali = new ArrayList<>(); //forme presenti nel file salvato
 
-        AttributiForma attr = new AttributiForma();
+        AttributiFormaDTO attr = new AttributiFormaDTO();
         Forma forma = new Rettangolo(attr.getCoordinataX(), attr.getCoordinataY(), attr.getLarghezza(),
                 attr.getAngoloInclinazione(), attr.getColore(), attr.getAltezza(), attr.getColoreInterno());
 
@@ -149,7 +149,7 @@ class LoadCommandTest {
     @Test
     void caricaFordeDaFile_QuandoNessunFileSelezionatoNonModificaForme_ConFoglioNonVuotoInizialmente(){
         //Carico una forma nel foglio di disegno dell'applicativo
-        AttributiForma attr1 = new AttributiForma();
+        AttributiFormaDTO attr1 = new AttributiFormaDTO();
         Forma forma1 = new Rettangolo(attr1.getCoordinataX(), attr1.getCoordinataY(), attr1.getLarghezza(),
                 attr1.getAngoloInclinazione(), attr1.getColore(), attr1.getAltezza(), attr1.getColoreInterno());
 
@@ -160,7 +160,7 @@ class LoadCommandTest {
         //Definisco le forme presenti nel file salvato
         List formeOriginali = new ArrayList<>(); //forme presenti nel file salvato
 
-        AttributiForma attr2 = new AttributiForma();
+        AttributiFormaDTO attr2 = new AttributiFormaDTO();
         Forma forma2 = new Rettangolo(attr2.getCoordinataX(), attr2.getCoordinataY(), attr2.getLarghezza(),
                 attr2.getAngoloInclinazione(), attr2.getColore(), attr2.getAltezza(), attr2.getColoreInterno());
 

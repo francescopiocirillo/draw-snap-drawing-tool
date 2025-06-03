@@ -30,8 +30,6 @@ public class RotationCommand implements Command {
      */
     @Override
     public void execute() {
-        System.out.println("command" + angleSelezionato);
-
         forme.rotation(angleSelezionato);
     }
 
