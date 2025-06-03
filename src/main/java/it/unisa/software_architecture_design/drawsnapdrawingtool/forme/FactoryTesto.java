@@ -4,7 +4,7 @@ import javafx.scene.paint.Color;
 
 public class FactoryTesto implements FactoryForma{
 
-    private String testo = "Default";
+    private String testo;
 
     public void setTesto(String testo) {
         this.testo = testo;

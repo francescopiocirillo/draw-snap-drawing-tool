@@ -1,60 +1,18 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.forme;
 
-import it.unisa.software_architecture_design.drawsnapdrawingtool.utils.ColorUtils;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serial;
-
-public class Ellisse extends Forma {
+/**
+ * La classe {@link Ellisse} rappresenta la {@link Forma} Ellisse e presenta
+ * tutte le caratteristiche ereditate da {@link Forma2D}.
+ */
+public class Ellisse extends Forma2D {
     /*
-     * Attributi
-     */
-    private double altezza;
-    private transient Color coloreInterno;
-
-    /**
-     * Costruttore, Getter e Setter
+     * Costruttore
      */
     public Ellisse(double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore, double altezza, Color coloreInterno) {
-        super(coordinataX, coordinataY, larghezza, angoloInclinazione, colore);
-        this.altezza = altezza;
-        this.coloreInterno = coloreInterno;
-    }
-
-    public double getAltezza() {
-        return altezza;
-    }
-
-    public void setAltezza(double altezza) {
-        this.altezza = altezza;
-    }
-
-    public Color getColoreInterno() {
-        return coloreInterno;
-    }
-
-    public void setColoreInterno(Color coloreInterno) {
-        this.coloreInterno = coloreInterno;
-    }
-
-    @Override
-    public void proportionalResize(double proporzione){
-        setLarghezza(getLarghezza()*proporzione/100);
-        setAltezza(getAltezza()*proporzione/100);
-    }
-
-    @Override
-    public void setCoordinataXForDrag(double coordinataXMouseDragged){
-        setCoordinataX(coordinataXMouseDragged-getOffsetX());
-    }
-
-    @Override
-    public void setCoordinataYForDrag(double coordinataYMouseDragged){
-        setCoordinataY(coordinataYMouseDragged-getOffsetY());
+        super(coordinataX, coordinataY, larghezza, angoloInclinazione, colore, altezza, coloreInterno);
     }
 
     /*
@@ -62,10 +20,9 @@ public class Ellisse extends Forma {
      */
     
     /**
-     * Disegna l'Ellisse sul {@link GraphicsContext} specificato.
-     *
-     * @param gc il {@code GraphicsContext} su cui disegnare l'Ellisse.
-     *           Deve essere già inizializzato e associato a un {@code Canvas} valido.
+     * Gestisce il disegno  di una {@link Ellisse} sul {@link GraphicsContext} specificato.
+     * @param gc il {@link GraphicsContext} su cui disegnare l'{@link Ellisse}.
+     *           Deve essere già inizializzato e associato a un {@link javafx.scene.canvas.Canvas} valido.
      */
     @Override
     public void disegna(GraphicsContext gc) {
@@ -79,33 +36,32 @@ public class Ellisse extends Forma {
         gc.rotate(getAngoloInclinazione());
 
         // fill disegna l'area interna dell'ellisse
-        gc.setFill(coloreInterno);
-        gc.fillOval(-getLarghezza()/ 2, -altezza / 2, getLarghezza(), altezza);
+        gc.setFill(getColoreInterno());
+        gc.fillOval(-getLarghezza()/ 2, -getAltezza() / 2, getLarghezza(), getAltezza());
 
         // stroke disegna il contorno
         gc.setStroke(getColore());
         gc.setLineWidth(2);
-        gc.strokeOval(-getLarghezza() / 2, -altezza / 2, getLarghezza(), altezza);
+        gc.strokeOval(-getLarghezza() / 2, -getAltezza() / 2, getLarghezza(), getAltezza());
 
         // Ripristina lo stato iniziale del foglio di disegno
         gc.restore();
     }
 
     /**
-     * Determina se l'Ellisse contiene un punto specifico nello spazio.
+     * Verifica se l'{@link Ellisse} contiene un punto specifico nello spazio.
      * L'equazione per verificare se un punto si trova all'interno dell'ellisse è
      * \frac{(puntoDaValutareX-coordinataX)^2}{mezzaLarghezza^2}+\frac{(puntoDaValutareY-coordinataY)^2}{mezzaAltezza^2}<=1
      *
-     *
      * @param puntoDaValutareX la coordinata X del punto da valutare
      * @param puntoDaValutareY la coordinata Y del punto da valutare
-     * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si trova all'interno dell'Ellisse,
-     *          altrimenti {@code false}.
+     * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si
+     * trova all'interno dell'{@link Ellisse}, altrimenti {@code false}.
      */
     @Override
     public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
         double mezzaLarghezza = getLarghezza() / 2;
-        double mezzaAltezza = altezza / 2;
+        double mezzaAltezza = getAltezza() / 2;
 
         // Traslazione rispetto al centro dell'ellisse
         double dx = puntoDaValutareX - getCoordinataX();
@@ -122,51 +78,8 @@ public class Ellisse extends Forma {
     }
 
     /**
-     * Serializza l'oggetto nel complesso con il metodo della superclasse e poi salva
-     * anche il colore di riempimento che non è serializzabile.
-     * @param out è lo stream sul quale salvare le informazioni, sarà il File scelto dall'utente
-     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
-     */
-    @Serial
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        out.writeUTF(ColorUtils.toHexString(getColore()));
-        // Serializza il colore interno specifico della sottoclasse
-        out.writeUTF(ColorUtils.toHexString(coloreInterno));
-    }
-
-    /**
-     * Deserializza l'oggetto nel complesso con il metodo della superclasse e poi ricava
-     * anche il colore di riempimento che non è serializzabile.
-     * @param in è lo stream dal quale caricare le informazioni, sarà il File scelto dall'utente
-     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
-     * @throws ClassNotFoundException se si verifica un errore nel caricare una classe
-     */
-    @Serial
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        String colore = in.readUTF();
-        this.setColore(Color.web(colore));
-        String coloreInterno = in.readUTF();
-        this.setColoreInterno(ColorUtils.fromHexString(coloreInterno));
-    }
-
-    /**
-     * Metodo per il controllare se due forme sono uguali
-     * @param forma -> forma con cui fare il confronto
-     * @return {@code true} se gli attributi sono uguali, altrimenti {@code false}
-     */
-    @Override
-    public boolean confrontaAttributi(Forma forma){
-        Ellisse ellisse = (Ellisse) forma;
-        return super.confrontaAttributi(ellisse) &&
-                this.altezza == ellisse.getAltezza() &&
-                this.coloreInterno == ellisse.getColoreInterno();
-    }
-
-    /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
-     * cetro della figura stessa
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse verticale che passa per il centro della {@link Forma} stessa
      */
     @Override
     public void specchiaInVerticale(){
@@ -177,6 +90,10 @@ public class Ellisse extends Forma {
         setAngoloInclinazione(nuovoAngolo);
     }
 
+    /**
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse orizzontale che passa per il centro della {@link Forma} stessa
+     */
     @Override
     public void specchiaInOrizzontale(){
         // Inverti l'angolo rispetto all'asse orizzontale
@@ -184,5 +101,18 @@ public class Ellisse extends Forma {
 
         // Imposta il nuovo angolo
         setAngoloInclinazione(nuovoAngolo);
+    }
+
+    /**
+     * Verifica se l' {@link Ellisse} corrente è uguale ad un altra {@link Forma}
+     * @param forma è la {@link Forma} con cui fare il confronto
+     * @return {@code true} se gli attributi sono uguali, altrimenti {@code false}
+     */
+    @Override
+    public boolean confrontaAttributi(Forma forma){
+        if(!(forma instanceof Ellisse ellisse))return false;
+        return super.confrontaAttributi(ellisse) &&
+                this.getAltezza() == ellisse.getAltezza() &&
+                this.getColoreInterno() == ellisse.getColoreInterno();
     }
 }

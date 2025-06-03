@@ -7,7 +7,10 @@ import javafx.scene.paint.Color;
 
 import java.io.*;
 
-
+/**
+ * La classe {@link Forma} rappresenta una forma generica. Si tratta di una
+ * classe astratta che verrà estesa da delle classi concrete.
+ */
 public abstract class Forma implements Serializable, Cloneable{
     /*
      * Attributi
@@ -22,6 +25,9 @@ public abstract class Forma implements Serializable, Cloneable{
 
     private double offsetX;
     private double offsetY;
+
+    private static final double MIN_DIMENSION = 5.0;
+    private static final double MAX_DIMENSION = 1000.0;
 
     /*
      * Costruttore, getter e setter
@@ -76,10 +82,6 @@ public abstract class Forma implements Serializable, Cloneable{
         this.angoloInclinazione = angoloInclinazione;
     }
 
-    public void proportionalResize(double proporzione) {
-        setLarghezza(getLarghezza()*proporzione/100);
-    }
-
     public void setOffsetX(double coordinataXPressed) {
         this.offsetX = coordinataXPressed - getCoordinataX();
     }
@@ -96,12 +98,24 @@ public abstract class Forma implements Serializable, Cloneable{
         return offsetY;
     }
 
+    /**
+     * Setter della coordinata X secondo la logica necessaria per l'operazione di Drag.
+     * La coordinata deve essere impostata alla differenza tra la coordinata x dell'evento e il valore di offset
+     * lungo l'asse x che viene impostato in seguito all'evento di mouse pressed che precede il drag.
+     * @param coordinataXMouseDragged -> Coordinata X dell'evento mouse dragged
+     */
     public void setCoordinataXForDrag(double coordinataXMouseDragged){
-        setCoordinataX(coordinataXMouseDragged-offsetX);
+        setCoordinataX(coordinataXMouseDragged-getOffsetX());
     }
 
+    /**
+     * Setter della coordinata Y secondo la logica necessaria per l'operazione di Drag.
+     * La coordinata deve essere impostata alla differenza tra la coordinata x dell'evento e il valore di offset
+     * lungo l'asse x che viene impostato in seguito all'evento di mouse pressed che precede il drag.
+     * @param coordinataYMouseDragged -> Coordinata X dell'evento mouse dragged
+     */
     public void setCoordinataYForDrag(double coordinataYMouseDragged){
-        setCoordinataY(coordinataYMouseDragged-offsetY);
+        setCoordinataY(coordinataYMouseDragged-getOffsetY());
     }
 
     /*
@@ -109,15 +123,15 @@ public abstract class Forma implements Serializable, Cloneable{
      */
 
     /**
-     * Disegna la Forma sul {@link GraphicsContext} specificato.
+     * Gestisce il disegno di una {@link Forma} sul {@link GraphicsContext} specificato.
      *
-     * @param gc il {@code GraphicsContext} su cui disegnare la Forma.
-     *           Deve essere già inizializzato e associato a un {@code Canvas} valido.
+     * @param gc il {@link GraphicsContext} su cui disegnare la {@link Forma}.
+     *           Deve essere già inizializzato e associato a un {@link javafx.scene.canvas.Canvas} valido.
      */
     public abstract void disegna(GraphicsContext gc);
 
     /**
-     * Determina se la forma contiene un punto specifico nello spazio.
+     * Verifica se la {@link Forma} contiene un punto specifico nello spazio.
      *
      * @param puntoDaValutareX La coordinata X del punto da verificare.
      * @param puntoDaValutareY La coordinata Y del punto da verificare.
@@ -127,53 +141,39 @@ public abstract class Forma implements Serializable, Cloneable{
     public abstract boolean contiene(double puntoDaValutareX, double puntoDaValutareY);
 
     /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
-     * cetro della figura stessa
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse verticale che passa per il centro della {@link Forma} stessa
      */
     public abstract void specchiaInVerticale();
 
     /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse orizzontale che passa per il
-     * cetro della figura stessa
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse orizzontale che passa per il centro della {@link Forma} stessa
      */
     public abstract void specchiaInOrizzontale();
 
-    /*
-     * Metodi per la serializzazione/deserializzazione
-     */
-
     /**
-     * Serializza l'oggetto nel complesso e poi salva come Stringa l'informazione sul colore
-     * visto che Color non è serializzabile
-     * @param out è lo stream sul quale salvare le informazioni, sarà il File scelto dall'utente
-     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
+     * Gestisce il ridimensionamento della {@link Forma} in modo proporzionale applicando un
+     * fattore di scala uniforme a tutti i suoi punti intrinseci, sempre rispettando i limiti di dimensione 5-1000
+     *
+     * @param proporzione La percentuale di ridimensionamento (es. 100 per nessuna modifica, 50 per metà dimensione).
      */
-    @Serial
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        // salva il colore come stringa HEX
-        out.writeUTF(ColorUtils.toHexString(colore));
+    public void proportionalResize(double proporzione){
+        double nuovaLarghezza = getLarghezza() * proporzione / 100;
+
+        if (nuovaLarghezza < MIN_DIMENSION) {
+            setLarghezza(MIN_DIMENSION);
+        } else if (nuovaLarghezza > MAX_DIMENSION) {
+            setLarghezza(MAX_DIMENSION);
+        } else {
+            setLarghezza(nuovaLarghezza);
+        }
     }
 
     /**
-     * Deserializza l'oggetto nel complesso e poi recupera le informazioni sul colore
-     * visto che Color non è serializzabile
-     * @param in è lo stream dal quale prelevare le informazioni, sarà il File scelto dall'utente
-     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
-     * @throws ClassNotFoundException se la classe dell'oggetto serializzato non è trovata
-     */
-    @Serial
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        // ricostruisci il colore da stringa HEX
-        String colorHex = in.readUTF();
-        colore = Color.web(colorHex);
-    }
-
-    /**
-     * Metodo per clonare l'oggetto creandone una nuova istanza
+     * Gestisce la clonazione dell'oggetto creandone una nuova istanza
      * Permette di modificare l'elemento clonato senza intaccare quello originale
-     * @return la forma clonata.
+     * @return la {@link Forma} clonata.
      */
     @Override
     public Forma clone(){
@@ -186,8 +186,8 @@ public abstract class Forma implements Serializable, Cloneable{
     }
 
     /**
-     * Metodo per il controllare se due forme sono uguali
-     * @param forma -> forma con cui fare il confronto
+     * Verifica se la {@link Forma} corrente è uguale ad un altra {@link Forma}
+     * @param forma è la {@link Forma} con cui fare il confronto
      * @return {@code true} se gli attributi sono uguali, altrimenti {@code false}
      */
     public boolean confrontaAttributi(Forma forma){
@@ -200,5 +200,41 @@ public abstract class Forma implements Serializable, Cloneable{
                 this.coordinataX == forma.getCoordinataX() &&
                 this.coordinataY == forma.getCoordinataY() &&
                 this.larghezza == forma.getLarghezza();
+    }
+
+    /*
+     * Logica per la serializzazione e deserializzazione
+     */
+
+    /**
+     * Gestisce la serializzazione dell'oggetto nel complesso e
+     * poi salva come {@link String} l'informazione sul {@code colore}
+     * visto che {@link Color} non è {@link Serializable}.
+     * @param out è l' {@link ObjectOutputStream} sul quale salvare le informazioni, sarà il
+     *            {@link java.io.File} scelto dall'utente
+     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
+     */
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        // salva il colore come stringa HEX
+        out.writeUTF(ColorUtils.toHexString(colore));
+    }
+
+    /**
+     * Gestisce la deserializzazione dell'oggetto nel complesso e
+     * poi recupera le informazioni sul {@code colore}
+     * visto che {@link Color} non è {@link Serializable}.
+     * @param in è l' {@link ObjectInputStream} dal quale caricare le informazioni, sarà il
+     *            {@link java.io.File} scelto dall'utente
+     * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
+     * @throws ClassNotFoundException se la classe dell'oggetto serializzato non è trovata
+     */
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        // ricostruisci il colore da stringa HEX
+        String colorHex = in.readUTF();
+        colore = Color.web(colorHex);
     }
 }

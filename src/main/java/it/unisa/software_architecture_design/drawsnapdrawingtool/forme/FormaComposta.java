@@ -6,10 +6,18 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * La classe {@link FormaComposta} rappresenta un insieme di {@link Forma} raggruppate
+ */
 public class FormaComposta extends Forma{
-
+    /*
+     * Attributi
+     */
     private List<Forma> forme;
 
+    /*
+     * Costruttori, getter e setter
+     */
     public FormaComposta() {
         forme = new ArrayList<Forma>();
     }
@@ -26,6 +34,76 @@ public class FormaComposta extends Forma{
         forme.add(forma);
     }
 
+    @Override
+    public void setColore(Color color) {
+        for(Forma f:forme){
+            f.setColore(color);
+        }
+    }
+
+    public void setColoreInterno(Color color) {
+        for(Forma formaCorrente:forme){
+            if(formaCorrente instanceof Forma2D){
+                Forma2D f2d = (Forma2D) formaCorrente;
+                f2d.setColoreInterno(color);
+            }else if (formaCorrente instanceof Poligono) {
+                Poligono poligono = (Poligono) formaCorrente;
+                poligono.setColoreInterno(color);
+            } else if (formaCorrente instanceof FormaComposta){
+                FormaComposta fc = (FormaComposta) formaCorrente;
+                fc.setColoreInterno(color);
+            }else if (formaCorrente instanceof Testo) {
+                Testo testo = (Testo) formaCorrente;
+                testo.setColoreInterno(color);
+            }
+        }
+    }
+
+    @Override
+    public void setAngoloInclinazione(double angoloDiInclinazione){
+        for(Forma f:forme){
+            f.setAngoloInclinazione(angoloDiInclinazione);
+        }
+    }
+
+    @Override
+    public void setCoordinataXForDrag(double coordinataXMouseDragged){
+        for(Forma f:forme){
+            f.setCoordinataXForDrag(coordinataXMouseDragged);
+        }
+    }
+
+    @Override
+    public void setCoordinataYForDrag(double coordinataYMouseDragged){
+        for(Forma f:forme){
+            f.setCoordinataYForDrag(coordinataYMouseDragged);
+        }
+    }
+
+    @Override
+    public void setOffsetX(double coordinataXPressed){
+        for(Forma f:forme){
+            f.setOffsetX(coordinataXPressed);
+        }
+    }
+
+    @Override
+    public void setOffsetY(double coordinataYPressed){
+        for(Forma f:forme){
+            f.setOffsetY(coordinataYPressed);
+        }
+    }
+
+    @Override
+    public void proportionalResize(double proporzione){
+        for(Forma f:forme){
+            f.proportionalResize(proporzione);
+        }
+    }
+
+    /**
+     * Decora le forme componenti.
+     */
     public void decorate(){
         int i = 0;
         int limit = forme.size();
@@ -37,6 +115,9 @@ public class FormaComposta extends Forma{
         }
     }
 
+    /**
+     * Rimuove la decorazione dalle forme componenti.
+     */
     public void undecorate(){
         int i = 0;
         int limit = forme.size();
@@ -69,8 +150,8 @@ public class FormaComposta extends Forma{
     }
 
     /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
-     * cetro della figura stessa
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse verticale che passa per il centro della {@link Forma} stessa
      */
     @Override
     public void specchiaInVerticale() {
@@ -80,8 +161,8 @@ public class FormaComposta extends Forma{
     }
 
     /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse orizzontale che passa per il
-     * cetro della figura stessa
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse orizzontale che passa per il centro della {@link Forma} stessa
      */
     @Override
     public void specchiaInOrizzontale() {
@@ -90,42 +171,11 @@ public class FormaComposta extends Forma{
         }
     }
 
-    @Override
-    public void setColore(Color color) {
-        for(Forma f:forme){
-            f.setColore(color);
-        }
-    }
-
-    public void setColoreInterno(Color color) {
-        for(Forma formaCorrente:forme){
-            if(formaCorrente instanceof Ellisse){
-                Ellisse ellisse = (Ellisse) formaCorrente;
-                ellisse.setColoreInterno(color);
-                System.out.println("cambio colore dell'ellissi in " + color);
-            } else if (formaCorrente instanceof Rettangolo) {
-                Rettangolo rettangolo = (Rettangolo) formaCorrente;
-                rettangolo.setColoreInterno(color);
-                System.out.println("cambio colore del rettangolo in " + color);
-            }else if (formaCorrente instanceof Poligono) {
-                Poligono poligono = (Poligono) formaCorrente;
-                poligono.setColoreInterno(color);
-                System.out.println("cambio colore del poligono in " + color);
-            } else if (formaCorrente instanceof FormaComposta){
-                FormaComposta fc = (FormaComposta) formaCorrente;
-                fc.setColoreInterno(color);
-                System.out.println("cambio colore della forma composta in " + color);
-            }else if (formaCorrente instanceof Poligono) {
-                Poligono poligono = (Poligono) formaCorrente;
-                poligono.setColoreInterno(color);
-                System.out.println("cambio colore del rettangolo in " + color);
-            }else if (formaCorrente instanceof Testo) {
-                Testo testo = (Testo) formaCorrente;
-                testo.setColoreInterno(color);
-            }
-        }
-    }
-
+    /**
+     * Gestisce la clonazione dell'oggetto creandone una nuova istanza
+     * Permette di modificare l'elemento clonato senza intaccare quello originale
+     * @return la {@link Forma} clonata.
+     */
     @Override
     public Forma clone() {
         List<Forma> newListaForme = new ArrayList<>();
@@ -136,40 +186,4 @@ public class FormaComposta extends Forma{
         return newForma;
     }
 
-    @Override
-    public void proportionalResize(double proporzione){
-        for(Forma f:forme){
-            f.proportionalResize(proporzione);
-        }
-    }
-
-    public void setAngoloInclinazione(double angoloDiInclinazione){
-        for(Forma f:forme){
-            f.setAngoloInclinazione(angoloDiInclinazione);
-        }
-    }
-
-    public void setCoordinataXForDrag(double coordinataXMouseDragged){
-        for(Forma f:forme){
-            f.setCoordinataXForDrag(coordinataXMouseDragged);
-        }
-    }
-
-    public void setCoordinataYForDrag(double coordinataYMouseDragged){
-        for(Forma f:forme){
-            f.setCoordinataYForDrag(coordinataYMouseDragged);
-        }
-    }
-
-    public void setOffsetX(double coordinataXPressed){
-        for(Forma f:forme){
-            f.setOffsetX(coordinataXPressed);
-        }
-    }
-
-    public void setOffsetY(double coordinataYPressed){
-        for(Forma f:forme){
-            f.setOffsetY(coordinataYPressed);
-        }
-    }
 }

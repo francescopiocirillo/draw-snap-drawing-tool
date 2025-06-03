@@ -209,11 +209,10 @@ class SelectStateTest {
     }
 
 
-/**
+    /**
      * Verifica il normale spostamento di una figura selezionata
      * @throws Exception a causa della reflection fatta con {@code setOffset}
      */
-
     @Test
     void testHandleMouseDragged_FormaSelezionataSiMuove() throws Exception {
         // Mock della forma base
@@ -230,23 +229,19 @@ class SelectStateTest {
         when(event.getX()).thenReturn(100.0);
         when(event.getY()).thenReturn(150.0);
 
-        // Imposta offsetX = 20, offsetY = 30
-        setOffset(selectState, 20.0, 30.0);
-
         // Chiamata al metodo
         selectState.handleMouseDragged(event, forme, 100.0, 150.0);
 
         // Verifica che la forma interna abbia ricevuto nuove coordinate
-        verify(forma).setCoordinataX(80.0); // 100 - 20
-        verify(forma).setCoordinataY(120.0); // 150 - 30
+        verify(forma).setCoordinataXForDrag(100.0); // 100 - 20
+        verify(forma).setCoordinataYForDrag(150.0); // 150 - 30
     }
 
 
-/**
+    /**
      * Verifica che se una forma non è selezionata allora non viene spostata.
      * @throws Exception a causa della reflection fatta con {@code setOffset}
      */
-
     @Test
     void testHandleMouseDragged_NessunaFormaSelezionata() throws Exception {
         // Lista senza decoratori
@@ -257,8 +252,6 @@ class SelectStateTest {
         MouseEvent event = mock(MouseEvent.class);
         when(event.getX()).thenReturn(200.0);
         when(event.getY()).thenReturn(300.0);
-
-        setOffset(selectState, 10.0, 10.0);
 
         selectState.handleMouseDragged(event, forme, 10.0, 10.0);
 
@@ -287,13 +280,11 @@ class SelectStateTest {
         when(event.getX()).thenReturn(300.0);
         when(event.getY()).thenReturn(400.0);
 
-        setOffset(selectState, 100.0, 50.0);
-
         selectState.handleMouseDragged(event, forme, 300.0, 400.0);
 
         // Deve spostare solo la forma decorata
-        verify(selezionata).setCoordinataX(200.0);
-        verify(selezionata).setCoordinataY(350.0);
+        verify(selezionata).setCoordinataXForDrag(300.0);
+        verify(selezionata).setCoordinataYForDrag((400.0));
 
         // La forma normale non deve essere toccata
         verify(normale, never()).setCoordinataX(anyDouble());
@@ -301,7 +292,7 @@ class SelectStateTest {
     }
 
 
-/**
+    /**
      * Verifica che non ci sono comportamenti anomali se la lista è vuota.
      * @throws Exception a causa della reflection fatta con {@code setOffset}
      */
@@ -313,8 +304,6 @@ class SelectStateTest {
         MouseEvent event = mock(MouseEvent.class);
         when(event.getX()).thenReturn(123.0);
         when(event.getY()).thenReturn(456.0);
-
-        setOffset(selectState, 10.0, 20.0);
 
         // Nessuna eccezione, nessuna modifica
         assertDoesNotThrow(() -> selectState.handleMouseDragged(event, forme, 123.0, 456.0));

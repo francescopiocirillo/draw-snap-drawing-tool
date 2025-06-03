@@ -74,9 +74,13 @@
  *	css per il contenitore del canvas, in modo da far capire fino a dove arriva il canvas
  */
 #canvaContainer {
-	-fx-background-color: #ffffff;
+	-fx-background-color: #AFEEEE;
 }
 
 #fileBar {
 	-fx-background-color: #7099b3;
+}
+
+.tooltip {
+	-fx-font-size: 13px;
 }

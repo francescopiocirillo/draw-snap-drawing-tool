@@ -6,8 +6,8 @@ import javafx.scene.input.MouseEvent;
 
 /**
  * La classe {@code DrawingContext} rappresenta il contesto di disegno e per mezzo del Pattern State
- * si occupa di memorizzare qual è lo stato corrente in modo da poter
- * delegare la gestione degli eventi di interazione con il canvas allo stato corrente
+ * si occupa di memorizzare qual è lo stato corrente in modo da poter delegare la gestione degli
+ * eventi di interazione con il {@link javafx.scene.canvas.Canvas} allo stato corrente
  */
 public class DrawingContext {
     /*
@@ -40,35 +40,39 @@ public class DrawingContext {
      */
 
     /**
-     * DrawingContext delega la gestione dell'evento pressione del mouse allo stato corrente
-     * @param event l'evento di pressione del Mouse
-     * @param forme la lista delle forme presenti sul canvas
-     * @param x coordinata logica per l'asse x dell'evento mouse
-     * @param y coordinata logica per l'asse y dell'evento mouse
+     * {@link DrawingContext} delega la gestione del {@link MouseEvent} di pressione allo stato corrente
+     * @param event è il {@link MouseEvent} di pressione che ha causato la chiamata al metodo
+     * @param forme è il {@link DrawSnapModel}  presente nel {@link javafx.scene.canvas.Canvas}
+     * @param x è la coordinata logica per l'asse x del {@link MouseEvent}
+     * @param y è la coordinata logica per l'asse y del {@link MouseEvent}
+     * @return {@code true} in caso di risultato positivo, altrimenti {@code false}
      */
     public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme, double x, double y){
         return currentState.handleMousePressed(event, forme,x, y);
     }
 
     /**
-     * DrawingContext delega la gestione dell'evento di trascinamento del mouse allo stato corrente
-     * @param event l'evento di pressione del Mouse
-     * @param forme la lista delle forme presenti sul canvas
-     * @param x coordinata logica per l'asse x dell'evento mouse
-     * @param y coordinata logica per l'asse y dell'evento mouse
+     * {@link DrawingContext} delega la gestione del {@link MouseEvent} di trascinamento allo stato corrente
+     * @param event è il {@link MouseEvent} di trascinamento che ha causato la chiamata al metodo
+     * @param forme è il {@link DrawSnapModel}  presente nel {@link javafx.scene.canvas.Canvas}
+     * @param x è la coordinata logica per l'asse x del {@link MouseEvent}
+     * @param y è la coordinata logica per l'asse y del {@link MouseEvent}
+     * @return {@code true} in caso di risultato positivo, altrimenti {@code false}
      */
     public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double x, double y){
         return currentState.handleMouseDragged(event, forme, x, y);
     }
 
     /**
-     * DrawingContext delega la gestione dell'evento di rilascio del mouse allo stato corrente
-     * @param event l'evento di rilascio del Mouse
-     * @param x coordinata logica per l'asse x dell'evento mouse
-     * @param y coordinata logica per l'asse y dell'evento mouse
+     * {@link DrawingContext} delega la gestione del {@link MouseEvent} di rilascio allo stato corrente
+     * @param event è il {@link MouseEvent} di rilascio che ha causato la chiamata al metodo
+     * @param forme è il {@link DrawSnapModel}  presente nel {@link javafx.scene.canvas.Canvas}
+     * @param x è la coordinata logica per l'asse x del {@link MouseEvent}
+     * @param y è la coordinata logica per l'asse y del {@link MouseEvent}
+     * @return {@code true} in caso di risultato positivo, altrimenti {@code false}
      */
-    public boolean handleMouseReleased(MouseEvent event, double x, double y){
-        return currentState.handleMouseReleased(event, x, y);
+    public boolean handleMouseReleased(MouseEvent event, DrawSnapModel forme, double x, double y){
+        return currentState.handleMouseReleased(event, forme, x, y);
     }
 
 }

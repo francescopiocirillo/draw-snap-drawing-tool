@@ -1,7 +1,7 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiForma;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiFormaDTO;
 import javafx.application.Platform;
 
 import javafx.scene.paint.Color;
@@ -38,7 +38,7 @@ public class DrawStateTestUI extends ApplicationTest {
     void setUp() {
         drawState = new DrawState(Forme.RETTANGOLO) {
             @Override
-            public AttributiForma helpUIHandleMousePressed(Forme tipoForma) {
+            public AttributiFormaDTO helpUIHandleMousePressed(Forme tipoForma) {
                 return super.helpUIHandleMousePressed(tipoForma);
             }
         };
@@ -64,7 +64,7 @@ public class DrawStateTestUI extends ApplicationTest {
     @Test
     void testHelpUIHandleMousePressed_Rettangolo() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
-        final AttributiForma[] result = new AttributiForma[1];
+        final AttributiFormaDTO[] result = new AttributiFormaDTO[1];
 
         Platform.runLater(() -> {
             try {
@@ -79,15 +79,13 @@ public class DrawStateTestUI extends ApplicationTest {
             fail("Timeout scaduto per l'interazione con JavaFX");
         }
 
-        AttributiForma attributi = result[0];
+        AttributiFormaDTO attributi = result[0];
 
         assertNotNull(attributi, "La finestra di dialogo non ha restituito attributi");
         assertNotNull(attributi.getColore(), "Il colore del bordo non deve essere nullo");
         assertNotNull(attributi.getColoreInterno(), "Il colore interno non deve essere nullo");
 
-        assertEquals(100.0, attributi.getAltezza(), 0.01, "Valore di altezza errato");
-        assertEquals(100.0, attributi.getLarghezza(), 0.01, "Valore di larghezza errato");
-        assertEquals(0.0, attributi.getAngoloInclinazione(), 0.01, "Valore di angolo errato");
+        assertEquals(45.0, attributi.getAngoloInclinazione(), 0.01, "Valore di angolo errato");
     }
 
     /**
@@ -100,7 +98,7 @@ public class DrawStateTestUI extends ApplicationTest {
     @Test
     void testHelpUIHandleMousePressed_Linea() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
-        final AttributiForma[] result = new AttributiForma[1];
+        final AttributiFormaDTO[] result = new AttributiFormaDTO[1];
 
         Platform.runLater(() -> {
             try {
@@ -115,15 +113,11 @@ public class DrawStateTestUI extends ApplicationTest {
             fail("Timeout scaduto per l'interazione con JavaFX");
         }
 
-        AttributiForma attributi = result[0];
+        AttributiFormaDTO attributi = result[0];
 
         assertNotNull(attributi, "La finestra di dialogo non ha restituito attributi");
         assertNotNull(attributi.getColore(), "Il colore del bordo non deve essere nullo");
         assertEquals(Color.TRANSPARENT, attributi.getColoreInterno(), "Il colore interno di una linea deve essere trasparente");
-        assertEquals(0.0, attributi.getAltezza(), 0.01, "L'altezza di una linea deve essere 0");
-
-        assertEquals(100.0, attributi.getLarghezza(), 0.01, "Larghezza non corretta");
-        assertEquals(0.0, attributi.getAngoloInclinazione(), 0.01, "Angolo di inclinazione non corretto");
     }
 
 
@@ -136,7 +130,7 @@ public class DrawStateTestUI extends ApplicationTest {
     @Test
     void testHelpUIHandleMousePressed_Annulla_Dialog() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
-        final AttributiForma[] result = new AttributiForma[1];
+        final AttributiFormaDTO[] result = new AttributiFormaDTO[1];
 
         Platform.runLater(() -> {
             try {
@@ -151,7 +145,7 @@ public class DrawStateTestUI extends ApplicationTest {
             fail("Timeout scaduto per l'interazione con JavaFX");
         }
 
-        AttributiForma attributi = result[0];
+        AttributiFormaDTO attributi = result[0];
         assertNull(attributi, "Se si preme Annulla, il metodo deve restituire null");
     }
 

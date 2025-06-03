@@ -5,89 +5,16 @@ import javafx.scene.paint.Color;
 
 import java.awt.geom.Line2D;
 
-public class Linea extends Forma  {
+/**
+ * La classe {@link Linea} rappresenta la {@link Forma} Linea e presenta
+ * tutte le caratteristiche ereditate da {@link Forma1D}.
+ */
+public class Linea extends Forma1D  {
     /*
-     * Attributi
-     */
-    private double xInizio;
-    private double yInizio;
-    private double xFine;
-    private double yFine;
-
-    /*
-     * Costruttore, getter e setter
+     * Costruttore
      */
     public Linea(double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore) {
         super(coordinataX, coordinataY, larghezza, angoloInclinazione, colore); // Chiamata al costruttore della classe estesa Forma
-        updateCoordinateYInizioFine();
-        updateCoordinateXInizioFine();
-    }
-
-    private void updateCoordinateYInizioFine() {
-        this.yInizio = this.getCoordinataY() - (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
-        this.yFine = this.getCoordinataY() + (this.getLarghezza() / 2) * Math.sin(Math.toRadians(getAngoloInclinazione()));
-    }
-
-    private void updateCoordinateXInizioFine() {
-        this.xInizio = this.getCoordinataX() - (this.getLarghezza() / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
-        this.xFine = this.getCoordinataX() + (this.getLarghezza() / 2) * Math.cos(Math.toRadians(getAngoloInclinazione()));
-    }
-
-    public double getXInizio() {
-        return xInizio;
-    }
-
-    public double getYInizio() {
-        return yInizio;
-    }
-
-    public double getXFine() {
-        return xFine;
-    }
-
-    public double getYFine() {
-        return yFine;
-    }
-
-    @Override
-    public void setLarghezza(double larghezza) {
-        super.setLarghezza(larghezza);
-        updateCoordinateYInizioFine();
-        updateCoordinateXInizioFine();
-    }
-
-    @Override
-    public void proportionalResize(double proporzione){
-        setLarghezza(getLarghezza()*proporzione/100);
-    }
-
-    @Override
-    public void setAngoloInclinazione(double angoloInclinazione) {
-        super.setAngoloInclinazione(angoloInclinazione);
-        updateCoordinateYInizioFine();
-        updateCoordinateXInizioFine();
-    }
-
-    @Override
-    public void setCoordinataY(double coordinataY) {
-        super.setCoordinataY(coordinataY);
-        updateCoordinateYInizioFine();
-    }
-
-    @Override
-    public void setCoordinataX(double coordinataX) {
-        super.setCoordinataX(coordinataX);
-        updateCoordinateXInizioFine();
-    }
-
-    @Override
-    public void setCoordinataXForDrag(double coordinataXMouseDragged){
-        setCoordinataX(coordinataXMouseDragged-getOffsetX());
-    }
-
-    @Override
-    public void setCoordinataYForDrag(double coordinataYMouseDragged){
-        setCoordinataY(coordinataYMouseDragged-getOffsetY());
     }
 
     /*
@@ -95,12 +22,11 @@ public class Linea extends Forma  {
      */
 
     /**
-     * Disegna una linea sul {@link GraphicsContext} specificato.
-     * Questo metodo disegna una linea utilizzando le coordinate di inizio e fine fornite dagli attributi
-     * dell'oggetto usando il colore della forma.
-     *
-     * @param gc il {@code GraphicsContext} su cui disegnare la linea.
-     *           Deve essere già inizializzato e associato a un {@code Canvas} valido.
+     * Gestisce il disegno di una {@link Linea} sul {@link GraphicsContext} specificato.
+     * Questo metodo disegna una {@link Linea} utilizzando le coordinate di inizio e
+     * fine fornite dagli attributi dell'oggetto usando il {@link Color} della {@link Forma}.
+     * @param gc il {@link GraphicsContext} su cui disegnare la {@link Linea}.
+     *           Deve essere già inizializzato e associato a un {@link javafx.scene.canvas.Canvas} valido.
      */
     @Override
     public void disegna(GraphicsContext gc) {
@@ -123,48 +49,4 @@ public class Linea extends Forma  {
         gc.restore();
     }
 
-    /**
-     * Determina se la linea contiene un punto specifico nello spazio.
-     *
-     * @param puntoDaValutareX La coordinata X del punto da verificare.
-     * @param puntoDaValutareY La coordinata Y del punto da verificare.
-     * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si trova sulla linea,
-     *         altrimenti {@code false}.
-     */
-    @Override
-    public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
-        //Punti alle estremità della linea
-        double xInizio = getXInizio();
-        double yInizio = getYInizio();
-        double xFine = getXFine();
-        double yFine = getYFine();
-        final double TOLLERANZA = 10; //si considerano anche i punti nell'intorno della linea
-
-        Line2D line = new Line2D.Double(xInizio, yInizio, xFine, yFine);
-        return line.ptSegDist(puntoDaValutareX, puntoDaValutareY) <= TOLLERANZA;
-    }
-
-    /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
-     * cetro della figura stessa
-     */
-    @Override
-    public void specchiaInVerticale(){
-        double centroX = getCoordinataX();
-
-        // Inverti le coordinate X rispetto al centro
-        this.xInizio = 2 * centroX - this.xInizio;
-        this.xFine = 2 * centroX - this.xFine;
-        this.setAngoloInclinazione(180 - this.getAngoloInclinazione());
-    }
-
-    @Override
-    public void specchiaInOrizzontale(){
-        double centroY = getCoordinataY();
-
-        // Inverti le coordinate Y rispetto al centro
-        this.yInizio = 2 * centroY - this.yInizio;
-        this.yFine = 2 * centroY - this.yFine;
-        this.setAngoloInclinazione(360 - this.getAngoloInclinazione());
-    }
 }

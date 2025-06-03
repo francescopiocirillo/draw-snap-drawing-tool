@@ -6,19 +6,18 @@ import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Linea;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Rettangolo;
 import javafx.scene.paint.Color;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
-class ResizeCommandTest {
+class StretchCommandTest {
     private DrawSnapModel drawSnapModel;
     private Ellisse ellisse;
     private Rettangolo rettangolo;
     private Linea linea;
-    private ResizeCommand command;
+    private StretchCommand command;
 
     @Test
     void testExecute_ellisse() {
@@ -32,9 +31,9 @@ class ResizeCommandTest {
             ellisse.setAltezza(altezza);
             ellisse.setLarghezza(larghezza);
             return null;
-        }).when(drawSnapModel).resize(any(double.class), any(double.class));
+        }).when(drawSnapModel).stretch(any(double.class), any(double.class));
 
-        command = new ResizeCommand(drawSnapModel, 20, 150);
+        command = new StretchCommand(drawSnapModel, 20, 150);
 
         assertEquals(50, ellisse.getLarghezza()); //controllo larghezza prima della modifica
         assertEquals(30, ellisse.getAltezza()); //controllo altezza prima della modifica
@@ -57,9 +56,9 @@ class ResizeCommandTest {
             ellisse.setAltezza(altezza);
             ellisse.setLarghezza(larghezza);
             return null;
-        }).when(drawSnapModel).resize(any(double.class), any(double.class));
+        }).when(drawSnapModel).stretch(any(double.class), any(double.class));
 
-        command = new ResizeCommand(drawSnapModel, 200, 150);
+        command = new StretchCommand(drawSnapModel, 200, 150);
 
         assertEquals(200, ellisse.getLarghezza()); //controllo larghezza prima della modifica
         assertEquals(15, ellisse.getAltezza()); //controllo altezza prima della modifica
@@ -82,9 +81,9 @@ class ResizeCommandTest {
             ellisse.setAltezza(altezza);
             ellisse.setLarghezza(larghezza);
             return null;
-        }).when(drawSnapModel).resize(any(double.class), any(double.class));
+        }).when(drawSnapModel).stretch(any(double.class), any(double.class));
 
-        command = new ResizeCommand(drawSnapModel, 32, 96);
+        command = new StretchCommand(drawSnapModel, 32, 96);
 
         assertEquals(74, ellisse.getLarghezza()); //controllo larghezza prima della modifica
         assertEquals(96, ellisse.getAltezza()); //controllo altezza prima della modifica
@@ -107,9 +106,9 @@ class ResizeCommandTest {
             rettangolo.setAltezza(altezza);
             rettangolo.setLarghezza(larghezza);
             return null;
-        }).when(drawSnapModel).resize(any(double.class), any(double.class));
+        }).when(drawSnapModel).stretch(any(double.class), any(double.class));
 
-        command = new ResizeCommand(drawSnapModel, 21, 54);
+        command = new StretchCommand(drawSnapModel, 21, 54);
 
         assertEquals(12, rettangolo.getLarghezza()); //controllo larghezza prima della modifica
         assertEquals(45, rettangolo.getAltezza()); //controllo altezza prima della modifica
@@ -132,9 +131,9 @@ class ResizeCommandTest {
             rettangolo.setAltezza(altezza);
             rettangolo.setLarghezza(larghezza);
             return null;
-        }).when(drawSnapModel).resize(any(double.class), any(double.class));
+        }).when(drawSnapModel).stretch(any(double.class), any(double.class));
 
-        command = new ResizeCommand(drawSnapModel, 58, 20);
+        command = new StretchCommand(drawSnapModel, 58, 20);
 
         assertEquals(58, rettangolo.getLarghezza()); //controllo larghezza prima della modifica
         assertEquals(41, rettangolo.getAltezza()); //controllo altezza prima della modifica
@@ -157,9 +156,9 @@ class ResizeCommandTest {
             rettangolo.setAltezza(altezza);
             rettangolo.setLarghezza(larghezza);
             return null;
-        }).when(drawSnapModel).resize(any(double.class), any(double.class));
+        }).when(drawSnapModel).stretch(any(double.class), any(double.class));
 
-        command = new ResizeCommand(drawSnapModel, 58, 18);
+        command = new StretchCommand(drawSnapModel, 58, 18);
 
         assertEquals(18, rettangolo.getLarghezza()); //controllo larghezza prima della modifica
         assertEquals(18, rettangolo.getAltezza()); //controllo altezza prima della modifica
@@ -180,9 +179,9 @@ class ResizeCommandTest {
 
             linea.setLarghezza(larghezza);
             return null;
-        }).when(drawSnapModel).resize(any(double.class), any(double.class));
+        }).when(drawSnapModel).stretch(any(double.class), any(double.class));
 
-        command = new ResizeCommand(drawSnapModel, 44, 0);
+        command = new StretchCommand(drawSnapModel, 44, 0);
 
         assertEquals(66, linea.getLarghezza()); //controllo larghezza prima della modifica
 

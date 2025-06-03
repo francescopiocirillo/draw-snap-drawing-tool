@@ -2,7 +2,16 @@ package it.unisa.software_architecture_design.drawsnapdrawingtool.forme;
 
 import javafx.scene.paint.Color;
 
-public class AttributiForma {
+/**
+ * La classe {@code AttributiFormaDTO} è un Data Transfer Object (DTO) che incapsula
+ * le proprietà fondamentali di una forma, come la posizione, le dimensioni,
+ * l'angolo di inclinazione, i colori.
+ *
+ */
+public class AttributiFormaDTO {
+    /*
+     * Attributi
+     */
     private double coordinataX;
     private double coordinataY;
     private double altezza;
@@ -12,8 +21,11 @@ public class AttributiForma {
     private Color coloreInterno;
     private String testo;
 
+    /*
+     * Costruttore, getter e setter
+     */
     // Costruttore con valori di default
-    public AttributiForma() {
+    public AttributiFormaDTO() {
         this.coordinataX = 0.0;
         this.coordinataY = 0.0;
         this.altezza = 50.0;
@@ -25,8 +37,8 @@ public class AttributiForma {
     }
 
     // Costruttore con valori scelti
-    public AttributiForma(double coordinataX, double coordinataY, double altezza, double larghezza,
-                           double angoloInclinazione, Color colore, Color coloreInterno, String testo) {
+    public AttributiFormaDTO(double coordinataX, double coordinataY, double altezza, double larghezza,
+                             double angoloInclinazione, Color colore, Color coloreInterno, String testo) {
         this.coordinataX = coordinataX;
         this.coordinataY = coordinataY;
         this.altezza = altezza;
