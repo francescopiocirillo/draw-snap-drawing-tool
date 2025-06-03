@@ -1,7 +1,7 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.interactionstate;
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.Forme;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiForma;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiFormaDTO;
 import javafx.application.Platform;
 
 import javafx.scene.paint.Color;
@@ -38,7 +38,7 @@ public class DrawStateTestUI extends ApplicationTest {
     void setUp() {
         drawState = new DrawState(Forme.RETTANGOLO) {
             @Override
-            public AttributiForma helpUIHandleMousePressed(Forme tipoForma) {
+            public AttributiFormaDTO helpUIHandleMousePressed(Forme tipoForma) {
                 return super.helpUIHandleMousePressed(tipoForma);
             }
         };
@@ -64,7 +64,7 @@ public class DrawStateTestUI extends ApplicationTest {
     @Test
     void testHelpUIHandleMousePressed_Rettangolo() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
-        final AttributiForma[] result = new AttributiForma[1];
+        final AttributiFormaDTO[] result = new AttributiFormaDTO[1];
 
         Platform.runLater(() -> {
             try {
@@ -79,7 +79,7 @@ public class DrawStateTestUI extends ApplicationTest {
             fail("Timeout scaduto per l'interazione con JavaFX");
         }
 
-        AttributiForma attributi = result[0];
+        AttributiFormaDTO attributi = result[0];
 
         assertNotNull(attributi, "La finestra di dialogo non ha restituito attributi");
         assertNotNull(attributi.getColore(), "Il colore del bordo non deve essere nullo");
@@ -98,7 +98,7 @@ public class DrawStateTestUI extends ApplicationTest {
     @Test
     void testHelpUIHandleMousePressed_Linea() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
-        final AttributiForma[] result = new AttributiForma[1];
+        final AttributiFormaDTO[] result = new AttributiFormaDTO[1];
 
         Platform.runLater(() -> {
             try {
@@ -113,7 +113,7 @@ public class DrawStateTestUI extends ApplicationTest {
             fail("Timeout scaduto per l'interazione con JavaFX");
         }
 
-        AttributiForma attributi = result[0];
+        AttributiFormaDTO attributi = result[0];
 
         assertNotNull(attributi, "La finestra di dialogo non ha restituito attributi");
         assertNotNull(attributi.getColore(), "Il colore del bordo non deve essere nullo");
@@ -130,7 +130,7 @@ public class DrawStateTestUI extends ApplicationTest {
     @Test
     void testHelpUIHandleMousePressed_Annulla_Dialog() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
-        final AttributiForma[] result = new AttributiForma[1];
+        final AttributiFormaDTO[] result = new AttributiFormaDTO[1];
 
         Platform.runLater(() -> {
             try {
@@ -145,7 +145,7 @@ public class DrawStateTestUI extends ApplicationTest {
             fail("Timeout scaduto per l'interazione con JavaFX");
         }
 
-        AttributiForma attributi = result[0];
+        AttributiFormaDTO attributi = result[0];
         assertNull(attributi, "Se si preme Annulla, il metodo deve restituire null");
     }
 

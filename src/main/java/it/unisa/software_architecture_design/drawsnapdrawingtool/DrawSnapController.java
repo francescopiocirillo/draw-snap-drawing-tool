@@ -261,7 +261,7 @@ public class DrawSnapController {
         });
         textButton.setOnAction(event -> {
             bottoniBarraPrincipale.forEach(btn -> btn.getStyleClass().remove("selected"));
-            setDrawMode(event, Forme.TEXT);
+            setDrawMode(event, Forme.TESTO);
             textButton.getStyleClass().add("selected");
         });
         selectButton.setOnAction(event -> {

@@ -521,7 +521,7 @@ public class DrawSnapModel implements Serializable {
         for (Forma f : forme) {
             if (f instanceof FormaSelezionataDecorator) {
                 formaDaRidimensionare = ((FormaSelezionataDecorator) f).getForma();
-                break; // Una volta trovata la forma selezionata, esci dal ciclo
+                break;
             }
         }
 

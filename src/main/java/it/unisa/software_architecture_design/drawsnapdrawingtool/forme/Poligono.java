@@ -176,11 +176,10 @@ public class Poligono extends Forma2D {
     public boolean contiene(double x, double y) {
         // I punti del poligono (puntiX, puntiY) sono relativi al suo centro e non ruotati.
         // Per verificare il contenimento, bisogna portare il punto di input (x, y) nello stesso sistema.
-        // Prima, si trasla il punto in modo che sia relativo al centro globale del poligono.
+        // Prima, si trasla il punto in modo che sia relativo al centro del poligono.
         double translatedX = x - super.getCoordinataX();
         double translatedY = y - super.getCoordinataY();
-        // Poi, ruota il punto traslato all'indietro (con l'angolo inverso del poligono).
-        // Questo annulla la rotazione del poligono rispetto al punto di input.
+        // Poi, ruota il punto traslato all'indietro, questo annulla la rotazione del poligono rispetto al punto di input.
         double angleRad = Math.toRadians(-super.getAngoloInclinazione());
         double rotatedX = translatedX * Math.cos(angleRad) - translatedY * Math.sin(angleRad);
         double rotatedY = translatedX * Math.sin(angleRad) + translatedY * Math.cos(angleRad);
@@ -340,7 +339,6 @@ public class Poligono extends Forma2D {
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         out.writeUTF(ColorUtils.toHexString(getColore()));
-        // Serializza il colore interno specifico della sottoclasse
         out.writeUTF(ColorUtils.toHexString(getColoreInterno()));
     }
 
@@ -402,7 +400,6 @@ public class Poligono extends Forma2D {
         this.intrinsicCenterX = (minX + maxX) / 2.0;
         this.intrinsicCenterY = (minY + maxY) / 2.0;
 
-        // Aggiorna anche le proprietà di larghezza e altezza nella superclasse Forma2D.
         super.setLarghezza(this.intrinsicLarghezza);
         super.setAltezza(this.intrinsicAltezza);
     }

@@ -1,7 +1,7 @@
 package it.unisa.software_architecture_design.drawsnapdrawingtool.commands;
 
 import it.unisa.software_architecture_design.drawsnapdrawingtool.DrawSnapModel;
-import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiForma;
+import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.AttributiFormaDTO;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Rettangolo;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -23,8 +23,6 @@ import org.mockito.Mockito;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Classe per il testing della classe {@code SaveCommand}
@@ -44,7 +42,7 @@ class SaveCommandTest {
     void salvaFormeSuFile_DovrebbeSalvareCorrettamenteLeForme() {
         // Preparazione
         DrawSnapModel forme = new DrawSnapModel();
-        AttributiForma attr = new AttributiForma();
+        AttributiFormaDTO attr = new AttributiFormaDTO();
         Forma forma = new Rettangolo(attr.getCoordinataX(), attr.getCoordinataY(), attr.getLarghezza(),
                 attr.getAngoloInclinazione(), attr.getColore(), attr.getAltezza(), attr.getColoreInterno());
         forme.add(forma);
