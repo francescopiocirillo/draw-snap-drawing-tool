@@ -408,6 +408,8 @@ public class DrawState implements DrawingState{
             finalCentroY = (startY + coordinataY) / 2.0;
             if(finalLarghezza < 1) finalLarghezza = 100;
             if(finalAltezza < 1) finalAltezza = 100;
+            if(finalLarghezza > 500) finalLarghezza = 500;
+            if(finalAltezza > 500) finalAltezza = 500;
             finalAngolo = attributiForma.getAngoloInclinazione();
         }
 
