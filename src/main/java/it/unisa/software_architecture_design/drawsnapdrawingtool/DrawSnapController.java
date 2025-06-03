@@ -17,6 +17,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -25,7 +30,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 
 public class DrawSnapController {
@@ -661,6 +670,36 @@ public class DrawSnapController {
 
         //Update dello stato
         updateState(true);
+    }
+
+    @FXML
+    void onHelpPressed(ActionEvent event) {
+        try{
+            File manuale = new File("docs/1 - First sprint/1 - Documentazione_2.0 _1st_Sprint_Release_gruppo07.pdf");
+            if(manuale.exists()){
+                if(Desktop.isDesktopSupported()){
+                    Desktop.getDesktop().open(manuale);
+                }else{
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Avviso");
+                    alert.setHeaderText("Funzionalità non disponibile");
+                    alert.setContentText("La tua piattaforma non supporta l'apertura automatica di file");
+                    alert.showAndWait();
+                }
+            }else{
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Avviso");
+                alert.setHeaderText("File non trovato");
+                alert.setContentText("Il file PDF non è stato trovato");
+                alert.showAndWait();
+            }
+        }catch(IOException ex){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Errore");
+            alert.setHeaderText("Impossibile aprire il manuale d'uso");
+            alert.setContentText("Si è verificato un errore durante l'apertura del file PDF");
+            alert.showAndWait();
+        }
     }
 
     /*
