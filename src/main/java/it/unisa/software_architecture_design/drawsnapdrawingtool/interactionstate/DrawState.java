@@ -23,11 +23,12 @@ import java.util.Locale;
 import java.util.Optional;
 
 /**
- * La classe {@code DrawState} rappresenta lo stato di disegno e per mezzo del Pattern State
- * si occupa di gestire la logica degli handler relativi agli eventi di interazione con
- * il canvas nello stato di disegno. Vi è una distinzione tra le diverse figure per mezzo di un
- * enum. Si occupa di fornire anche la finestra di dialogo per la scelta dei colori e la creazione
- * di una preview della figura per una corretta implementazione del drag & drop.
+ * La classe {@link DrawState} rappresenta lo stato di disegno e per mezzo del Pattern State
+ * si occupa di gestire la logica degli {@link javafx.event.EventHandler} relativi ai
+ * {@link MouseEvent} di interazione con il {@link javafx.scene.canvas.Canvas} nello stato di disegno.
+ * Vi è una distinzione tra le diverse {@link Forme} per mezzo di un enum. Si occupa di fornire
+ * anche la {@link Dialog} per la scelta dei {@link Color} e la creazione di una preview della
+ * {@link Forma} per una corretta implementazione del drag & drop.
  */
 public class DrawState implements DrawingState{
     /*
@@ -79,12 +80,12 @@ public class DrawState implements DrawingState{
      */
 
     /**
-     * Gestisce l'evento di pressione del mouse sul canvas in modo da iniziare il
-     * processo di creazione della {@code formaCorrente}
-     * @param event è l'evento di pressione del mouse
-     * @param forme è la lista di tutte le forme presenti sul canvas (forse da togliere)
-     * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
-     * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
+     * Gestisce il {@link MouseEvent} di pressione sul {@link javafx.scene.canvas.Canvas}
+     * in modo da iniziare il processo di creazione della {@code formaCorrente}
+     * @param event è {@link MouseEvent} di pressione che ha causato la chiamata al metodo
+     * @param forme è il {@link DrawSnapModel}  presente nel {@link javafx.scene.canvas.Canvas}
+     * @param coordinataX è la coordinata logica per l'asse x del {@link MouseEvent}
+     * @param coordinataY è la coordinata logica per l'asse y del {@link MouseEvent}
      * @return {@code true} se gli attributi sono stati ottenuti correttemante e il processo
      * di "Inizio Creazione" è avvenuto correttamente, altrimenti {@code false}
      */
@@ -162,28 +163,29 @@ public class DrawState implements DrawingState{
     }
 
     /**
-     * Gestisce l'evento di trascinamento del mouse sul canvas in modo da continuare il
-     * processo di creazione della {@code formaCorrente}
-     * @param event è l'evento di trascinamento del mouse
-     * @param forme è la lista di tutte le forme presenti sul canvas
-     * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
-     * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
-     * @return {@code false} nel caso in cui si sta creando un poligono (la cui creazione
-     * non avviene con il drag & drop), altrimenti {@code true}
+     * Gestisce il {@link MouseEvent} trascinamento sul {@link javafx.scene.canvas.Canvas}
+     * in modo da continuare il processo di creazione della {@code formaCorrente}
+     * @param event è {@link MouseEvent} di trascinamento che ha causato la chiamata al metodo
+     * @param forme è il {@link DrawSnapModel}  presente nel {@link javafx.scene.canvas.Canvas}
+     * @param coordinataX è la coordinata logica per l'asse x del {@link MouseEvent}
+     * @param coordinataY è la coordinata logica per l'asse y del {@link MouseEvent}
+     * @return {@code true} nel caso in cui la creazione della preview è andata a buon fine,
+     * altrimenti {@code false}
      */
     @Override
     public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
         this.currentDrawingShapePreview = createShapePreview(coordinataX, coordinataY);
-        return true;
+        return currentDrawingShapePreview != null;
     }
 
     /**
-     * Gestisce l'evento di rilascio del mouse sul canvas in modo da terminare il
-     * processo di creazione della {@code formaCorrente}
-     * @param event è l'evento di rilascio del mouse
-     * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
-     * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
-     * @return {@code false} nel caso in cui si sta creando un poligono (la cui creazione
+     * Gestisce il {@link MouseEvent} di rilascio sul {@link javafx.scene.canvas.Canvas}
+     * in modo da terminare il processo di creazione della {@code formaCorrente}
+     * @param event è {@link MouseEvent} di trascinamento che ha causato la chiamata al metodo
+     * @param forme è il {@link DrawSnapModel}  presente nel {@link javafx.scene.canvas.Canvas}
+     * @param coordinataX è la coordinata logica per l'asse x del {@link MouseEvent}
+     * @param coordinataY è la coordinata logica per l'asse y del {@link MouseEvent}
+     * @return {@code false} nel caso in cui si sta creando un {@link Poligono} (la cui creazione
      * non avviene con il drag & drop), altrimenti {@code true}
      */
     @Override
@@ -197,15 +199,18 @@ public class DrawState implements DrawingState{
     }
 
     /**
-     * Gestisce la visualizzazione di una finestra di dialogo che consente all'utente di
-     * selezionare i colori della figura da disegnare.
-     * Il dialogo permette di:
-     * selezionare il colore del bordo tramite un {@link ColorPicker},
-     * selezionare il colore di riempimento (solo se la figura non è una linea) tramite un {@link ColorPicker},
-     * specificare angolo di inclinazione (solo se la figura non è una linea) tramite un {@link Spinner},
-     * specificare la stringa di testo (solo se la figura è un testo), tramite un {@link TextField}
-     * @param tipoForma è il tipo di figura geometrica selezionata
-     * @return un oggetto {@link AttributiForma} contenente i colori selezionati se l'utente conferma,
+     * Gestisce la visualizzazione di una {@link Dialog} che consente all'utente di
+     * selezionare i {@link Color} della {@link Forma} da disegnare.
+     * Il {@link Dialog} permette di:
+     * -    selezionare il {@link Color} del bordo tramite un {@link ColorPicker},
+     * -    selezionare il {@link Color} di riempimento (solo se la {@link Forma} non è
+     *      una {@link Linea}) tramite un {@link ColorPicker},
+     * -    specificare angolo di inclinazione (solo se la {@link Forma} non è una
+     *      {@link Linea}) tramite un {@link Spinner},
+     * -    specificare la {@link String} (solo se la {@link Forma} è un {@link Testo})
+     *      , tramite un {@link TextField}
+     * @param tipoForma è il tipo di {@link Forme} selezionata
+     * @return un oggetto {@link AttributiForma} contenente i {@link Color} selezionati se l'utente conferma,
      * oppure {@code null} se l'utente annulla l'operazione
      */
     protected AttributiForma helpUIHandleMousePressed(Forme tipoForma) {
@@ -213,7 +218,7 @@ public class DrawState implements DrawingState{
         Dialog<AttributiForma> dialog = new Dialog<>();
         dialog.setTitle("Conferma Disegno");
         Locale.setDefault(new Locale("it", "IT"));
-        Label headerLabel = new Label("Vuoi inserire la figura scelta qui?");
+        Label headerLabel = new Label("Inserisci i parametri della figura");
         headerLabel.setStyle("-fx-font-size: 20px;");
         StackPane headerPane = new StackPane(headerLabel);
         headerPane.setPadding(new Insets(20, 0, 10, 0));
@@ -245,6 +250,7 @@ public class DrawState implements DrawingState{
         Spinner<Double> spinnerAngolo = new Spinner<>(-360, 360.0, 0.0, 1.0);
         spinnerAngolo.setEditable(true);
         spinnerAngolo.setTooltip(new Tooltip("Angolo di rotazione in gradi (0-360, anche angoli negativi)"));
+        spinnerAngolo.getEditor().setStyle("-fx-alignment: center;");
         VBox angoloBox = new VBox(5, angoloLabel, spinnerAngolo);
         angoloBox.setAlignment(Pos.CENTER);
 
@@ -256,7 +262,8 @@ public class DrawState implements DrawingState{
             testoLabel.setStyle("-fx-font-size: 18px;");
             textField = new TextField();
             textField.setPromptText("Inserisci testo qui");
-            textField.setPrefWidth(200);
+            textField.setMaxWidth(200);
+            textField.setStyle("-fx-alignment: center;");
             textBox = new VBox(5, testoLabel, textField);
             textBox.setAlignment(Pos.CENTER);
         }
@@ -344,10 +351,10 @@ public class DrawState implements DrawingState{
 
     /**
      * Gestisce la creazione di una {@code currentShapePreview} per la giusta
-     * implementazione del drag & drop per la creazione della figura
-     * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
-     * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
-     * @return la {@code currentShapePreview} della forma da creare
+     * implementazione del drag & drop per la creazione della {@link Forma}
+     * @param coordinataX è la coordinata logica per l'asse x del {@link MouseEvent}
+     * @param coordinataY è la coordinata logica per l'asse y del {@link MouseEvent}
+     * @return la {@code currentShapePreview} della {@link Forma} da creare
      */
     private Forma createShapePreview(double coordinataX, double coordinataY){
 
@@ -401,6 +408,8 @@ public class DrawState implements DrawingState{
             finalCentroY = (startY + coordinataY) / 2.0;
             if(finalLarghezza < 1) finalLarghezza = 100;
             if(finalAltezza < 1) finalAltezza = 100;
+            if(finalLarghezza > 1000) finalLarghezza = 1000;
+            if(finalAltezza > 1000) finalAltezza = 1000;
             finalAngolo = attributiForma.getAngoloInclinazione();
         }
 
@@ -442,16 +451,16 @@ public class DrawState implements DrawingState{
     }
 
     /**
-     * Metodo di utilità per il disegno dinamico del Poligono
-     * @return la lista di coordinate X ad un certo momento
+     * Metodo di utilità per il disegno dinamico del {@link Poligono}
+     * @return la {@link List} di coordinate X ad un certo momento
      */
     public List<Double> getPuntiX(){
         return poligonoBuilder.getPuntiX();
     }
 
     /**
-     * Metodo di utilità per il disegno dinamico del Poligono
-     * @return la lista di coordinate Y ad un certo momento
+     * Metodo di utilità per il disegno dinamico del {@link Poligono}
+     * @return la {@link List} di coordinate Y ad un certo momento
      */
     public List<Double> getPuntiY(){
         return poligonoBuilder.getPuntiY();

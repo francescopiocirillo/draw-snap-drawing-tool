@@ -19,7 +19,7 @@ public class DrawSnapModel implements Serializable {
     /*
      * Attributi
      */
-    private List<Forma> forme = null;
+    private List<Forma> forme = null; //Lista di forme presenti nel canvas
     private transient List<Forma> formeCopiate = null; //Lista per tenere salvate le variabili copiate
     @Serial
     private static final long serialVersionUID = 1001L;
@@ -32,165 +32,210 @@ public class DrawSnapModel implements Serializable {
         formeCopiate = new ArrayList<Forma>();
     }
 
+    /*
+     * Logica sul Model
+     */
+
     /**
-     * Metodo per aggiungere una forma al disegno
-     * @param f -> la forma da aggiungere
+     * Gestisce la popolazione della {@link List} interna al {@link DrawSnapModel}
+     * con il contenuto dell'istanza {@link DrawSnapModel} passata come @param
+     * @param nuovoModel è l'istanza di {@link DrawSnapModel} da cui prendere le {@link Forma}.
+     */
+    public void rebuildForme(DrawSnapModel nuovoModel){
+        forme.clear();
+        Iterator<Forma> it = nuovoModel.getIteratorForme();
+        while (it.hasNext()) {
+            Forma formaCorrente = it.next();
+            forme.add(formaCorrente);
+        }
+    }
+
+    /*
+     * Logica sulla lista di forme presenti nel foglio
+     */
+
+    /**
+     * Gestisce l'aggiunta di una {@code Forma} al
+     * {@link javafx.scene.canvas.GraphicsContext} del {@link javafx.scene.canvas.Canvas}
+     * @param f è la {@code Forma} da aggiungere
      */
     public void add(Forma f){
         forme.add(f);
     }
 
     /**
-     * Metodo per rimuovere una forma dal disegno
-     * @param f -> la forma da rimuovere
+     * Gestisce la rimozione di una {@link Forma} dal
+     * {@link javafx.scene.canvas.GraphicsContext} del {@link javafx.scene.canvas.Canvas}
+     * @param f è la {@link Forma} da rimuovere
      */
     public void remove(Forma f){
         forme.remove(f);
     }
 
     /**
-     * Metodo per rimuovere tutte le forme presenti nel disegno
+     * Gestisce la rimozione di tutte le {@link Forma} presenti nel
+     * {@link javafx.scene.canvas.GraphicsContext} del {@link javafx.scene.canvas.Canvas}
      */
     public void clear(){
         forme.clear();
     }
 
     /**
-     * Metodo per aggiungere una lista di forme al disegno
-     * @param forme -> lista di forme da aggiungere
+     * Gestisce l'aggiunta di una {@link List} si {@link Forma} nel
+     * {@link javafx.scene.canvas.GraphicsContext} del {@link javafx.scene.canvas.Canvas}
+     * @param forme è la {@link List} di {@link Forma} da aggiungere
      */
     public void addAll(List<Forma> forme){
         this.forme.addAll(forme);
     }
 
     /**
-     * Metodo per prendere una forma tramite indice
-     * @param index -> indice della forma
-     * @return la forma selezionata
+     * Gestisce il prelevamento di una {@link Forma} presente nella
+     * {@link List} di {@link Forma} tramite indice
+     * @param index è l'indice della {@link Forma}
+     * @return la {@link Forma} corrispondente all'indice
      */
     public Forma get(int index){
         return forme.get(index);
     }
 
     /**
-     * Metodo per ottenere la prima forma aggiunta
-     * @return la prima forma presente nella lista
+     * Gestisce il prelevamento della prima {@link Forma} aggiunta nella
+     * {@link List} di {@link Forma}
+     * @return la prima {@link Forma} presente nella {@link List}
      */
     public Forma getFirst(){
         return forme.getFirst();
     }
 
     /**
-     * Metodo per creare l'iterator da usare nelle liste di Forme
-     * @return Iterator
+     * Gestisce la creazione di un {@link Iterator} per la
+     * {@link List} di {@link Forma}
+     * @return {@link Iterator}
      */
     public Iterator<Forma> getIteratorForme() {
         return forme.iterator();
     }
 
     /**
-     * Metodo per controllare se la lista di forme presenti nel disegno è vuota
-     * @return {@code true} se la lista è vuota, altrimenti {@code false}
+     * Verifiva se la {@link List} di {@link Forma} è vuota
+     * @return {@code true} se la {@link List} è vuota, altrimenti {@code false}
      */
     public boolean isEmpty(){
         return forme.isEmpty();
     }
 
     /**
-     * Metodo per ottenere il numerod i forme presenti nel disegno
-     * @return numero di forme
+     * Fornisce la lunghezza della {@link List} di {@link Forma}
+     * @return numero di {@link Forma} presenti nella {@link List}
      */
     public int size(){
         return forme.size();
     }
 
     /**
-     * Metodo per controllare che una forma è presente nel foglio did isegno
-     * @param f -> la forma di cui controllare la presenza
-     * @return {@code true} se la forma è presente, altrimenti {@code false}
+     * Verifica che la {@link Forma} sia presente nel {@link javafx.scene.canvas.GraphicsContext}
+     * del {@link javafx.scene.canvas.Canvas}
+     * @param f è la {@link Forma} di cui controllare la presenza
+     * @return {@code true} se la {@link Forma} è presente, altrimenti {@code false}
      */
     public boolean contains(Forma f){
         return forme.contains(f);
     }
 
     /**
-     * Metodo per aggiungere una forma alla lista di forme copiate
-     * @param f -> la forma da aggiungere
+     * Fornisce una copia della {@link List} di {@link Forma}
+     * @return una copia della {@link List} di {@link Forma}
+     */
+    public List<Forma> getCopy() {
+        List<Forma> copia = new ArrayList<>();
+        for (Forma f : forme) {
+            copia.add(f.clone());
+        }
+        return copia;
+    }
+
+    /*
+     * Logica sulla lista di forme copiate
+     */
+
+    /**
+     * Gestisce l'aggiunta di una {@link Forma} alla {@link List}
+     * di {@link Forma} copiate
+     * @param f è la {@link Forma} da aggiungere
      */
     public void addFormaCopiata(Forma f){
         formeCopiate.add(f);
     }
 
     /**
-     * Metodo per rimuovere una forma dalla lista di forme copiate
-     * @param f -> forma da rimuovere
+     * Gestisce la rimozione di una {@link Forma} dalla {@link List}
+     * di {@link Forma} copiate
+     * @param f è la {@link Forma} da rimuovere
      */
     public void removeFormaCopiata(Forma f){
         formeCopiate.remove(f);
     }
 
     /**
-     * Metodo per ottenere il numerod i forme copiate
-     * @return numero di forme
+     * Gestisce la rimozione di tutte le {@link Forma} dalla {@link List}
+     * di {@link Forma} copiate
      */
-    public int sizeFormeCopiate(){
-        return formeCopiate.size();
+    public void clearFormeCopiate(){
+        formeCopiate.clear();
     }
 
     /**
-     * Metodo per controllare se la lista di forme copiate è vuota
-     * @return {@code true} se la lista è vuota, altrimenti {@code false}
-     */
-    public boolean isEmptyFormeCopiate(){
-        return formeCopiate.isEmpty();
-    }
-
-    /**
-     * Metodo per prendere una forma copiata tramite indice
-     * @param index -> indice della forma
-     * @return la forma selezionata
+     * Gestisce il prelevamento di una {@link Forma} presente nella
+     * {@link List} di {@link Forma} copiate tramite indice
+     * @param index è l'indice della {@link Forma}
+     * @return la {@link Forma} corrispondente all'indice
      */
     public Forma getFormaCopiata(int index){
         return formeCopiate.get(index);
     }
 
     /**
-     * Metodo per ottenere la prima forma copiata
-     * @return la prima forma copiata nella lista
+     * Gestisce il prelevamento della prima {@link Forma} aggiunta nella
+     * {@link List} di {@link Forma} copiate
+     * @return la prima {@link Forma} copiata nella {@link List}
      */
     public Forma getFirstFormaCopiata(){
         return formeCopiate.getFirst();
     }
 
     /**
-     * Metodo per ottenere l'ultima forma copiata
-     * @return l'ultima forma copiata nella lista
+     * Gestisce il prelevamento dell'ultima {@link Forma} aggiunta nella
+     * {@link List} di {@link Forma}
+     * @return l'ultima {@link Forma} copiata nella {@link List}
      */
     public Forma getLastFormaCopiata(){return formeCopiate.getLast();}
 
-
     /**
-     * Metodo per inserire una forma all'inizio della lista
-     * @param f la forma da spostare
+     * Verifiva se la {@link List} di {@link Forma} copiate è vuota
+     * @return {@code true} se la {@link List} è vuota, altrimenti {@code false}
      */
-    public void moveToBack(Forma f) {
-        forme.remove(f);
-        forme.addFirst(f);
+    public boolean isEmptyFormeCopiate(){
+        return formeCopiate.isEmpty();
     }
 
     /**
-     * Metodo per inserire una forma alla fine della lista
-     * @param f la forma da spostare
+     * Fornisce la lunghezza della {@link List} di {@link Forma} copiate
+     * @return numero di {@link Forma} copiate
      */
-    public void moveToFront(Forma f) {
-        forme.remove(f);
-        forme.add(f);
+    public int sizeFormeCopiate(){
+        return formeCopiate.size();
     }
 
+    /*
+     * Logica sulle Forme Selezionate
+     */
+
     /**
-     * La Forma Selezionata viene rimossa dalla lista forme e reinserita dopo la decorazione
-     * @param formaSelezionata -> la forma da selezionare
-     * @return la forma selezionata
+     * Gestisce la rimozione della {@link Forma} e la sua riaggiunta dopo
+     * essere stata decodarata in una {@link FormaSelezionataDecorator}
+     * @param formaSelezionata è la {@link Forma} da selezionare
+     * @return la {@link FormaSelezionataDecorator}
      */
     public Forma selezionaForma(Forma formaSelezionata){
         if (!(formaSelezionata instanceof FormaSelezionataDecorator)) {
@@ -205,18 +250,20 @@ public class DrawSnapModel implements Serializable {
     }
 
     /**
-     * Deseleziona, rimuovendo il Decorator, tutte le Forme memorizzate eccetto quella
-     * fornita come parametro. La deselezione avviene sulla lista interna al Model.
-     * @param formaSelezionata forma da non deselezionare
+     * Gestisce la deseleziona, rimuovendo il {@link FormaSelezionataDecorator},
+     * di tutte le {@link Forma} memorizzate eccetto quella fornita come @param.
+     * La deselezione avviene sulla {@link List} interna al {@link DrawSnapModel}
+     * @param formaSelezionata è la {@link FormaSelezionataDecorator} da non deselezionare
      */
     public void deselezionaEccetto(Forma formaSelezionata) {
         deselezionaEccetto(formaSelezionata, this.forme);
     }
 
     /**
-     * Deseleziona, rimuovendo il Decorator, tutte le Forme memorizzate eccetto quella
-     * fornita come parametro. La deselezione avviene sulla lista fornita.
-     * @param formaSelezionata forma da non deselezionare
+     * Gestisce la deseleziona, rimuovendo il {@code FormaSelezionataDecorator},
+     * di tutte le {@code Forma} memorizzate eccetto quella fornita come @param.
+     * La deselezione avviene sulla {@link List} fornita.
+     * @param formaSelezionata è la {@link FormaSelezionataDecorator} da non deselezionare
      */
     public void deselezionaEccetto(Forma formaSelezionata, List<Forma> forme) {
         int index = 0;
@@ -244,21 +291,9 @@ public class DrawSnapModel implements Serializable {
     }
 
     /**
-     * Popola la lista interna al Model con il contenuto dell'istanza di Model passata come parametro.
-     * @param nuovoModel -> istanza di Model da cui prendere le forme.
-     */
-    public void rebuildForme(DrawSnapModel nuovoModel){
-        forme.clear();
-        Iterator<Forma> it = nuovoModel.getIteratorForme();
-        while (it.hasNext()) {
-            Forma formaCorrente = it.next();
-            forme.add(formaCorrente);
-        }
-    }
-
-    /**
-     * Metodo che prendere la forma selezionata
-     * @return -> la forma selezionata
+     * Gestisce il prelevamente della {@link FormaSelezionataDecorator} presente
+     * nella {@link List} di {@link Forma}
+     * @return è la {@link FormaSelezionataDecorator}
      */
     public Forma getFormaSelezionata(){
         Forma formaSelezionata = null;
@@ -271,8 +306,10 @@ public class DrawSnapModel implements Serializable {
     }
 
     /**
-     * Metodo che controlla se c'è una forma selezionata nella lista
-     * @return {@code true} se è presente una forma selezionata, altrimenti {@cide false}
+     * Verifica che ci sia una {@link FormaSelezionataDecorator}
+     * nella {@link List} di {@link Forma}
+     * @return {@code true} se è presente una {@link FormaSelezionataDecorator},
+     * altrimenti {@code false}
      */
     public boolean thereIsFormaSelezionata(){
         boolean result = false;
@@ -285,20 +322,30 @@ public class DrawSnapModel implements Serializable {
     }
 
     /**
-     * Fornisce una copia della lista di forme
-     * @return una copia della lista di forme
+     * Fornisce il numero di {@link FormaSelezionataDecorator} presente nella
+     * {@link List} di {@link Forma}
+     * @return il numero di {@link FormaSelezionataDecorator}
      */
-    public List<Forma> getCopy() {
-        List<Forma> copia = new ArrayList<>();
-        for (Forma f : forme) {
-            copia.add(f.clone());
+    public int countFormeSelezionate() {
+        int count = 0;
+        Iterator<Forma> it = forme.iterator();
+        while (it.hasNext()) {
+            Forma f = it.next();
+            if (f instanceof FormaSelezionataDecorator) {
+                count++;
+            }
         }
-        return copia;
+        return count;
     }
 
+    /*
+     * Logica sul Memento
+     */
+
     /**
-     * Salva lo stato attuale dell'applicazione in un memento
-     * @return il memento contenente lo stato attuale dell'applicazione
+     * Gestisce il salvataggio dello stato attuale dell'applicazione in un
+     * {@link DrawSnapMemento}
+     * @return il {@link DrawSnapMemento} contenente lo stato attuale dell'applicazione
      */
     public DrawSnapMemento saveToMemento() {
         List<Forma> copia = getCopy();
@@ -307,18 +354,44 @@ public class DrawSnapModel implements Serializable {
     }
 
     /**
-     * Ripristina lo stato dell'applicazione a quello del memento fornito
-     * @param memento -> il memento da ripristinare
+     * Gestisce il ripristino dello stato dell'applicazione a quello del
+     * {@link DrawSnapMemento} fornito
+     * @param memento è il {@link DrawSnapMemento} da ripristinare
      */
     public void restoreFromMemento(DrawSnapMemento memento) {
         this.forme.clear();
         this.forme.addAll(memento.getSavedState());
     }
 
+    /*
+     * Logica di Receiver dei Command
+     */
+
     /**
-     * Cambia il colore del riempimento della figura selezionata con @colore. La figura non può essere una
-     * linea perchè il bottone sarà disattivato se la figura selezionata non ha un colore interno
-     * @param colore colore deciso dall'utente per aggiornare la figura selezionata
+     * Gestisce lo spostamento di una {@link Forma} all'inizio della
+     * {@link List} di {@link Forma}
+     * @param f è la {@link Forma} da spostare
+     */
+    public void moveToBack(Forma f) {
+        forme.remove(f);
+        forme.addFirst(f);
+    }
+
+    /**
+     * Gestisce lo spostamento di una {@link Forma} alla fine della
+     * {@link List} di {@link Forma}
+     * @param f la {@link Forma} da spostare
+     */
+    public void moveToFront(Forma f) {
+        forme.remove(f);
+        forme.add(f);
+    }
+
+    /**
+     * Gestisce il cambio del {@link Color} interno della {@link FormaSelezionataDecorator}
+     * presente nella {@link List} di {@link Forma}.
+     * Il {@link Color} interno non può essere cambiato se si tratta di una {@link Linea}
+     * @param colore è il {@link Color} deciso dall'utente per aggiornare la {@link FormaSelezionataDecorator}
      */
     public void changeFillColor(Color colore) {
         System.out.println("model: " + colore);
@@ -358,8 +431,9 @@ public class DrawSnapModel implements Serializable {
     }
 
     /**
-     * Cambia il colore del contorno della figura selezionata con @colore.
-     * @param colore colore deciso dall'utente per aggiornare la figura selezionata
+     * Gestisce il cambio del {@link Color} del bordo della {@link FormaSelezionataDecorator}
+     * presente nella {@link List} di {@link Forma}
+     * @param colore è il {@link Color} deciso dall'utente per aggiornare la {@link FormaSelezionataDecorator}
      */
     public void changeOutlineColor(Color colore) {
         System.out.println("model: " + colore);
@@ -374,15 +448,16 @@ public class DrawSnapModel implements Serializable {
     }
 
     /**
-     * Ridimensiona la forma attualmente selezionata.
-     * @param larghezza La larghezza desiderata per la forma. Per i poligoni,
+     * Gestisce lo stiramento della {@link FormaSelezionataDecorator} presente
+     * nella {@link List} di {@link Forma}.
+     * @param larghezza La larghezza desiderata per la {@link Forma}. Per i {@link Poligono},
      * questo valore viene utilizzato come riferimento per il calcolo
      * del fattore di scala sull'asse X della bounding box.
-     * @param altezza L'altezza desiderata per la forma. Per i poligoni, questo valore
+     * @param altezza L'altezza desiderata per la {@link Forma}. Per i {@link Poligono}, questo valore
      * viene utilizzato come riferimento per il calcolo del fattore di scala
      * sull'asse Y della bounding box.
      */
-    public void resize(double larghezza, double altezza) {
+    public void stretch(double larghezza, double altezza) {
         // Itera attraverso le forme per trovare quella selezionata
         System.out.println("model");
         Forma formaDaRidimensionare = null;
@@ -434,6 +509,11 @@ public class DrawSnapModel implements Serializable {
         }
     }
 
+    /**
+     * Gestisce il cambio di dimensione proporzionale della {@link FormaSelezionataDecorator}
+     * presente nella {@link List} di {@link Forma}
+     * @param proporzione è la nuova dimensione proporzionale della {@link FormaSelezionataDecorator}
+     */
     public void proportionalResize(double proporzione) {
         // Itera attraverso le forme per trovare quella selezionata
         System.out.println("model" );
@@ -453,42 +533,11 @@ public class DrawSnapModel implements Serializable {
         formaDaRidimensionare.proportionalResize(proporzione);
     }
 
-    public int countFormeSelezionate() {
-        int count = 0;
-        Iterator<Forma> it = forme.iterator();
-        while (it.hasNext()) {
-            Forma f = it.next();
-            if (f instanceof FormaSelezionataDecorator) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public void creaFormaComposta(){
-        FormaComposta fc = new FormaComposta();
-        Iterator<Forma> it = forme.iterator();
-        while (it.hasNext()) {
-            Forma f = it.next();
-            if (f instanceof FormaSelezionataDecorator) {
-                f = ((FormaSelezionataDecorator) f).undecorate();
-                fc.add(f);
-                it.remove();
-            }
-        }
-        forme.add(fc);
-    }
-
-    public void decomponiFormaSelezionata(){
-        Forma f = getFormaSelezionata();
-        forme.remove(f);
-        f = ((FormaSelezionataDecorator)f).undecorate();
-        if (f instanceof FormaComposta) {
-            List<Forma> formeComponenti = ((FormaComposta) f).getForme();
-            forme.addAll(formeComponenti);
-        }
-    }
-
+    /**
+     * Gestisce il cambio di angolo della {@link FormaSelezionataDecorator}
+     * presente nella {@link List} di {@link Forma}
+     * @param angoloSelezionato è il nuovo angolo della {@link FormaSelezionataDecorator}
+     */
     public void rotation(double angoloSelezionato){
         System.out.println("model: " + angoloSelezionato);
 
@@ -504,6 +553,12 @@ public class DrawSnapModel implements Serializable {
         }
     }
 
+    /**
+     * Gestisce lo specchiamento della {@link FormaSelezionataDecorator}
+     * presente nella {@link List} di {@link Forma}
+     * @param horizontal è il {@link Boolean} che distingue i casi di specchiamento
+     *                   orizzontale {@code true} e verticale {@code false}
+     */
     public void reflect(boolean horizontal){
         Forma formaSelezionata = null;
         for(Forma f:forme){
@@ -520,6 +575,40 @@ public class DrawSnapModel implements Serializable {
             else{
                 forma.specchiaInVerticale();
             }
+        }
+    }
+
+    /*
+     * Logica delle forme composte
+     */
+
+    /**
+     *
+     */
+    public void creaFormaComposta(){
+        FormaComposta fc = new FormaComposta();
+        Iterator<Forma> it = forme.iterator();
+        while (it.hasNext()) {
+            Forma f = it.next();
+            if (f instanceof FormaSelezionataDecorator) {
+                f = ((FormaSelezionataDecorator) f).undecorate();
+                fc.add(f);
+                it.remove();
+            }
+        }
+        forme.add(fc);
+    }
+
+    /**
+     *
+     */
+    public void decomponiFormaSelezionata(){
+        Forma f = getFormaSelezionata();
+        forme.remove(f);
+        f = ((FormaSelezionataDecorator)f).undecorate();
+        if (f instanceof FormaComposta) {
+            List<Forma> formeComponenti = ((FormaComposta) f).getForme();
+            forme.addAll(formeComponenti);
         }
     }
 }

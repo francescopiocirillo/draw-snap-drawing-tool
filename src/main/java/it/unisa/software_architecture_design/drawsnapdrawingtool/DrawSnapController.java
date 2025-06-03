@@ -17,6 +17,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.enumeration.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -25,7 +30,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 
 public class DrawSnapController {
@@ -54,11 +63,17 @@ public class DrawSnapController {
      * Attributi grafici per lo zoom
      */
     @FXML
-    private ComboBox<Double> zoom;
+    private ComboBox<Double> zoomChangeButton;
+    @FXML
+    private Button zoomInButton;
+    @FXML
+    private Button zoomOutButton;
 
     /*
      * Attributi grafici per la griglia
      */
+    @FXML
+    private ToggleButton gridButton;
     @FXML
     private Slider gridSlider;
 
@@ -97,7 +112,15 @@ public class DrawSnapController {
     @FXML
     private Button changeOutlineColorButton;
     @FXML
-    private Button proportionalResizePressed;
+    private Button stretchButton;
+    @FXML
+    private Button proportionalResizeButton;
+    @FXML
+    private Button rotationButton;
+    @FXML
+    private Button verticalReflectButton;
+    @FXML
+    private Button horizontalReflectButton;
 
     /*
      * Attributi grafici per l'undo
@@ -144,7 +167,7 @@ public class DrawSnapController {
 
     /**
      * Gestisce l'inizializzazione dell'applicativo dopo il caricamento
-     * del foglio fxml
+     * del foglio {@link FXML}
      */
     @FXML
     void initialize() {
@@ -158,7 +181,7 @@ public class DrawSnapController {
         initializeZoom(); //Inizializzazione zoom
         initializeGridSlider(); //Inizializzazione griglia
         undoButton.setDisable(true); //Disabilitamento pulsante undo
-        initializeTooltip();
+        initializeTooltip(); //Inizializzazione suggerimenti
     }
 
     /**
@@ -167,7 +190,7 @@ public class DrawSnapController {
      * -    inizializzare il {@link Canvas}
      * -    inizializzare il {@link GraphicsContext}
      * -    inizializzare lo {@link ScrollPane}
-     * -    impostare il livello di zoom iniziale
+     * -    impostare lo {@code zoomLevels} corrente
      */
     private void initializeWindow(){
         //Inizializzazione del Canvas
@@ -195,7 +218,7 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'inzializzazione degli handler del {@link Canvas}
+     * Gestisce l'inzializzazione degli {@link javafx.event.EventHandler} del {@link Canvas}
      */
     private void initializeCanvasEventHandlers() {
         canvas.setOnMousePressed(this::handleMousePressed);
@@ -206,7 +229,7 @@ public class DrawSnapController {
     /**
      * Gestisce l'inizializzazione della barra principale
      * Si occupa di:
-     * -    gestire lo stile dei pulsanti quando selezionati
+     * -    gestire lo stile dei {@link Button} quando selezionati
      * -    settare la modalità dell'applicativo
      */
     private void initializePrincipalBar(){
@@ -252,11 +275,11 @@ public class DrawSnapController {
     /**
      * Gestisce l'inizializzazione del menu contestuale
      * Si occupa di:
-     * -    creare del {@link ContextMenu}
-     * -    creare dei {@link MenuItem}
-     * -    definire gli handler dei {@link MenuItem}
+     * -    creare il {@link ContextMenu}
+     * -    creare i {@link MenuItem}
+     * -    definire gli {@link javafx.event.EventHandler} dei {@link MenuItem}
      * -    aggiungere le {@link ImageView} ai {@link MenuItem}
-     * -    aggiungere i {@link MenuItem} al menu contestuale
+     * -    aggiungere i {@link MenuItem} al {@link ContextMenu}
      */
     private void initializeContextMenu() {
         //Creazione Context Menu
@@ -305,17 +328,17 @@ public class DrawSnapController {
     /**
      * Gestisce l'inizializzaione dello zoom
      * Si occupa di:
-     * -    definire il menu a tendina dello zoom
-     * -    aggiungere la {@link ImageView} al pulsante di Zoom
-     * -    aggiungere i testi per il menu a tendina
+     * -    definire il {@link ComboBox} dello {@code zoomChangeButton}
+     * -    aggiungere la {@link ImageView} al {@code zoomChangeButton}
+     * -    aggiungere i testi al {@link ComboBox}
      */
     private void initializeZoom(){
         //Definizione menu a tendina
-        zoom.getItems().addAll(zoomLevels);
-        zoom.setValue(zoomLevels[currentZoomIndex]);
+        zoomChangeButton.getItems().addAll(zoomLevels);
+        zoomChangeButton.setValue(zoomLevels[currentZoomIndex]);
 
         //Aggiunta dell'ImageView
-        zoom.setButtonCell(new ListCell<>(){
+        zoomChangeButton.setButtonCell(new ListCell<>(){
             private final ImageView zoomImage = new ImageView(new Image(getClass().getResourceAsStream("/it/unisa/software_architecture_design/drawsnapdrawingtool/images/zoom.png")));
             {
                 zoomImage.setFitWidth(24);
@@ -336,7 +359,7 @@ public class DrawSnapController {
         });
 
         //Aggiunta dei testi
-        zoom.setCellFactory(lv -> new ListCell<Double>(){
+        zoomChangeButton.setCellFactory(lv -> new ListCell<Double>(){
             @Override
             protected void updateItem(Double item, boolean empty) {
                 super.updateItem(item, empty);
@@ -350,10 +373,10 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'inizializzazione dello Slider per il cambio dimensione della griglia
+     * Gestisce l'inizializzazione dello {@link Slider} per il cambio dimensione della griglia
      * Si occupa di:
-     * -    definire un {@link EventListener} (forse da cambiare) per il cambio dimensione
-     * -    non rendere visibile lo slider
+     * -    definire un {@link EventListener} per il cambio dimensione
+     * -    non rendere visibile lo {@link Slider}
      */
     private void initializeGridSlider(){
         //Cambio dimensione
@@ -369,7 +392,7 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce la visione di suggerimenti per l'uso dei bottoni
+     * Gestisce la visione di suggerimenti tramite {@link Tooltip} per l'uso dei {@link Button}
      */
     private void initializeTooltip(){
         handButton.setTooltip(new Tooltip("Movimento nel Canvas"));
@@ -384,8 +407,17 @@ public class DrawSnapController {
         backToFrontButton.setTooltip(new Tooltip("Metti in primo piano"));
         changeFillColorButton.setTooltip(new Tooltip("Cambio colore Interno"));
         changeOutlineColorButton.setTooltip(new Tooltip("Cambio colore Bordo"));
-
-
+        stretchButton.setTooltip(new Tooltip("Stiramento della figura"));
+        proportionalResizeButton.setTooltip(new Tooltip("Ridimensionamento della figura"));
+        rotationButton.setTooltip(new Tooltip("Rotazione della figura"));
+        verticalReflectButton.setTooltip(new Tooltip("Specchiamento verticale della figura"));
+        horizontalReflectButton.setTooltip(new Tooltip("Specchiamento orizzontale della figura"));
+        undoButton.setTooltip(new Tooltip("Annulla ultima modifica"));
+        zoomChangeButton.setTooltip(new Tooltip("Cambio dello zoom tramite livelli"));
+        zoomInButton.setTooltip(new Tooltip("Aumento dello zoom"));
+        zoomOutButton.setTooltip(new Tooltip("Riduzione dello zoom"));
+        gridButton.setTooltip(new Tooltip("Inserimento griglia"));
+        gridSlider.setTooltip(new Tooltip("Cambio dimensione griglia"));
     }
 
     /*
@@ -404,14 +436,15 @@ public class DrawSnapController {
      */
 
     /**
-     * Gestisce l'evento di pressione del mouse sul {@link Canvas}.
-     * Controlla se viene cliccato il tasto destro o il sinistro e si comporta di conseguenza
-     * -    Se cliccato il tasto sinistro chiama {@code handleMousePressed()} del {@code drawingContext}
-     *      e ridisegna tutto richiamando {@code redrawAll()}.
-     * -    Se cliccato il tasto destro mostra il menu contestuale con i bottoni di {@code pasteButton},
-     *      {@code copyButton}, {@code cutButton}, {@code composeButton} e {@code decomposeButton},
-     *      cliccabili a seconda delle casistiche
-     * @param mouseEvent è l' evento di pressione del mouse
+     * Gestisce il {@link MouseEvent} di pressione sul {@link Canvas}.
+     * Controlla se viene cliccato il {@link MouseButton} destro o il {@link MouseButton}
+     * sinistro e si comporta di conseguenza
+     * -    Se cliccato il {@link MouseButton} sinistro chiama {@code handleMousePressed()} del
+     *      {@link DrawingContext} e ridisegna tutto richiamando {@code redrawAll()}.
+     * -    Se cliccato il {@link MouseButton} destro mostra il {@link ContextMenu} con i {@link Button}
+     *      di {@code pasteButton}, {@code copyButton}, {@code cutButton}, {@code composeButton} e
+     *      {@code decomposeButton}, cliccabili a seconda delle casistiche
+     * @param mouseEvent è il {@link MouseEvent} di pressione cha ha causato la chiamata del metodo
      */
     private void handleMousePressed(MouseEvent mouseEvent) {
         // alla pressione del mouse si suppone sempre che non si tratta di un drag, solo all'interno del metodo
@@ -486,17 +519,21 @@ public class DrawSnapController {
             }
 
             //Visione del Context Menu
-            if(!contextMenu.getItems().isEmpty()){
+            if(!contextMenu.getItems().isEmpty() && drawingContext.getCurrentState() instanceof SelectState){
                 contextMenu.show(canvas, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+            }
+
+            if (drawingContext.getCurrentState() instanceof DrawState) {
+                ((DrawState) drawingContext.getCurrentState()).resetDialogShown();
             }
         }
     }
 
     /**
-     * Gestisce l'evento di trascinamento del mouse sul {@link Canvas}.
-     * Se si trascina viene chiamato {@code handleMouseDragged()} del {@code drawingContext}
+     * Gestisce il {@link MouseEvent} di trascinamento sul {@link Canvas}.
+     * Se si trascina viene chiamato {@code handleMouseDragged()} del {@link DrawingContext}
      * e ridisegna tutto richiamando {@code redrawAll()}.
-     * @param mouseEvent è l'evento di trascinamento del mouse
+     * @param mouseEvent è il {@link MouseEvent} di trascinamento cha ha causato la chiamata del metodo
      */
     private void handleMouseDragged(MouseEvent mouseEvent) {
         //Calcolo coordinate logiche
@@ -512,10 +549,10 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'evento di rilascio del mouse sul {@link Canvas}.
-     * Se si rilascia viene chiamato {@code hndleMouseReleased()} del {@code drawingContext}
+     * Gestisce il {@link MouseEvent} di rilascio sul {@link Canvas}.
+     * Se si rilascia viene chiamato {@code hndleMouseReleased()} del {@link DrawingContext}
      * e ridisegna tutto richiamando {@code redrawAll()}.
-     * @param mouseEvent è l'evento di rilascio del mouse
+     * @param mouseEvent è il {@link MouseEvent} di rilascio cha ha causato la chiamata del metodo
      */
     private void handleMouseReleased(MouseEvent mouseEvent) {
         //Calcolo coordinate logiche
@@ -538,9 +575,9 @@ public class DrawSnapController {
      */
 
     /**
-     * Gestisce il cambio di stato in {@code DrawState}
-     * @param event è l'evento che ha causato la chiamata alla funzione
-     * @param forma è la forma corrispondente al bottone che è stato premuto
+     * Gestisce il cambio di stato in {@link DrawState}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
+     * @param forma è la {@link Forme} corrispondente al {@link Button} che è stato premuto
      */
     void setDrawMode(ActionEvent event, Forme forma) {
         //Cambio di stato
@@ -558,7 +595,7 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce il cambio di stato in {@code SelectState}
+     * Gestisce il cambio di stato in {@link SelectState}
      */
     void setSelectMode() {
         //Cambio di stato
@@ -572,7 +609,7 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce il cambio di stato in {@code MoveCanvasState}
+     * Gestisce il cambio di stato in {@link MoveCanvasState}
      */
     void setMoveCanvasMode() {
         //Cambio stato
@@ -590,9 +627,28 @@ public class DrawSnapController {
      */
 
     /**
+     * Gestisce la pulizia del {@link GraphicsContext} corrente
+     * all'interno del {@link Canvas} per averne uno nuovo vuoto
+     */
+    @FXML
+    void onClearPressed(){
+        //Creazione del comando
+        invoker.setCommand(new ClearCommand(gc, forme, history));
+
+        //Esecuzione del comando
+        invoker.executeCommand();
+
+        //Disabilitazione del pulsante Undo
+        undoButton.setDisable(true);
+
+        //Update dello stato
+        updateState(false);
+    }
+
+    /**
      * Gestisce il salvataggio del {@link Canvas} corrente all'interno di
-     * un {@link java.io.File} attraverso l'esecuzione del {@code SaveCommand}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * un {@link java.io.File} attraverso l'esecuzione del {@link SaveCommand}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
     void onSavePressed(ActionEvent event) {
@@ -605,8 +661,8 @@ public class DrawSnapController {
 
     /**
      * Gestisce il caricamento del {@link java.io.File} all'interno del
-     * {@link Canvas} attraverso l'esecuzione del {@code LoadCommand}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * {@link Canvas} attraverso l'esecuzione del {@link LoadCommand}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
     void onLoadPressed(ActionEvent event) {
@@ -620,35 +676,44 @@ public class DrawSnapController {
         updateState(true);
     }
 
+    @FXML
+    void onHelpPressed(ActionEvent event) {
+        try{
+            File manuale = new File("docs/1 - First sprint/1 - Documentazione_2.0 _1st_Sprint_Release_gruppo07.pdf");
+            if(manuale.exists()){
+                if(Desktop.isDesktopSupported()){
+                    Desktop.getDesktop().open(manuale);
+                }else{
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Avviso");
+                    alert.setHeaderText("Funzionalità non disponibile");
+                    alert.setContentText("La tua piattaforma non supporta l'apertura automatica di file");
+                    alert.showAndWait();
+                }
+            }else{
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Avviso");
+                alert.setHeaderText("File non trovato");
+                alert.setContentText("Il file PDF non è stato trovato");
+                alert.showAndWait();
+            }
+        }catch(IOException ex){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Errore");
+            alert.setHeaderText("Impossibile aprire il manuale d'uso");
+            alert.setContentText("Si è verificato un errore durante l'apertura del file PDF");
+            alert.showAndWait();
+        }
+    }
+
     /*
      * Handler del Context Menu
      */
 
     /**
-     * Gestisce l'esecuzione del {@code DeleteCommand} sulla
-     * {@code FormaSelezionataDecorator} corrente
-     * @param event è l'evento che ha causato la chiamata alla funzione
-     */
-    @FXML
-    void onDeletePressed(ActionEvent event) {
-        //Creazione del comando
-        invoker.setCommand(new DeleteCommand(forme));
-
-        //Esecuzione del comando
-        invoker.executeCommand();
-
-        //Disabilitazione della toolbar
-        toolBarFX.setDisable(true);
-
-        //Update dello stato
-        updateState(true);
-        canvas.requestFocus();
-    }
-
-    /**
-     * Gestisce l'eseguzione del {@code CutCommand}
-     * sulla {@code FormaSelezionataDecorator} corrente
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * Gestisce l'eseguzione del {@link CutCommand}
+     * sulla {@link FormaSelezionataDecorator} corrente
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     void onCutPressed(ActionEvent event) {
         //Creazione del comando
@@ -665,9 +730,9 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'esecuzione del {@code CopyCommand}
-     * sulla {@code FormaSelezionataDecorator}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * Gestisce l'esecuzione del {@link CopyCommand}
+     * sulla {@link FormaSelezionataDecorator}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     void onCopyPressed(ActionEvent event) {
         //Creazione del comando
@@ -684,9 +749,9 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'esecuzione del {@code PasteCommand}
-     * sulla {@code FormaSelezionataDecorator}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * Gestisce l'esecuzione del {@link PasteCommand}
+     * sulla {@link FormaSelezionataDecorator}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     void onPastePressed(ActionEvent event) {
         //Creazione del comando
@@ -703,9 +768,9 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'esecuzione del {@code ComposeCommand}
-     * sulle {@code FormaSelezionataDecorator}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * Gestisce l'esecuzione del {@link ComposeCommand}
+     * sulle {@link FormaSelezionataDecorator}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
     public void onComposePressed(ActionEvent event) {
@@ -720,9 +785,9 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'esecuzione del {@code DecomposeCommand}
-     * sulla {@code FormaSelezionataDecorator}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * Gestisce l'esecuzione del {@link DecomposeCommand}
+     * sulla {@link FormaSelezionataDecorator}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
     public void onDecomposePressed(ActionEvent event) {
@@ -741,9 +806,31 @@ public class DrawSnapController {
      */
 
     /**
-     * Gestisce l'esecuzione del {@code BackToFrontCommand}
-     * sulla {@code FormaSelezionataDecorator}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * Gestisce l'esecuzione del {@link DeleteCommand} sulla
+     * {@link FormaSelezionataDecorator} corrente
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
+     */
+    @FXML
+    void onDeletePressed(ActionEvent event) {
+        //Creazione del comando
+        invoker.setCommand(new DeleteCommand(forme));
+
+        //Esecuzione del comando
+        invoker.executeCommand();
+
+        //Disabilitazione della toolbar
+        toolBarFX.setDisable(true);
+
+        //Update dello stato
+        updateState(true);
+        canvas.requestFocus();
+
+    }
+
+    /**
+     * Gestisce l'esecuzione del {@link BackToFrontCommand}
+     * sulla {@link FormaSelezionataDecorator}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
     void onBackToFrontPressed(ActionEvent event) {
@@ -758,9 +845,9 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'esecuzione del {@code FrontToBackCommand}
-     * sulla {@code FormaSelezionataDecorator}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * Gestisce l'esecuzione del {@link FrontToBackCommand}
+     * sulla {@link FormaSelezionataDecorator}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
     void onFrontToBackPressed(ActionEvent event) {
@@ -775,9 +862,9 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'esecuzione del {@code ChangeFillColorCommand}
-     * sulla {@code FormaSelezionataDecorator}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * Gestisce l'esecuzione del {@link ChangeFillColorCommand}
+     * sulla {@link FormaSelezionataDecorator}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
     void onChangeFillColorPressed(ActionEvent event) {
@@ -838,9 +925,9 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'esecuzione del {@code ChangeOutlineColorCommand}
-     * sulla {@code FormaSelezionataDecorator}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * Gestisce l'esecuzione del {@link ChangeOutlineColorCommand}
+     * sulla {@link FormaSelezionataDecorator}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
     void onChangeOutlineColorPressed(ActionEvent event) {
@@ -894,12 +981,12 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'esecuzione del {@code ResizeCommand}
-     * sulla {@code FormaSelezionataDecorator}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * Gestisce l'esecuzione del {@link StretchCommand}
+     * sulla {@link FormaSelezionataDecorator}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
-    public void onResizePressed(ActionEvent event) {
+    public void onStretchPressed(ActionEvent event) {
         Forma tipoForma = forme.getFormaSelezionata();
         Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
 
@@ -913,7 +1000,7 @@ public class DrawSnapController {
 
             // Controlla se l'utente ha premuto OK
             if (risultato.isPresent() && risultato.get() == ButtonType.OK) {
-                proportionalResizePressed.fire();
+                proportionalResizeButton.fire();
             }
         }else{
             Dialog<Map<String, Double>> dialog = new Dialog<>();
@@ -924,7 +1011,9 @@ public class DrawSnapController {
             contentBox.setPadding(new Insets(20));
 
             // Spinner per dimensioni
-            Spinner<Double> spinnerLarghezza = new Spinner<>(10.0, 500.0, forma.getLarghezza(), 1.0); //imposta dimensioni attuali
+            Spinner<Double> spinnerLarghezza = new Spinner<>(5.0, 1000.0, forma.getLarghezza(), 1.0);
+            spinnerLarghezza.setTooltip(new Tooltip("Dimensione minima: 5. Dimensione massima: 1000"));
+
             double altezzaDefault = 0;
             if ( forma instanceof Rettangolo ) {
                 altezzaDefault = ((Rettangolo)forma).getAltezza();
@@ -935,7 +1024,9 @@ public class DrawSnapController {
             }else if(forma instanceof Testo){
                 altezzaDefault = ((Testo) forma).getAltezza();
             }
-            Spinner<Double>  spinnerAltezza = new Spinner<>(10.0, 500.0, altezzaDefault, 1.0); //imposta dimensioni attuali
+            Spinner<Double>  spinnerAltezza = new Spinner<>(5.0, 1000.0, altezzaDefault, 1.0);
+            spinnerAltezza.setTooltip(new Tooltip("Dimensione minima: 5. Dimensione massima: 1000"));
+
 
             spinnerAltezza.setEditable(true);
             spinnerLarghezza.setEditable(true);
@@ -989,11 +1080,11 @@ public class DrawSnapController {
             Optional<Map<String, Double>> result = dialog.showAndWait();
             result.ifPresent(nuoveDimensioni -> {
                 if (( (FormaSelezionataDecorator)tipoForma ).getForma() instanceof Linea) {
-                    invoker.setCommand(new ResizeCommand(forme, nuoveDimensioni.get("Lunghezza"), 0));
+                    invoker.setCommand(new StretchCommand(forme, nuoveDimensioni.get("Lunghezza"), 0));
                     invoker.executeCommand();
                     updateState(true);
                 } else {
-                    invoker.setCommand(new ResizeCommand(forme, nuoveDimensioni.get("Larghezza"), nuoveDimensioni.get("Altezza")));
+                    invoker.setCommand(new StretchCommand(forme, nuoveDimensioni.get("Larghezza"), nuoveDimensioni.get("Altezza")));
                     invoker.executeCommand();
                     updateState(true);
                 }
@@ -1002,23 +1093,26 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'esecuzione del {@code ProportionalResizeCommand}
-     * sulla {@code FormaSelezionataDecorator}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * Gestisce l'esecuzione del {@link ProportionalResizeCommand}
+     * sulla {@link FormaSelezionataDecorator}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
     public void onProportionalResizePressed(ActionEvent event) {
         Forma tipoForma = forme.getFormaSelezionata();
         Dialog<Double> dialog = new Dialog<>();
         dialog.setTitle("Ridimensiona Figura");
-        dialog.setHeaderText("La figura sarà ridimensionata sulla base del fattore proporzionale inserito, 100 significa lasciare la figura con le sue dimensioni attuali");
+        dialog.setHeaderText("Ridimensiona la figura. (100 = dimensioni attuali)");
 
         VBox contentBox = new VBox(15);
         contentBox.setPadding(new Insets(20));
 
         // Spinner per dimensioni
         Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
-        Spinner<Double> spinnerProporzione = new Spinner<>(1.0, 500.0, 100, 1.0); //imposta dimensioni attuali
+        Spinner<Double> spinnerProporzione = new Spinner<>(10, 500.0, 100, 1.0);
+        spinnerProporzione.setTooltip(new Tooltip("Proporzione minima: 10. Proporzione massima: 500"));
+
+
         spinnerProporzione.setEditable(true);
 
         double proporzioneDefault = 100;
@@ -1056,9 +1150,9 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'esecuzione del {@code RotationCommand}
-     * sulla {@code FormaSelezionataDecorator}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * Gestisce l'esecuzione del {@link RotationCommand}
+     * sulla {@link FormaSelezionataDecorator}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
     void onRotationPressed(ActionEvent event){
@@ -1116,9 +1210,9 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'esecuzione verticale del {@code ReflectCommand}
-     * sulla {@code FormaSelezionataDecorator}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * Gestisce l'esecuzione verticale del {@link ReflectCommand}
+     * sulla {@link FormaSelezionataDecorator}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
     public void onVerticalReflectionPressed(ActionEvent event) {
@@ -1133,8 +1227,8 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'esecuzione orizzontale del {@code ReflectCommand}
-     * sulla {@code FormaSelezionataDecorator}
+     * Gestisce l'esecuzione orizzontale del {@link ReflectCommand}
+     * sulla {@link FormaSelezionataDecorator}
      * @param event è l'evento che ha causato la chiamata alla funzione
      */
     @FXML
@@ -1154,15 +1248,15 @@ public class DrawSnapController {
      */
 
     /**
-     * Gestisce l'esecuzione del {@code ZoomCommand}
-     * sul {@link Canvas} quando si cambia il livello di {@code zoom}
-     * tramite il menu a tendina
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * Gestisce l'esecuzione del {@link ZoomCommand}
+     * sul {@link Canvas} quando si cambia il livello di {@code zoomLevels}
+     * tramite il {@link ComboBox}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
     void onZoomChangePressed(ActionEvent event) {
         //Ottenimento del livello selezionato
-        int selectedIndex = zoom.getSelectionModel().getSelectedIndex();
+        int selectedIndex = zoomChangeButton.getSelectionModel().getSelectedIndex();
         if(selectedIndex >= 0){
             //Cambio del livello corrente
             currentZoomIndex = selectedIndex;
@@ -1179,9 +1273,9 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'esecuzione del {@code ZoomCommand}
-     * sul {@link Canvas} quando si aumenta il livello di {@code zoom}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * Gestisce l'esecuzione del {@link ZoomCommand}
+     * sul {@link Canvas} quando si aumenta il livello di {@code zoomLevels}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
     void onZoomInPressed(ActionEvent event) {
@@ -1197,7 +1291,7 @@ public class DrawSnapController {
             invoker.executeCommand();
 
             //Cambio di livello nel menu a tendina
-            zoom.getSelectionModel().select(currentZoomIndex);
+            zoomChangeButton.getSelectionModel().select(currentZoomIndex);
 
             //Update dello stato
             updateState(false);
@@ -1205,9 +1299,9 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce l'esecuzione del {@code ZoomCommand}
-     * sul {@link Canvas} quando si diminuisce il livello di {@code zoom}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * Gestisce l'esecuzione del {@link ZoomCommand}
+     * sul {@link Canvas} quando si diminuisce il livello di {@code zoomLevels}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
     void onZoomOutPressed(ActionEvent event) {
@@ -1223,7 +1317,7 @@ public class DrawSnapController {
             invoker.executeCommand();
 
             //Cambio di livello nel menu a tendina
-            zoom.getSelectionModel().select(currentZoomIndex);
+            zoomChangeButton.getSelectionModel().select(currentZoomIndex);
 
             //Update dello stato
             updateState(false);
@@ -1235,8 +1329,10 @@ public class DrawSnapController {
      */
 
     /**
-     * Metodo per invocare il comando di ripristino dello stato precedente dell'applicazione
-     * @param event -> evento di pressione del mouse sul tasto undo
+     * Gestisce l'esecuzione del {@link UndoCommand}
+     * sul {@link Canvas} quando si vuole annullare l'ultima modifica
+     * effettuata sul {@link GraphicsContext}
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
     void onUndoPressed(ActionEvent event) {
@@ -1263,7 +1359,7 @@ public class DrawSnapController {
 
     /**
      * Gestisce la visione della griglia e del {@code gridSlider}
-     * @param event è l'evento che ha causato la chiamata alla funzione
+     * @param event è il {@link ActionEvent} cha ha causato la chiamata del metodo
      */
     @FXML
     public void onGridPressed(ActionEvent event) {
@@ -1283,9 +1379,9 @@ public class DrawSnapController {
      */
 
     /**
-     * Gestisce il salvataggio dello stato corrente nel {@code DrawSnapHistory}
+     * Gestisce il salvataggio dello stato corrente nel {@link DrawSnapHistory}
      * in seguito ad un cambiamento di stato
-     * @param stateChanged è il booleano uguale a {@code true} se lo stato è cambiato
+     * @param stateChanged è il {@link Boolean} uguale a {@code true} se lo stato è cambiato
      *                     e deve avvenuire il salvataggio, altrimenti {@code false}
      */
     void updateState(boolean stateChanged){
@@ -1302,7 +1398,7 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce il ridisegno di tutte le forme contenute nel {@code DrawSnapModel} all'interno
+     * Gestisce il ridisegno di tutte le forme contenute nel {@link DrawSnapModel} all'interno
      * del {@link GraphicsContext} del {@link Canvas}
      * Viene chiamato dopo una modifica nel {@link Canvas} per aggiornarne la visualizzazione.
      */
@@ -1336,7 +1432,7 @@ public class DrawSnapController {
     }
 
     /**
-     * Gestisce il disegno dinamico di una nuova forma all'interno del
+     * Gestisce il disegno dinamico di una nuova {@link Forma} all'interno del
      * {@link GraphicsContext} del {@link Canvas}
      */
     private void dinamicDraw(){

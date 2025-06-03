@@ -6,15 +6,17 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * La classe {@link FormaComposta} rappresenta un insieme di {@link Forma} raggruppate
+ */
 public class FormaComposta extends Forma{
-
     /*
      * Attributi
      */
     private List<Forma> forme;
 
     /*
-     * Costruttori
+     * Costruttori, getter e setter
      */
     public FormaComposta() {
         forme = new ArrayList<Forma>();
@@ -24,9 +26,6 @@ public class FormaComposta extends Forma{
         this.forme = forme;
     }
 
-    /*
-     * Getter, setter e Override che consistono nel chiamare il metodo in questione sulle Forme componenti
-     */
     public List<Forma> getForme() {
         return forme;
     }
@@ -154,8 +153,8 @@ public class FormaComposta extends Forma{
     }
 
     /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
-     * cetro della figura stessa
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse verticale che passa per il centro della {@link Forma} stessa
      */
     @Override
     public void specchiaInVerticale() {
@@ -165,8 +164,8 @@ public class FormaComposta extends Forma{
     }
 
     /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse orizzontale che passa per il
-     * cetro della figura stessa
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse orizzontale che passa per il centro della {@link Forma} stessa
      */
     @Override
     public void specchiaInOrizzontale() {
@@ -175,6 +174,11 @@ public class FormaComposta extends Forma{
         }
     }
 
+    /**
+     * Gestisce la clonazione dell'oggetto creandone una nuova istanza
+     * Permette di modificare l'elemento clonato senza intaccare quello originale
+     * @return la {@link Forma} clonata.
+     */
     @Override
     public Forma clone() {
         List<Forma> newListaForme = new ArrayList<>();

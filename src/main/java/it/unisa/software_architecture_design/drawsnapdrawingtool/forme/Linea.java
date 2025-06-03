@@ -5,8 +5,11 @@ import javafx.scene.paint.Color;
 
 import java.awt.geom.Line2D;
 
+/**
+ * La classe {@link Linea} rappresenta la {@link Forma} Linea e presenta
+ * tutte le caratteristiche ereditate da {@link Forma1D}.
+ */
 public class Linea extends Forma1D  {
-
     /*
      * Costruttore
      */
@@ -19,12 +22,11 @@ public class Linea extends Forma1D  {
      */
 
     /**
-     * Disegna una linea sul {@link GraphicsContext} specificato.
-     * Questo metodo disegna una linea utilizzando le coordinate di inizio e fine fornite dagli attributi
-     * dell'oggetto usando il colore della forma.
-     *
-     * @param gc il {@code GraphicsContext} su cui disegnare la linea.
-     *           Deve essere già inizializzato e associato a un {@code Canvas} valido.
+     * Gestisce il disegno di una {@link Linea} sul {@link GraphicsContext} specificato.
+     * Questo metodo disegna una {@link Linea} utilizzando le coordinate di inizio e
+     * fine fornite dagli attributi dell'oggetto usando il {@link Color} della {@link Forma}.
+     * @param gc il {@link GraphicsContext} su cui disegnare la {@link Linea}.
+     *           Deve essere già inizializzato e associato a un {@link javafx.scene.canvas.Canvas} valido.
      */
     @Override
     public void disegna(GraphicsContext gc) {
