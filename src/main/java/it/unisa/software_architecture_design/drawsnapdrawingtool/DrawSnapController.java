@@ -519,8 +519,12 @@ public class DrawSnapController {
             }
 
             //Visione del Context Menu
-            if(!contextMenu.getItems().isEmpty()){
+            if(!contextMenu.getItems().isEmpty() && drawingContext.getCurrentState() instanceof SelectState){
                 contextMenu.show(canvas, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+            }
+
+            if (drawingContext.getCurrentState() instanceof DrawState) {
+                ((DrawState) drawingContext.getCurrentState()).resetDialogShown();
             }
         }
     }
