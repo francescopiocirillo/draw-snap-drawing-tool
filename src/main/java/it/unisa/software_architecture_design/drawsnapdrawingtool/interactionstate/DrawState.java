@@ -245,6 +245,7 @@ public class DrawState implements DrawingState{
         Spinner<Double> spinnerAngolo = new Spinner<>(-360, 360.0, 0.0, 1.0);
         spinnerAngolo.setEditable(true);
         spinnerAngolo.setTooltip(new Tooltip("Angolo di rotazione in gradi (0-360, anche angoli negativi)"));
+        spinnerAngolo.getEditor().setStyle("-fx-alignment: center;");
         VBox angoloBox = new VBox(5, angoloLabel, spinnerAngolo);
         angoloBox.setAlignment(Pos.CENTER);
 
@@ -256,7 +257,8 @@ public class DrawState implements DrawingState{
             testoLabel.setStyle("-fx-font-size: 18px;");
             textField = new TextField();
             textField.setPromptText("Inserisci testo qui");
-            textField.setPrefWidth(200);
+            textField.setMaxWidth(200);
+            textField.setStyle("-fx-alignment: center;");
             textBox = new VBox(5, testoLabel, textField);
             textBox.setAlignment(Pos.CENTER);
         }
