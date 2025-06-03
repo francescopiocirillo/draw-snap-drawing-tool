@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
  * La classe {@code AttributiFormaDTO} è un Data Transfer Object (DTO) che incapsula
  * le proprietà fondamentali di una forma, come la posizione, le dimensioni,
  * l'angolo di inclinazione, i colori.
+ *
  */
 public class AttributiFormaDTO {
     /*
