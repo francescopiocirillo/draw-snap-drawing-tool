@@ -679,7 +679,7 @@ public class DrawSnapController {
     @FXML
     void onHelpPressed(ActionEvent event) {
         try{
-            File manuale = new File("docs/1 - First sprint/1 - Documentazione_2.0 _1st_Sprint_Release_gruppo07.pdf");
+            File manuale = new File("docs/Manuale d'uso/Manuale Utente.pdf");
             if(manuale.exists()){
                 if(Desktop.isDesktopSupported()){
                     Desktop.getDesktop().open(manuale);
@@ -823,6 +823,8 @@ public class DrawSnapController {
 
         //Update dello stato
         updateState(true);
+        canvas.requestFocus();
+
     }
 
     /**
