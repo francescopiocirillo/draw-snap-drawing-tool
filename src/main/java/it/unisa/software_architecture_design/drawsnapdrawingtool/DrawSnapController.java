@@ -642,6 +642,7 @@ public class DrawSnapController {
 
         //Update dello stato
         updateState(true);
+        canvas.requestFocus();
     }
 
     /**
