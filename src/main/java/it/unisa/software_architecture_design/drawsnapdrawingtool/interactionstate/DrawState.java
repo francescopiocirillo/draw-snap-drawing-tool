@@ -218,7 +218,7 @@ public class DrawState implements DrawingState{
         Dialog<AttributiForma> dialog = new Dialog<>();
         dialog.setTitle("Conferma Disegno");
         Locale.setDefault(new Locale("it", "IT"));
-        Label headerLabel = new Label("Vuoi inserire la figura scelta qui?");
+        Label headerLabel = new Label("Inserisci i parametri della figura");
         headerLabel.setStyle("-fx-font-size: 20px;");
         StackPane headerPane = new StackPane(headerLabel);
         headerPane.setPadding(new Insets(20, 0, 10, 0));
