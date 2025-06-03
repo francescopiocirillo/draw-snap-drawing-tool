@@ -51,14 +51,45 @@ public abstract class Forma2D extends Forma{
 
     /**
      * Gestisce il ridimensionamento della {@link Forma2D} in modo proporzionale applicando un
-     * fattore di scala uniforme a tutti i suoi punti intrinseci.
+     * fattore di scala uniforme a tutti i suoi punti intrinseci, facendo in modo che le dimensioni entrino nel range 5-500
+     *
      *
      * @param proporzione La percentuale di ridimensionamento (es. 100 per nessuna modifica, 50 per metà dimensione).
      */
     @Override
     public void proportionalResize(double proporzione){
-        setLarghezza(getLarghezza()*proporzione/100);
-        setAltezza(getAltezza()*proporzione/100);
+        double larghezzaAttuale = getLarghezza();
+        double altezzaAttuale = getAltezza();
+
+        double nuovaLarghezza = larghezzaAttuale * proporzione / 100;
+        double nuovaAltezza = altezzaAttuale * proporzione / 100;
+
+        double fattoreDiScalaFinale = proporzione / 100.0;
+
+        if (nuovaLarghezza > 500 || nuovaAltezza > 500) {
+            if (nuovaLarghezza > nuovaAltezza) { // Se la larghezza è la più grande
+                fattoreDiScalaFinale = 500.0 / larghezzaAttuale;
+            } else { // Se l'altezza è la più grande
+                fattoreDiScalaFinale = 500.0 / altezzaAttuale;
+            }
+        }
+        else if (nuovaLarghezza < 5 || nuovaAltezza < 5) {
+            if (nuovaLarghezza < nuovaAltezza) { // Se la larghezza è la più piccola
+                fattoreDiScalaFinale = 5.0 / larghezzaAttuale;
+            } else { // Se l'altezza è la più piccola
+                fattoreDiScalaFinale = 5.0 / altezzaAttuale;
+            }
+        }
+
+        // Applica il fattore di scala finale a entrambe le dimensioni
+        setLarghezza(larghezzaAttuale * fattoreDiScalaFinale);
+        setAltezza(altezzaAttuale * fattoreDiScalaFinale);
+
+        // Assicura che nessuna dimensione superi i limiti
+        if (getLarghezza() > 500) setLarghezza(500);
+        if (getAltezza() > 500) setAltezza(500);
+        if (getLarghezza() < 5) setLarghezza(5);
+        if (getAltezza() < 5) setAltezza(5);
     }
 
     /*

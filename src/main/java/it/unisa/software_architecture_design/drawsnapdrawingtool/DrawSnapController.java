@@ -966,7 +966,9 @@ public class DrawSnapController {
             contentBox.setPadding(new Insets(20));
 
             // Spinner per dimensioni
-            Spinner<Double> spinnerLarghezza = new Spinner<>(5.0, 500.0, forma.getLarghezza(), 1.0); //imposta dimensioni attuali
+            Spinner<Double> spinnerLarghezza = new Spinner<>(5.0, 500.0, forma.getLarghezza(), 1.0);
+            spinnerLarghezza.setTooltip(new Tooltip("Dimensione minima: 5. Dimensione massima: 500"));
+
             double altezzaDefault = 0;
             if ( forma instanceof Rettangolo ) {
                 altezzaDefault = ((Rettangolo)forma).getAltezza();
@@ -977,7 +979,9 @@ public class DrawSnapController {
             }else if(forma instanceof Testo){
                 altezzaDefault = ((Testo) forma).getAltezza();
             }
-            Spinner<Double>  spinnerAltezza = new Spinner<>(5.0, 500.0, altezzaDefault, 1.0); //imposta dimensioni attuali
+            Spinner<Double>  spinnerAltezza = new Spinner<>(5.0, 500.0, altezzaDefault, 1.0);
+            spinnerAltezza.setTooltip(new Tooltip("Dimensione minima: 5. Dimensione massima: 500"));
+
 
             spinnerAltezza.setEditable(true);
             spinnerLarghezza.setEditable(true);
@@ -1053,7 +1057,7 @@ public class DrawSnapController {
         Forma tipoForma = forme.getFormaSelezionata();
         Dialog<Double> dialog = new Dialog<>();
         dialog.setTitle("Ridimensiona Figura");
-        dialog.setHeaderText("La figura sarà ridimensionata sulla base del fattore proporzionale inserito, 100 significa lasciare la figura con le sue dimensioni attuali");
+        dialog.setHeaderText("Ridimensiona la figura. (100 = dimensioni attuali)");
 
         VBox contentBox = new VBox(15);
         contentBox.setPadding(new Insets(20));
@@ -1061,6 +1065,9 @@ public class DrawSnapController {
         // Spinner per dimensioni
         Forma forma = ((FormaSelezionataDecorator)tipoForma ).getForma();
         Spinner<Double> spinnerProporzione = new Spinner<>(10, 500.0, 100, 1.0);
+        spinnerProporzione.setTooltip(new Tooltip("Proporzione minima: 10. Proporzione massima: 500"));
+
+
         spinnerProporzione.setEditable(true);
 
         double proporzioneDefault = 100;

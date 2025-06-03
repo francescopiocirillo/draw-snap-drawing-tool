@@ -158,7 +158,15 @@ public abstract class Forma implements Serializable, Cloneable{
      * @param proporzione La percentuale di ridimensionamento (es. 100 per nessuna modifica, 50 per metà dimensione).
      */
     public void proportionalResize(double proporzione){
-        setLarghezza(getLarghezza()*proporzione/100);
+        double nuovaLarghezza = getLarghezza() * proporzione / 100;
+
+        if (nuovaLarghezza < 5) {
+            setLarghezza(5);
+        } else if (nuovaLarghezza > 500) {
+            setLarghezza(500);
+        } else {
+            setLarghezza(nuovaLarghezza);
+        }
     }
 
     /**
