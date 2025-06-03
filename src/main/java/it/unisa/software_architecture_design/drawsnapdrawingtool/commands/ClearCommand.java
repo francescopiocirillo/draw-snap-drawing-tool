@@ -40,6 +40,7 @@ public class ClearCommand implements Command{
     @Override
     public void execute() {
         forme.clear();
+        forme.clearFormeCopiate();
         history.clear();
         gc.clearRect(0, 0, 4096, 4096);
     }

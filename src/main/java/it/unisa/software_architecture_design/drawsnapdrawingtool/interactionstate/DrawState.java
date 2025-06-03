@@ -380,7 +380,10 @@ public class DrawState implements DrawingState{
             finalAngolo = Math.toDegrees(Math.atan2(coordinataY - startY, coordinataX - startX));
             finalAltezza = 0.0;
 
-            if(finalLarghezza < 1) finalLarghezza = 100.0;
+            if(finalLarghezza > 1000) finalLarghezza = 1000.0;
+            if(finalLarghezza < 5) {
+                if(finalLarghezza < 1) finalLarghezza = 100.0; else finalLarghezza = 5.0;
+            }
         }else if (formaCorrente == Forme.POLIGONO) {
             if (poligonoBuilder != null && (poligonoBuilder.getNumeroPunti() > 0 || currentDrawingShapePreview != null) ) {
                 PoligonoBuilder previewBuilder = new PoligonoBuilder()
@@ -406,10 +409,14 @@ public class DrawState implements DrawingState{
             finalAltezza = Math.abs(coordinataY-startY);
             finalCentroX = (startX + coordinataX) /2.0;
             finalCentroY = (startY + coordinataY) / 2.0;
-            if(finalLarghezza < 1) finalLarghezza = 100;
-            if(finalAltezza < 1) finalAltezza = 100;
             if(finalLarghezza > 1000) finalLarghezza = 1000;
             if(finalAltezza > 1000) finalAltezza = 1000;
+            if(finalLarghezza < 5) {
+                if(finalLarghezza < 1) finalLarghezza = 100;else finalLarghezza = 5;
+            }
+            if(finalAltezza < 5) {
+                if(finalAltezza < 1) finalAltezza = 100; else finalAltezza = 5;
+            }
             finalAngolo = attributiForma.getAngoloInclinazione();
         }
 
