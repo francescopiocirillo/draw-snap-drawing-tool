@@ -44,7 +44,6 @@ public class Testo extends Forma2D {
     public Testo(double coordinataX, double coordinataY, double larghezza, double angoloInclinazione, Color colore, double altezza, Color coloreInterno, String testo) {
         super(coordinataX, coordinataY, larghezza, angoloInclinazione, colore, altezza, coloreInterno);
         this.testo = testo;
-        System.out.println("colore interno" + coloreInterno + "\n colore Bordo" + super.getColore());
         calculateFontSize();
         updateVertici();
     }
@@ -57,7 +56,6 @@ public class Testo extends Forma2D {
     @Override
     public void setAltezza(double altezza) {
         super.setAltezza(altezza);
-        System.out.println("Altezza: " + altezza);
         calculateFontSize();
         updateVertici();
     }

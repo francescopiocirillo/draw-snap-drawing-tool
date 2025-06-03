@@ -394,32 +394,22 @@ public class DrawSnapModel implements Serializable {
      * @param colore è il {@link Color} deciso dall'utente per aggiornare la {@link FormaSelezionataDecorator}
      */
     public void changeFillColor(Color colore) {
-        System.out.println("model: " + colore);
         for(Forma f:forme){
             if(f instanceof FormaSelezionataDecorator){
-                System.out.println("forma selezionata nel command" );
-                // se la forma è composta la decorazione delle forme interne blocca il propagarsi verso il basso
-                // della nuova colorazione, togliere e rimettere la decorazione risolve il problema
-                // per il colore di bordo visto che è una qualità che hanno tutte le figure è bastato aggiungere il
-                // metodo setColor a FormaSelezionataDecorator
                 FormaSelezionataDecorator formaCorrente = (FormaSelezionataDecorator)f;
                 ((FormaSelezionataDecorator) f).undecorate();
                 if(formaCorrente.getForma() instanceof Ellisse){
                     Ellisse ellisse = (Ellisse) formaCorrente.getForma();
                     ellisse.setColoreInterno(colore);
-                    System.out.println("cambio colore dell'ellissi in " + colore);
                 } else if (formaCorrente.getForma() instanceof Rettangolo) {
                     Rettangolo rettangolo = (Rettangolo) formaCorrente.getForma();
                     rettangolo.setColoreInterno(colore);
-                    System.out.println("cambio colore del rettangolo in " + colore);
                 } else if (formaCorrente.getForma() instanceof FormaComposta){
                     FormaComposta fc = (FormaComposta) formaCorrente.getForma();
                     fc.setColoreInterno(colore);
-                    System.out.println("cambio colore della forma composta in " + colore);
                 } else if (formaCorrente.getForma() instanceof Poligono) {
                     Poligono poligono = (Poligono) formaCorrente.getForma();
                     poligono.setColoreInterno(colore);
-                    System.out.println("cambio colore del rettangolo in " + colore);
                 }else if (formaCorrente.getForma() instanceof Testo) {
                     Testo testo = (Testo) formaCorrente.getForma();
                     testo.setColoreInterno(colore);
@@ -436,12 +426,10 @@ public class DrawSnapModel implements Serializable {
      * @param colore è il {@link Color} deciso dall'utente per aggiornare la {@link FormaSelezionataDecorator}
      */
     public void changeOutlineColor(Color colore) {
-        System.out.println("model: " + colore);
 
         for(Forma f:forme){
             if(f instanceof FormaSelezionataDecorator){
 
-                System.out.println("colore aggiornato");
                 f.setColore(colore);
             }
         }
@@ -459,7 +447,6 @@ public class DrawSnapModel implements Serializable {
      */
     public void stretch(double larghezza, double altezza) {
         // Itera attraverso le forme per trovare quella selezionata
-        System.out.println("model");
         Forma formaDaRidimensionare = null;
         for (Forma f : forme) {
             if (f instanceof FormaSelezionataDecorator) {
@@ -469,7 +456,6 @@ public class DrawSnapModel implements Serializable {
         }
 
         if (formaDaRidimensionare == null) {
-            System.err.println("Nessuna forma selezionata trovata per il ridimensionamento.");
             return;
         }
 
@@ -483,29 +469,21 @@ public class DrawSnapModel implements Serializable {
             double fattoreScalaY = (altezzaCorrente > 0) ? altezza / altezzaCorrente : 1.0;
             poligono.scala(fattoreScalaX, fattoreScalaY);
 
-            System.out.println("  Poligono ridimensionato. Nuove dimensioni bounding box: W=" + poligono.getLarghezza() + ", H=" + poligono.getAltezza());
-
         } else if (formaDaRidimensionare instanceof Rettangolo) {
             Rettangolo rettangolo = (Rettangolo) formaDaRidimensionare;
             rettangolo.setLarghezza(larghezza);
             rettangolo.setAltezza(altezza);
-            System.out.println("  Tipo: Rettangolo. Impostate nuove dimensioni: W=" + larghezza + ", H=" + larghezza);
-
         } else if (formaDaRidimensionare instanceof Testo){
             Testo testo = (Testo) formaDaRidimensionare;
             testo.setLarghezza(larghezza);
             testo.setAltezza(altezza);
-            System.out.println("  Tipo: Testo. Impostate nuove dimensioni: W=" + larghezza + ", H=" + larghezza);
         }else if (formaDaRidimensionare instanceof Ellisse) {
             Ellisse ellisse = (Ellisse) formaDaRidimensionare;
             ellisse.setLarghezza(larghezza);
             ellisse.setAltezza(altezza);
-            System.out.println("  Tipo: Ellisse. Impostate nuove dimensioni: W=" + larghezza + ", H=" + larghezza);
-
         } else {
             Linea linea = (Linea) formaDaRidimensionare;
             linea.setLarghezza(larghezza);
-            System.out.println("  Tipo: Linea. Impostata nuova dimensione: W=" + larghezza + ", H=" + larghezza);
         }
     }
 
@@ -516,7 +494,6 @@ public class DrawSnapModel implements Serializable {
      */
     public void proportionalResize(double proporzione) {
         // Itera attraverso le forme per trovare quella selezionata
-        System.out.println("model" );
         Forma formaDaRidimensionare = null;
         for (Forma f : forme) {
             if (f instanceof FormaSelezionataDecorator) {
@@ -526,7 +503,6 @@ public class DrawSnapModel implements Serializable {
         }
 
         if (formaDaRidimensionare == null) {
-            System.err.println("Nessuna forma selezionata trovata per il ridimensionamento.");
             return;
         }
 
@@ -539,15 +515,12 @@ public class DrawSnapModel implements Serializable {
      * @param angoloSelezionato è il nuovo angolo della {@link FormaSelezionataDecorator}
      */
     public void rotation(double angoloSelezionato){
-        System.out.println("model: " + angoloSelezionato);
 
         if(angoloSelezionato < 0){
             angoloSelezionato = angoloSelezionato + 360;
         }
         for(Forma f:forme){
             if(f instanceof FormaSelezionataDecorator){
-
-                System.out.println("angolo aggiornato");
                 ((FormaSelezionataDecorator) f).getForma().setAngoloInclinazione(angoloSelezionato);
             }
         }

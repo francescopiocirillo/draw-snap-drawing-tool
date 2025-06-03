@@ -48,7 +48,6 @@ public class DrawState implements DrawingState{
      */
     public DrawState(Forme formaCorrente) {
         this.formaCorrente = formaCorrente;
-        System.out.println(formaCorrente);
     }
 
     public Forme getFormaCorrente() {
@@ -359,7 +358,6 @@ public class DrawState implements DrawingState{
 
         //Se attributi è null non viene creata alcuna preview
         if (attributiFormaDTO == null){
-            System.out.println("ERROR");
             return null;
         }
 
