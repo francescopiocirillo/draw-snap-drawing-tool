@@ -233,16 +233,40 @@ public class Poligono extends Forma2D {
 
     /**
      * Gestisce il ridimensionamento del {@link Poligono} in modo proporzionale applicando un
-     * fattore di scala uniforme a tutti i suoi punti intrinseci.
+     * fattore di scala uniforme a tutti i suoi punti intrinseci, facendo in modo di rispettare i limiti di dimensione 5-500
      *
      * @param proporzione La percentuale di ridimensionamento (es. 100 per nessuna modifica, 50 per metà dimensione).
      */
     @Override
     public void proportionalResize(double proporzione) {
-        double fattoreScala = proporzione / 100.0;
-        // Applica il fattore di scala sia sull'asse X che sull'asse Y
-        scala(fattoreScala, fattoreScala);
+        double larghezzaAttuale = this.intrinsicLarghezza;
+        double altezzaAttuale = this.intrinsicAltezza;
 
+        // Calcola le nuove dimensioni teoriche
+        double nuovaLarghezza = larghezzaAttuale * proporzione / 100;
+        double nuovaAltezza = altezzaAttuale * proporzione / 100;
+
+        double fattoreDiScalaFinale = proporzione / 100.0; // Fattore di scala desiderato
+
+        // Logica per il valore massimo 500
+        if (nuovaLarghezza > 500 || nuovaAltezza > 500) {
+            if (larghezzaAttuale > altezzaAttuale) {
+                fattoreDiScalaFinale = 500.0 / larghezzaAttuale;
+            } else {
+                fattoreDiScalaFinale = 500.0 / altezzaAttuale;
+            }
+        }
+        // Logica per il valore minimo 5
+        else if (nuovaLarghezza < 5 || nuovaAltezza < 5) {
+            if (larghezzaAttuale < altezzaAttuale) {
+                fattoreDiScalaFinale = 5.0 / larghezzaAttuale;
+            } else {
+                fattoreDiScalaFinale = 5.0 / altezzaAttuale;
+            }
+        }
+
+        // Applica il fattore di scala finale ai punti intrinseci del poligono
+        scala(fattoreDiScalaFinale, fattoreDiScalaFinale);
     }
 
     /**
