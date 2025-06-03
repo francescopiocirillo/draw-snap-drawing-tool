@@ -7,7 +7,10 @@ import javafx.scene.paint.Color;
 
 import java.io.*;
 
-
+/**
+ * La classe {@link Forma} rappresenta una forma generica. Si tratta di una
+ * classe astratta che verrà estesa da delle classi concrete.
+ */
 public abstract class Forma implements Serializable, Cloneable{
     /*
      * Attributi
@@ -114,19 +117,54 @@ public abstract class Forma implements Serializable, Cloneable{
         setCoordinataY(coordinataYMouseDragged-getOffsetY());
     }
 
+    /*
+     * Logica della classe
+     */
+
     /**
-     * Esegue il resize proporzionale.
-     * Il resize avviene impostando la larghezza al proporzione% del valore attuale.
-     * @param proporzione -> la proporzione per realizzare la modifica.
+     * Gestisce il disegno di una {@link Forma} sul {@link GraphicsContext} specificato.
+     *
+     * @param gc il {@link GraphicsContext} su cui disegnare la {@link Forma}.
+     *           Deve essere già inizializzato e associato a un {@link javafx.scene.canvas.Canvas} valido.
+     */
+    public abstract void disegna(GraphicsContext gc);
+
+    /**
+     * Verifica se la {@link Forma} contiene un punto specifico nello spazio.
+     *
+     * @param puntoDaValutareX La coordinata X del punto da verificare.
+     * @param puntoDaValutareY La coordinata Y del punto da verificare.
+     * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si trova all'interno della forma,
+     *         altrimenti {@code false}.
+     */
+    public abstract boolean contiene(double puntoDaValutareX, double puntoDaValutareY);
+
+    /**
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse verticale che passa per il centro della {@link Forma} stessa
+     */
+    public abstract void specchiaInVerticale();
+
+    /**
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse orizzontale che passa per il centro della {@link Forma} stessa
+     */
+    public abstract void specchiaInOrizzontale();
+
+    /**
+     * Gestisce il ridimensionamento della {@link Forma} in modo proporzionale applicando un
+     * fattore di scala uniforme a tutti i suoi punti intrinseci.
+     *
+     * @param proporzione La percentuale di ridimensionamento (es. 100 per nessuna modifica, 50 per metà dimensione).
      */
     public void proportionalResize(double proporzione){
         setLarghezza(getLarghezza()*proporzione/100);
     }
 
     /**
-     * Metodo per clonare l'oggetto creandone una nuova istanza
+     * Gestisce la clonazione dell'oggetto creandone una nuova istanza
      * Permette di modificare l'elemento clonato senza intaccare quello originale
-     * @return la forma clonata.
+     * @return la {@link Forma} clonata.
      */
     @Override
     public Forma clone(){
@@ -139,8 +177,8 @@ public abstract class Forma implements Serializable, Cloneable{
     }
 
     /**
-     * Metodo per il controllare se due forme sono uguali
-     * @param forma -> forma con cui fare il confronto
+     * Verifica se la {@link Forma} corrente è uguale ad un altra {@link Forma}
+     * @param forma è la {@link Forma} con cui fare il confronto
      * @return {@code true} se gli attributi sono uguali, altrimenti {@code false}
      */
     public boolean confrontaAttributi(Forma forma){
@@ -156,47 +194,15 @@ public abstract class Forma implements Serializable, Cloneable{
     }
 
     /*
-     * Logica della classe
+     * Logica per la serializzazione e deserializzazione
      */
 
     /**
-     * Disegna la Forma sul {@link GraphicsContext} specificato.
-     *
-     * @param gc il {@code GraphicsContext} su cui disegnare la Forma.
-     *           Deve essere già inizializzato e associato a un {@code Canvas} valido.
-     */
-    public abstract void disegna(GraphicsContext gc);
-
-    /**
-     * Determina se la forma contiene un punto specifico nello spazio.
-     *
-     * @param puntoDaValutareX La coordinata X del punto da verificare.
-     * @param puntoDaValutareY La coordinata Y del punto da verificare.
-     * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si trova all'interno della forma,
-     *         altrimenti {@code false}.
-     */
-    public abstract boolean contiene(double puntoDaValutareX, double puntoDaValutareY);
-
-    /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
-     * cetro della figura stessa
-     */
-    public abstract void specchiaInVerticale();
-
-    /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse orizzontale che passa per il
-     * cetro della figura stessa
-     */
-    public abstract void specchiaInOrizzontale();
-
-    /*
-     * Metodi per la serializzazione/deserializzazione
-     */
-
-    /**
-     * Serializza l'oggetto nel complesso e poi salva come Stringa l'informazione sul colore
-     * visto che Color non è serializzabile
-     * @param out è lo stream sul quale salvare le informazioni, sarà il File scelto dall'utente
+     * Gestisce la serializzazione dell'oggetto nel complesso e
+     * poi salva come {@link String} l'informazione sul {@code colore}
+     * visto che {@link Color} non è {@link Serializable}.
+     * @param out è l' {@link ObjectOutputStream} sul quale salvare le informazioni, sarà il
+     *            {@link java.io.File} scelto dall'utente
      * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
      */
     @Serial
@@ -207,9 +213,11 @@ public abstract class Forma implements Serializable, Cloneable{
     }
 
     /**
-     * Deserializza l'oggetto nel complesso e poi recupera le informazioni sul colore
-     * visto che Color non è serializzabile
-     * @param in è lo stream dal quale prelevare le informazioni, sarà il File scelto dall'utente
+     * Gestisce la deserializzazione dell'oggetto nel complesso e
+     * poi recupera le informazioni sul {@code colore}
+     * visto che {@link Color} non è {@link Serializable}.
+     * @param in è l' {@link ObjectInputStream} dal quale caricare le informazioni, sarà il
+     *            {@link java.io.File} scelto dall'utente
      * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
      * @throws ClassNotFoundException se la classe dell'oggetto serializzato non è trovata
      */

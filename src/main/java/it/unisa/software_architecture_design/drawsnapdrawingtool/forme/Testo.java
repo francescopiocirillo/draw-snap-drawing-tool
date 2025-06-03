@@ -13,8 +13,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serial;
 
 /**
- * La classe {@code Testo} rappresenta la forma Testo e presenta tutte le caratteristiche
- * ereditate da {@code Forma2D} in più alla stringa {@code testo} che rappresenterà.
+ * La classe {@link Testo} rappresenta la {@link Forma} Testo e presenta tutte le caratteristiche
+ * ereditate da {@link Forma2D} in più alla {@link String} {@code testo} che rappresenterà.
  */
 public class Testo extends Forma2D {
 
@@ -143,7 +143,6 @@ public class Testo extends Forma2D {
         return verticeBX;
     }
 
-
     @Override
     public void setCoordinataY(double coordinataY) {
         super.setCoordinataY(coordinataY);
@@ -156,12 +155,15 @@ public class Testo extends Forma2D {
         updateVertici();
     }
 
+    /*
+     * Logica della Classe
+     */
 
     /**
-     * Aggiorna le coordinate dei vertici del bounding box del testo.
-     * Questo metodo calcola i 4 vertici del rettangolo delimitatore del testo
+     * Gestisce l'aggiornamento delle coordinate dei vertici del bounding box del {@link Testo}
+     * Questo metodo calcola i 4 vertici del rettangolo delimitatore del {@link Testo}
      * tenendo conto della sua posizione (centro), larghezza, altezza e angolo di inclinazione.
-     * È simile a updateVertici() del Rettangolo.
+     * È simile a {@code updateVertici()} del {@link Rettangolo}.
      */
     private void updateVertici() {
 
@@ -190,11 +192,10 @@ public class Testo extends Forma2D {
         this.verticeDY = centroY - mezzaLarghezza * sinAngolo + mezzaAltezza * cosAngolo;
     }
 
-
     /**
-     * Calcola i fattori di scala (scaleX, scaleY) necessari per stirare il testo
-     * in modo che riempia la larghezza e l'altezza della bounding box.
-     * Imposta anche un currentFontSize di base per la misurazione del testo.
+     * Gestisce il calcolo dei fattori di scala ({@code scaleX}, {@code scaleY}) necessari per
+     * stirare il {@link Testo} in modo che riempia la larghezza e l'altezza della bounding box.
+     * Imposta anche un {@code currentFontSize} di base per la misurazione del {@code testo}.
      */
     private void calculateFontSize() {
         if (getLarghezza() <= 0 || getAltezza() <= 0 || testo == null || testo.isEmpty()) {
@@ -220,6 +221,12 @@ public class Testo extends Forma2D {
         this.currentFontSize = baseMeasurementFontSize;
     }
 
+    /**
+     * Gestisce il disegno della {@link Forma} {@link Testo} sul {@link GraphicsContext}
+     * del {@link javafx.scene.canvas.Canvas}
+     * @param gc il {@code GraphicsContext} su cui disegnare la Forma.
+     *           Deve essere già inizializzato e associato a un {@link javafx.scene.canvas.Canvas} valido.
+     */
     @Override
     public void disegna(GraphicsContext gc) {
         gc.save(); // Salva lo stato iniziale del contesto grafico
@@ -285,12 +292,11 @@ public class Testo extends Forma2D {
     }
 
     /**
-     * Determina se il testo contiene un punto specifico nello spazio.
-     *
+     * Verifica se il {@link Testo} contiene un punto specifico nello spazio.
      * @param puntoDaValutareX La coordinata X del punto da verificare.
      * @param puntoDaValutareY La coordinata Y del punto da verificare.
-     * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si trova all'interno del rettangolo,
-     * altrimenti {@code false}.
+     * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si trova
+     * all'interno del rettangolo di contenimento, altrimenti {@code false}.
      */
     @Override
     public boolean contiene(double puntoDaValutareX, double puntoDaValutareY) {
@@ -311,9 +317,10 @@ public class Testo extends Forma2D {
                 isToTheLeft(puntoDaValutareX, puntoDaValutareY, verticeCX, verticeCY, verticeDX, verticeDY) &&
                 isToTheLeft(puntoDaValutareX, puntoDaValutareY, verticeDX, verticeDY, verticeAX, verticeAY);
     }
+
     /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse verticale che passa per il
-     * cetro della figura stessa
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse verticale che passa per il centro della {@link Forma} stessa
      */
     @Override
     public void specchiaInVerticale() {
@@ -328,8 +335,8 @@ public class Testo extends Forma2D {
     }
 
     /**
-     * Ridistribuisce i valori della figura per specchiarla lungo l'asse orizzontale che passa per il
-     * cetro della figura stessa
+     * Gestisce la ridistribuzione dei valori della {@link Forma} per specchiarla
+     * lungo l'asse orizzontale che passa per il centro della {@link Forma} stessa
      */
     @Override
     public void specchiaInOrizzontale() {
@@ -337,29 +344,15 @@ public class Testo extends Forma2D {
         this.specchiataOrizzontale = !specchiataOrizzontale;
     }
 
-    /**
-     * Determina se il punto (puntoDaValutareX, puntoDaValutareY) è "alla sinistra" del segmento tra
-     * (inizioVettoreCoordinataX, y1) e (x2, y2) tramite il prodotto vettoriale.
-     *
-     * @param puntoDaValutareX
-     * @param puntoDaValutareY
-     * @param inizioVettoreCoordinataX
-     * @param inizioVettoreCoordinataY
-     * @param fineVettoreCoordinataX
-     * @param fineVettoreCoordinataY
-     * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si trova "alla sinistra" del segmento,
-     *          altrimenti {@code false}.
+    /*
+     * Logica di serializzazione e deserializzazione
      */
-    private boolean isToTheLeft(double puntoDaValutareX, double puntoDaValutareY, double inizioVettoreCoordinataX, double inizioVettoreCoordinataY, double fineVettoreCoordinataX, double fineVettoreCoordinataY) {
-        double crossProduct = (fineVettoreCoordinataX - inizioVettoreCoordinataX) * (puntoDaValutareY - inizioVettoreCoordinataY) - (fineVettoreCoordinataY - inizioVettoreCoordinataY) * (puntoDaValutareX - inizioVettoreCoordinataX);
-        return crossProduct >= 0 ;
-    }
-
 
     /**
-     * Serializza l'oggetto nel complesso con il metodo della superclasse e poi salva
-     * anche il colore di riempimento che non è serializzabile.
-     * @param out è lo stream sul quale salvare le informazioni, sarà il File scelto dall'utente
+     * Gestisce la serializzazione dell'oggetto nel complesso con il metodo della superclasse e
+     * poi salva anche il {@link Color} di riempimento che non è {@link java.io.Serializable}.
+     * @param out è l' {@link ObjectOutputStream} sul quale salvare le informazioni, sarà il
+     *            {@link java.io.File} scelto dall'utente
      * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
      */
     @Serial
@@ -375,9 +368,10 @@ public class Testo extends Forma2D {
     }
 
     /**
-     * Deserializza l'oggetto nel complesso con il metodo della superclasse e poi ricava
-     * anche il colore di riempimento che non è serializzabile.
-     * @param in è lo stream dal quale caricare le informazioni, sarà il File scelto dall'utente
+     * Gestsce la deserializzazione dell'oggetto nel complesso con il metodo della superclasse e
+     * poi ricava anche il {@link Color} di riempimento che non è {@link java.io.Serializable}.
+     * @param in è l' {@link ObjectInputStream} dal quale caricare le informazioni, sarà il
+     *           {@link java.io.File} scelto dall'utente
      * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
      * @throws ClassNotFoundException se si verifica un errore nel caricare una classe
      */
@@ -393,5 +387,27 @@ public class Testo extends Forma2D {
         this.currentFontSize = in.readDouble();
         specchiataVerticale = in.readBoolean();
         specchiataOrizzontale = in.readBoolean();
+    }
+
+    /*
+     * Metodi Ausiliari
+     */
+
+    /**
+     * Verifica se il punto (puntoDaValutareX, puntoDaValutareY) è "alla sinistra" del segmento tra
+     * (inizioVettoreCoordinataX, y1) e (x2, y2) tramite il prodotto vettoriale.
+     *
+     * @param puntoDaValutareX
+     * @param puntoDaValutareY
+     * @param inizioVettoreCoordinataX
+     * @param inizioVettoreCoordinataY
+     * @param fineVettoreCoordinataX
+     * @param fineVettoreCoordinataY
+     * @return {@code true} se il punto specificato (puntoDaValutareX, puntoDaValutareY) si trova "alla sinistra" del segmento,
+     *          altrimenti {@code false}.
+     */
+    private boolean isToTheLeft(double puntoDaValutareX, double puntoDaValutareY, double inizioVettoreCoordinataX, double inizioVettoreCoordinataY, double fineVettoreCoordinataX, double fineVettoreCoordinataY) {
+        double crossProduct = (fineVettoreCoordinataX - inizioVettoreCoordinataX) * (puntoDaValutareY - inizioVettoreCoordinataY) - (fineVettoreCoordinataY - inizioVettoreCoordinataY) * (puntoDaValutareX - inizioVettoreCoordinataX);
+        return crossProduct >= 0 ;
     }
 }

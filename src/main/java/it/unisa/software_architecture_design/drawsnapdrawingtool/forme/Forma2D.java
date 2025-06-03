@@ -8,6 +8,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
 
+/**
+ * La classe {@link Forma2D} eredita le caratteristiche della classe {@link Forma}
+ * e viene usata per distinguere le {@link Forma} a 2 Dimensioni. Si tratta di una
+ * classe astratta che verrà estesa da delle classi concrete.
+ */
 public abstract class Forma2D extends Forma{
     /*
      * Attributi
@@ -40,10 +45,15 @@ public abstract class Forma2D extends Forma{
         this.altezza = altezza;
     }
 
+    /*
+     * Logica della classe
+     */
+
     /**
-     * Esegue il resize proporzionale.
-     * Il resize avviene impostando la larghezza e l'altezza al proporzione% del loro valore attuale.
-     * @param proporzione -> la proporzione per realizzare la modifica.
+     * Gestisce il ridimensionamento della {@link Forma2D} in modo proporzionale applicando un
+     * fattore di scala uniforme a tutti i suoi punti intrinseci.
+     *
+     * @param proporzione La percentuale di ridimensionamento (es. 100 per nessuna modifica, 50 per metà dimensione).
      */
     @Override
     public void proportionalResize(double proporzione){
@@ -51,10 +61,15 @@ public abstract class Forma2D extends Forma{
         setAltezza(getAltezza()*proporzione/100);
     }
 
+    /*
+     * Logica di serializzazione e deserializzazione
+     */
+
     /**
-     * Serializza l'oggetto nel complesso con il metodo della superclasse e poi salva
-     * anche il colore di riempimento che non è serializzabile.
-     * @param out è lo stream sul quale salvare le informazioni, sarà il File scelto dall'utente
+     * Gestisce la serializzazione dell'oggetto nel complesso con il metodo della superclasse e
+     * poi salva anche il {@link Color} di riempimento che non è {@link java.io.Serializable}.
+     * @param out è l' {@link ObjectOutputStream} sul quale salvare le informazioni, sarà il
+     *            {@link java.io.File} scelto dall'utente
      * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
      */
     @Serial
@@ -66,9 +81,10 @@ public abstract class Forma2D extends Forma{
     }
 
     /**
-     * Deserializza l'oggetto nel complesso con il metodo della superclasse e poi ricava
-     * anche il colore di riempimento che non è serializzabile.
-     * @param in è lo stream dal quale caricare le informazioni, sarà il File scelto dall'utente
+     * Gestisce la deserializzazione dell'oggetto nel complesso con il metodo della superclasse e
+     * poi ricava anche il {@link Color} di riempimento che non è {@link java.io.Serializable}
+     * @param in è l' {@link ObjectInputStream} dal quale caricare le informazioni, sarà il
+     *           {@link java.io.File} scelto dall'utente
      * @throws IOException se si verifica un errore di I/O durante la scrittura dell'oggetto
      * @throws ClassNotFoundException se si verifica un errore nel caricare una classe
      */

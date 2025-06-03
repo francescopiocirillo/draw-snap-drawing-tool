@@ -5,6 +5,7 @@ import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Forma;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaComposta;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.FormaSelezionataDecorator;
 import it.unisa.software_architecture_design.drawsnapdrawingtool.forme.Linea;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToolBar;
@@ -13,9 +14,10 @@ import javafx.scene.input.MouseEvent;
 import java.util.Iterator;
 
 /**
- * La classe {@code SelectState} rappresenta lo stato di selezione e per mezzo del Pattern State
- * si occupa della logica degli handler relativi agli eventi di interazione con il canvas nello stato di selezione
- * permettendo la selezione di una figura e il suo spostamento.
+ * La classe {@link SelectState} rappresenta lo stato di selezione e per mezzo del Pattern State
+ * si occupa della logica degli {@link javafx.event.EventHandler} relativi ai
+ * {@link MouseEvent} di interazione con il {@link javafx.scene.canvas.Canvas} nello stato di selezione
+ * permettendo la selezione di una {@link Forma} e il suo spostamento.
  */
 public class SelectState implements DrawingState{
     /*
@@ -26,7 +28,7 @@ public class SelectState implements DrawingState{
     private final MenuItem composeButton; // pulsante per comporre le forme
 
     /*
-     * Costruttore
+     * Costruttore, getter e setter
      */
     public SelectState(ToolBar toolBarFX, Button changeFillColorButton, MenuItem composeButton) {
         this.toolBarFX = toolBarFX;
@@ -39,13 +41,15 @@ public class SelectState implements DrawingState{
      */
 
     /**
-     * Gestisce l'evento di pressione del mouse sul canvas per permettere la selezione di una figura
-     * @param event è l'evento di pressione del mouse
-     * @param forme è la lista delle forme presenti sul foglio di disegno
-     * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
-     * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
-     * @return false poiché l'evento di pressione del mouse, inclusa la logica di selezione e gestione delle forme,
-     *  * è completamente gestito da questo metodo e non necessita di ulteriori elaborazioni da parte di altre componenti.
+     * Gestisce il {@link MouseEvent} di pressione sul {@link javafx.scene.canvas.Canvas} per
+     * permettere la selezione di una {@link Forma}
+     * @param event è il {@link MouseEvent} di pressione che ha causato la chiamata al metodo
+     * @param forme è il {@link DrawSnapModel}  presente nel {@link Canvas}
+     * @param coordinataX è la coordinata logica per l'asse x del {@link MouseEvent}
+     * @param coordinataY è la coordinata logica per l'asse y del {@link MouseEvent}
+     * @return {@code false} poiché il {@link MouseEvent} di pressione, inclusa la logica di
+     * selezione e gestione delle {@link Forma},è completamente gestito da questo metodo e
+     * non necessita di ulteriori elaborazioni da parte di altre componenti.
      */
     @Override
     public boolean handleMousePressed(MouseEvent event, DrawSnapModel forme, double coordinataX , double coordinataY) {
@@ -105,74 +109,15 @@ public class SelectState implements DrawingState{
     }
 
     /**
-     * Metodo di utilità per disattivare la toolBar quando non necessaria
-     */
-    public void disattivaToolBar() {
-        if(toolBarFX != null) {
-            toolBarFX.setDisable(true); //disabilita la barra in alto delle modifiche
-        }
-    }
-
-    /**
-     * Metodo di utilità per attivare la toolBar quando non necessaria
-     */
-    public void attivaToolBar() {
-        if(toolBarFX != null) {
-            toolBarFX.setDisable(false); //abilita la barra in alto delle modifiche
-        }
-    }
-
-    /**
-     * Metodo di utilità per disattivare la toolBar quando non necessaria
-     */
-    public void disattivaComposeButton() {
-        if(composeButton != null) {
-            composeButton.setDisable(true); //disabilita la barra in alto delle modifiche
-        }
-    }
-
-    /**
-     * Metodo di utilità per attivare la toolBar quando non necessaria
-     */
-    public void attivaComposeButton() {
-        if(composeButton != null) {
-            composeButton.setDisable(false); //abilita la barra in alto delle modifiche
-        }
-    }
-
-    /**
-     * Metodo di utilità per abilitare o disabilitare il pulsante di cambio colore di riempimento
-     * in base alla forma selezionata.
-     */
-    public void disattivaChangeFillColorButton(Forma formaSelezionata) {
-        if(formaSelezionata != null) {
-            Forma formaDecorata = ((FormaSelezionataDecorator)formaSelezionata).getForma();
-            if (formaDecorata instanceof Linea) {
-                changeFillColorButtonDisable(true);
-            } else {
-                changeFillColorButtonDisable(false);
-            }
-        }
-    }
-
-    /**
-     * Metodo di utilità per abilitare o disabilitare il pulsante di cambio colore di riempimento.
-     * @param disable true per disabilitare il pulsante, false per abilitarlo.
-     */
-    private void changeFillColorButtonDisable(boolean disable) {
-        if(changeFillColorButton != null) {
-            changeFillColorButton.setDisable(disable);
-        }
-    }
-
-    /**
-     * Gestisce l'evento di trascinamento del mouse permettendo lo spostamento della forma selezionata.
-     * @param event è l'evento di trascinamento del mouse
-     * @param forme è la lista di forme presenti sul canvas
-     * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
-     * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
-     * @return true se una forma selezionata è stata spostata con successo, false se non ci sono forme
-     * selezionate o se ci sono più forme selezionate (il metodo non gestisce lo spostamento in questi casi).
+     * Gestisce il {@link MouseEvent} di trascinamento sul {@link Canvas} per
+     * permettere lo spostamento della {@link FormaSelezionataDecorator}
+     * @param event è il {@link MouseEvent} di trascinamento che ha causato la chiamata al metodo
+     * @param forme è il {@link DrawSnapModel}  presente nel {@link Canvas}
+     * @param coordinataX è la coordinata logica per l'asse x del {@link MouseEvent}
+     * @param coordinataY è la coordinata logica per l'asse y del {@link MouseEvent}
+     * @return {@code true} se una {@link FormaSelezionataDecorator} è stata spostata con successo,
+     * {@code false} se non ci sono {@link FormaSelezionataDecorator} o se ci sono più
+     * {@link FormaSelezionataDecorator} (il metodo non gestisce lo spostamento in questi casi).
      */
     @Override
     public boolean handleMouseDragged(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
@@ -196,14 +141,82 @@ public class SelectState implements DrawingState{
 
     /**
      * METODO MOMENTANEAMENTE NON NECESSARI0
-     * @param event è l'evento di rilascio del mouse
-     * @param coordinataX è la coordinata logica per l'asse x dell'evento mouse
-     * @param coordinataY è la coordinata logica per l'asse y dell'evento mouse
-     * @return false poiché il metodo non implementa alcuna funzionalità al momento ed è marcato come non necessario.
+     * @param event è il {@link MouseEvent} di rilascio che ha causato la chiamata al metodo
+     * @param forme è il {@link DrawSnapModel}  presente nel {@link Canvas}
+     * @param coordinataX è la coordinata logica per l'asse x del {@link MouseEvent}
+     * @param coordinataY è la coordinata logica per l'asse y del {@link MouseEvent}
+     * @return {@code false} poiché il metodo non implementa alcuna funzionalità al momento ed
+     * è marcato come non necessario.
      */
     @Override
     public boolean handleMouseReleased(MouseEvent event, DrawSnapModel forme, double coordinataX, double coordinataY) {
         //NA
         return false;
+    }
+
+    /*
+     * Metodi Ausiliari
+     */
+
+    /**
+     * Gestisce la disabilitazione della {@code toolBarFX} quando non necessaria
+     */
+    public void disattivaToolBar() {
+        if(toolBarFX != null) {
+            toolBarFX.setDisable(true); //disabilita la barra in alto delle modifiche
+        }
+    }
+
+    /**
+     * Gestisce l'abilitazione della {@code toolBarFX} quando necessaria
+     */
+    public void attivaToolBar() {
+        if(toolBarFX != null) {
+            toolBarFX.setDisable(false); //abilita la barra in alto delle modifiche
+        }
+    }
+
+    /**
+     * Gestisce la disabilitazione del {@code composeButton} quando non necessario
+     */
+    public void disattivaComposeButton() {
+        if(composeButton != null) {
+            composeButton.setDisable(true); //disabilita la barra in alto delle modifiche
+        }
+    }
+
+    /**
+     * Gestisce l'abilitazione del {@code composeButton} quando necessario
+     */
+    public void attivaComposeButton() {
+        if(composeButton != null) {
+            composeButton.setDisable(false); //abilita la barra in alto delle modifiche
+        }
+    }
+
+    /**
+     * Gestisce l'abilitazione o la disabilitazione del {@code changeFillColorButton}
+     * in base alla {@link FormaSelezionataDecorator}.
+     */
+    public void disattivaChangeFillColorButton(Forma formaSelezionata) {
+        if(formaSelezionata != null) {
+            Forma formaDecorata = ((FormaSelezionataDecorator)formaSelezionata).getForma();
+            if (formaDecorata instanceof Linea) {
+                changeFillColorButtonDisable(true);
+            } else {
+                changeFillColorButtonDisable(false);
+            }
+        }
+    }
+
+    /**
+     * Gestisce l'abilitazione o la disabilitazione del {@code changeFillColorButton}
+     * tramite booleano
+     * @param disable {@code true} per disabilitare il {@link Button}, {@code false} per abilitarlo.
+     */
+    private void changeFillColorButtonDisable(boolean disable) {
+        if(changeFillColorButton != null) {
+            changeFillColorButton.setDisable(disable);
+        }
     }
 }
