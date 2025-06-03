@@ -1009,8 +1009,8 @@ public class DrawSnapController {
             contentBox.setPadding(new Insets(20));
 
             // Spinner per dimensioni
-            Spinner<Double> spinnerLarghezza = new Spinner<>(5.0, 500.0, forma.getLarghezza(), 1.0);
-            spinnerLarghezza.setTooltip(new Tooltip("Dimensione minima: 5. Dimensione massima: 500"));
+            Spinner<Double> spinnerLarghezza = new Spinner<>(5.0, 1000.0, forma.getLarghezza(), 1.0);
+            spinnerLarghezza.setTooltip(new Tooltip("Dimensione minima: 5. Dimensione massima: 1000"));
 
             double altezzaDefault = 0;
             if ( forma instanceof Rettangolo ) {
@@ -1022,8 +1022,8 @@ public class DrawSnapController {
             }else if(forma instanceof Testo){
                 altezzaDefault = ((Testo) forma).getAltezza();
             }
-            Spinner<Double>  spinnerAltezza = new Spinner<>(5.0, 500.0, altezzaDefault, 1.0);
-            spinnerAltezza.setTooltip(new Tooltip("Dimensione minima: 5. Dimensione massima: 500"));
+            Spinner<Double>  spinnerAltezza = new Spinner<>(5.0, 1000.0, altezzaDefault, 1.0);
+            spinnerAltezza.setTooltip(new Tooltip("Dimensione minima: 5. Dimensione massima: 1000"));
 
 
             spinnerAltezza.setEditable(true);

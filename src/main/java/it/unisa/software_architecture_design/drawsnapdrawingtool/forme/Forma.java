@@ -26,6 +26,9 @@ public abstract class Forma implements Serializable, Cloneable{
     private double offsetX;
     private double offsetY;
 
+    private static final double MIN_DIMENSION = 5.0;
+    private static final double MAX_DIMENSION = 1000.0;
+
     /*
      * Costruttore, getter e setter
      */
@@ -153,17 +156,17 @@ public abstract class Forma implements Serializable, Cloneable{
 
     /**
      * Gestisce il ridimensionamento della {@link Forma} in modo proporzionale applicando un
-     * fattore di scala uniforme a tutti i suoi punti intrinseci.
+     * fattore di scala uniforme a tutti i suoi punti intrinseci, sempre rispettando i limiti di dimensione 5-1000
      *
      * @param proporzione La percentuale di ridimensionamento (es. 100 per nessuna modifica, 50 per metà dimensione).
      */
     public void proportionalResize(double proporzione){
         double nuovaLarghezza = getLarghezza() * proporzione / 100;
 
-        if (nuovaLarghezza < 5) {
-            setLarghezza(5);
-        } else if (nuovaLarghezza > 500) {
-            setLarghezza(500);
+        if (nuovaLarghezza < MIN_DIMENSION) {
+            setLarghezza(MIN_DIMENSION);
+        } else if (nuovaLarghezza > MAX_DIMENSION) {
+            setLarghezza(MAX_DIMENSION);
         } else {
             setLarghezza(nuovaLarghezza);
         }

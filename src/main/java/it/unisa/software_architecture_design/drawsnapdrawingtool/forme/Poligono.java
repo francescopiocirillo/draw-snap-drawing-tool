@@ -25,12 +25,13 @@ public class Poligono extends Forma2D {
     private double intrinsicLarghezza; // Larghezza della bounding box del poligono.
     private double intrinsicCenterX; // Centro X della bounding box
     private double intrinsicCenterY; // Centro Y della bounding box
+    private static final double MIN_DIMENSION = 5.0;
+    private static final double MAX_DIMENSION = 1000.0;
 
     /*
      * Costruttore, getter e setter
      */
     public Poligono(double initialRefX, double initialRefY, double larghezza, double altezza, double angoloInclinazione, Color colore, List<Double> rawPuntiX, List<Double> rawPuntiY, Color coloreInterno) {
-        // Imposta la posizione globale del poligono direttamente al punto di riferimento iniziale.
         super(initialRefX, initialRefY, larghezza, angoloInclinazione, colore, altezza, coloreInterno);
 
         this.puntiX = new ArrayList<>();
@@ -42,8 +43,36 @@ public class Poligono extends Forma2D {
             this.puntiY.add(rawPuntiY.get(i) - initialRefY);
         }
 
-        // Calcola la bounding box dei punti relativi.
+        // Calcola la bounding box iniziale dei punti relativi.
         calcolaBoundingBox();
+
+        double larghezzaAttuale = this.intrinsicLarghezza;
+        double altezzaAttuale = this.intrinsicAltezza;
+
+        double scalingFactor = 1.0; // Inizialmente nessun ridimensionamento
+
+        // Controlla se le dimensioni superano il limite massimo
+        if (larghezzaAttuale > MAX_DIMENSION || altezzaAttuale > MAX_DIMENSION) {
+            if (larghezzaAttuale >= altezzaAttuale) {
+                scalingFactor = MAX_DIMENSION / larghezzaAttuale;
+            } else {
+                scalingFactor = MAX_DIMENSION / altezzaAttuale;
+            }
+        }
+        // Controlla se le dimensioni scendono sotto il limite minimo
+        else if (larghezzaAttuale < MIN_DIMENSION || altezzaAttuale < MIN_DIMENSION) {
+            if (larghezzaAttuale <= altezzaAttuale) {
+                scalingFactor = MIN_DIMENSION / larghezzaAttuale;
+            } else {
+                scalingFactor = MIN_DIMENSION / altezzaAttuale;
+            }
+        }
+
+        // Applica il fattore di scala calcolato ai punti intrinseci
+        if (scalingFactor != 1.0) { // Applica la scala solo se c'è stato un capping
+            scala(scalingFactor, scalingFactor);
+        }
+
     }
 
     @Override
@@ -233,7 +262,7 @@ public class Poligono extends Forma2D {
 
     /**
      * Gestisce il ridimensionamento del {@link Poligono} in modo proporzionale applicando un
-     * fattore di scala uniforme a tutti i suoi punti intrinseci, facendo in modo di rispettare i limiti di dimensione 5-500
+     * fattore di scala uniforme a tutti i suoi punti intrinseci, facendo in modo di rispettare i limiti di dimensione 5-1000
      *
      * @param proporzione La percentuale di ridimensionamento (es. 100 per nessuna modifica, 50 per metà dimensione).
      */
@@ -242,26 +271,26 @@ public class Poligono extends Forma2D {
         double larghezzaAttuale = this.intrinsicLarghezza;
         double altezzaAttuale = this.intrinsicAltezza;
 
-        // Calcola le nuove dimensioni teoriche
+        // Calcola le nuove dimensioni senza capping
         double nuovaLarghezza = larghezzaAttuale * proporzione / 100;
         double nuovaAltezza = altezzaAttuale * proporzione / 100;
 
-        double fattoreDiScalaFinale = proporzione / 100.0; // Fattore di scala desiderato
+        double fattoreDiScalaFinale = proporzione / 100.0; // Inizia con il fattore di scala desiderato
 
-        // Logica per il valore massimo 500
-        if (nuovaLarghezza > 500 || nuovaAltezza > 500) {
-            if (larghezzaAttuale > altezzaAttuale) {
-                fattoreDiScalaFinale = 500.0 / larghezzaAttuale;
+        // Logica per il capping massimo (MAX_DIMENSION)
+        if (nuovaLarghezza > MAX_DIMENSION || nuovaAltezza > MAX_DIMENSION) {
+            if (larghezzaAttuale >= altezzaAttuale) {
+                fattoreDiScalaFinale = MAX_DIMENSION / larghezzaAttuale;
             } else {
-                fattoreDiScalaFinale = 500.0 / altezzaAttuale;
+                fattoreDiScalaFinale = MAX_DIMENSION / altezzaAttuale;
             }
         }
-        // Logica per il valore minimo 5
-        else if (nuovaLarghezza < 5 || nuovaAltezza < 5) {
-            if (larghezzaAttuale < altezzaAttuale) {
-                fattoreDiScalaFinale = 5.0 / larghezzaAttuale;
+        // Logica per il capping minimo (MIN_DIMENSION)
+        else if (nuovaLarghezza < MIN_DIMENSION || nuovaAltezza < MIN_DIMENSION) {
+            if (larghezzaAttuale <= altezzaAttuale) {
+                fattoreDiScalaFinale = MIN_DIMENSION / larghezzaAttuale;
             } else {
-                fattoreDiScalaFinale = 5.0 / altezzaAttuale;
+                fattoreDiScalaFinale = MIN_DIMENSION / altezzaAttuale;
             }
         }
 
@@ -293,7 +322,7 @@ public class Poligono extends Forma2D {
         }
         this.puntiX = nuoviPuntiX;
         this.puntiY = nuoviPuntiY;
-        calcolaBoundingBox(); // Ricalcola le dimensioni intrinseche dopo la scala
+        calcolaBoundingBox();
     }
 
     /*

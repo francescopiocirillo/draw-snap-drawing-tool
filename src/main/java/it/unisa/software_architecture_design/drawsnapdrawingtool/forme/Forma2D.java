@@ -19,6 +19,8 @@ public abstract class Forma2D extends Forma{
      */
     private double altezza;
     private transient Color coloreInterno;
+    private static final double MIN_DIMENSION = 5.0;
+    private static final double MAX_DIMENSION = 1000.0;
 
     /*
      * Costruttore, Getter e Setter
@@ -51,7 +53,7 @@ public abstract class Forma2D extends Forma{
 
     /**
      * Gestisce il ridimensionamento della {@link Forma2D} in modo proporzionale applicando un
-     * fattore di scala uniforme a tutti i suoi punti intrinseci, facendo in modo che le dimensioni entrino nel range 5-500
+     * fattore di scala uniforme a tutti i suoi punti intrinseci, facendo in modo che le dimensioni entrino nel range 5-1000
      *
      *
      * @param proporzione La percentuale di ridimensionamento (es. 100 per nessuna modifica, 50 per metà dimensione).
@@ -66,18 +68,18 @@ public abstract class Forma2D extends Forma{
 
         double fattoreDiScalaFinale = proporzione / 100.0;
 
-        if (nuovaLarghezza > 500 || nuovaAltezza > 500) {
-            if (nuovaLarghezza > nuovaAltezza) { // Se la larghezza è la più grande
-                fattoreDiScalaFinale = 500.0 / larghezzaAttuale;
-            } else { // Se l'altezza è la più grande
-                fattoreDiScalaFinale = 500.0 / altezzaAttuale;
+        if (nuovaLarghezza > MAX_DIMENSION || nuovaAltezza > MAX_DIMENSION) {
+            if (nuovaLarghezza > nuovaAltezza) {
+                fattoreDiScalaFinale = MAX_DIMENSION / larghezzaAttuale;
+            } else {
+                fattoreDiScalaFinale = MAX_DIMENSION / altezzaAttuale;
             }
         }
-        else if (nuovaLarghezza < 5 || nuovaAltezza < 5) {
-            if (nuovaLarghezza < nuovaAltezza) { // Se la larghezza è la più piccola
-                fattoreDiScalaFinale = 5.0 / larghezzaAttuale;
-            } else { // Se l'altezza è la più piccola
-                fattoreDiScalaFinale = 5.0 / altezzaAttuale;
+        else if (nuovaLarghezza < MIN_DIMENSION || nuovaAltezza < MIN_DIMENSION) {
+            if (nuovaLarghezza < nuovaAltezza) {
+                fattoreDiScalaFinale = MIN_DIMENSION / larghezzaAttuale;
+            } else {
+                fattoreDiScalaFinale = MIN_DIMENSION / altezzaAttuale;
             }
         }
 
@@ -85,11 +87,6 @@ public abstract class Forma2D extends Forma{
         setLarghezza(larghezzaAttuale * fattoreDiScalaFinale);
         setAltezza(altezzaAttuale * fattoreDiScalaFinale);
 
-        // Assicura che nessuna dimensione superi i limiti
-        if (getLarghezza() > 500) setLarghezza(500);
-        if (getAltezza() > 500) setAltezza(500);
-        if (getLarghezza() < 5) setLarghezza(5);
-        if (getAltezza() < 5) setAltezza(5);
     }
 
     /*
