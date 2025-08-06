@@ -178,9 +178,9 @@ All documentation is available in the `docs/` folder, including:
 👥 Team – University of Salerno
 -------------------------------
 
-* https://github.com/RaffaeleCalabrese2
+* [@Pepi2002](https://github.com/Pepi2002)
 
-* https://github.com/Pepi2002
+* [@RaffaeleCalabrese2](https://github.com/RaffaeleCalabrese2)
 
 * [@francescopiocirillo](https://github.com/francescopiocirillo) (👑 Team Leader)
     
