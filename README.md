@@ -195,7 +195,7 @@ All documentation is available in the `docs/` folder, including:
 1. Clone the repository:
     
     ```bash
-    git clone https://github.com/your-username/draw-snap-drawing-tool.git
+    git clone https://github.com/francescopiocirillo/draw-snap-drawing-tool.git
     ```
     
 2. Open in your preferred IDE (IntelliJ, VS Code, NetBeans).
