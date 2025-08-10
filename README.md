@@ -1,7 +1,9 @@
 🎨 DrawSnap – Geometric Drawing Tool
 ====================================
 
-> 🚀 A **Java-based geometric drawing application** built using the **Scrum methodology**, designed to support shape creation, editing, grouping, and custom shape libraries, developed as part of a university project.
+🚀 A **Java-based geometric drawing application** built using the **Scrum methodology**, designed to support shape creation, editing, grouping, and custom shape libraries, developed as part of a university project.
+
+> Demonstrated proficiency in Java application development, agile Scrum methodology, UI/UX design, advanced shape manipulation features, and automated testing with JUnit.
 
 * * *
 
